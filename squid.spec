@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	4
+Release:	5
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -74,6 +74,7 @@ Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
 Patch190:	%{name}-newssl.patch
 Patch200:	%{name}-sasl.patch
+Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
 BuildRequires:	autoconf
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	openldap-devel
@@ -493,6 +494,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch180 -p1
 %patch190 -p1
 %patch200 -p1
+%patch210 -p1
 
 %build
 %{__aclocal}
@@ -546,6 +548,7 @@ install -d \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -a contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
+install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
@@ -560,8 +563,6 @@ cd -
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/squid
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
-
-install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
