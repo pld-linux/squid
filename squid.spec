@@ -113,8 +113,8 @@ make install \
 	sysconfdir=$RPM_BUILD_ROOT/etc/squid \
 	localstatedir=$RPM_BUILD_ROOT/var
 
-mv $RPM_BUILD_ROOT/usr/bin/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
-mv $RPM_BUILD_ROOT/usr/bin/squid $RPM_BUILD_ROOT/usr/sbin/
+mv $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
+mv $RPM_BUILD_ROOT%{_bindir}/squid $RPM_BUILD_ROOT/usr/sbin/
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/crontab.d/squid
@@ -122,14 +122,14 @@ install %{SOURCE8} $RPM_BUILD_ROOT/etc/crontab.d/calamaris
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/squid
 install %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/squid
 
-install calamaris-%{calamaris_ver}/calamaris $RPM_BUILD_ROOT/usr/bin
+install calamaris-%{calamaris_ver}/calamaris $RPM_BUILD_ROOT%{_bindir}
 install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 install scripts/*.pl $RPM_BUILD_ROOT%{_libdir}/squid
 
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
-rm -f $RPM_BUILD_ROOT/usr/bin/R*
+rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
 gzip -9nf README ChangeLog QUICKSTART \
 	contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl \
@@ -156,7 +156,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc contrib/url-normalizer.pl* contrib/rredir.pl* 
 %doc contrib/user-agents.pl*
 
-%attr(755,root,root) /usr/bin/*
+%attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) /usr/sbin/*
 
 %dir /etc/squid
