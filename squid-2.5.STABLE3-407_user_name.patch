@@ -1,0 +1,21 @@
+Index: squid/src/auth/basic/auth_basic.c
+diff -c squid/src/auth/basic/auth_basic.c:1.14.2.2 squid/src/auth/basic/auth_basic.c:1.14.2.3
+*** squid/src/auth/basic/auth_basic.c:1.14.2.2	Wed Jan  8 13:59:02 2003
+--- squid/src/auth/basic/auth_basic.c	Sun Aug 10 12:53:38 2003
+***************
+*** 212,218 ****
+      case 2:			/* paused while waiting for a username:password check on another request */
+  	return -1;
+      case 3:			/* authentication process failed. */
+! 	return -2;
+      }
+      return -2;
+  }
+--- 212,218 ----
+      case 2:			/* paused while waiting for a username:password check on another request */
+  	return -1;
+      case 3:			/* authentication process failed. */
+! 	return 0;
+      }
+      return -2;
+  }
