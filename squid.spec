@@ -25,7 +25,7 @@ Patch3:		squid-fhs.patch
 Patch4:		squid-version.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
-Requires:	/etc/crontab.d
+Requires:	/etc/cron.d
 Requires:	crontabs
 Requires:	rc-scripts
 
@@ -111,7 +111,7 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
-	$RPM_BUILD_ROOT/etc/{rc.d/init.d,crontab.d,sysconfig} \
+	$RPM_BUILD_ROOT/etc/{rc.d/init.d,cron.d,sysconfig} \
 	$RPM_BUILD_ROOT%{_prefix}/{sbin,bin,lib/squid,share/{man/man1,squid}} \
 	$RPM_BUILD_ROOT/var/cache/squid
 
@@ -130,8 +130,8 @@ mv $RPM_BUILD_ROOT/etc/squid/errors	$RPM_BUILD_ROOT%{_datadir}/squid
 mv $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/crontab.d/squid
-install %{SOURCE8} $RPM_BUILD_ROOT/etc/crontab.d/calamaris
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/cron.d/squid
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/cron.d/calamaris
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/squid
 install %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/squid
 
@@ -185,7 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_datadir}/squid
 
-%attr(640,root,root) /etc/crontab.d/*
+%attr(640,root,root) /etc/cron.d/*
 
 %attr(755,nobody,nobody) /home/httpd/cgi-bin/*
 
