@@ -4,7 +4,7 @@
 CACHE_SWAP=/var/spool/squid
 
 # Try to define nice-level for running squid
-NICELEVEL="5"
+NICELEVEL="+5"
 
 # default squid options
 # -D disables initial dns checks. If you most likely will not to have an
