@@ -1,3 +1,7 @@
+#
+# Conditional build:
+# _with_apache_like_combined_log - enables apache-like combined log format
+#
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
 Summary(pl):	Uniwersalny proxy-cache server
@@ -7,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	7
+Release:	8
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -76,6 +80,7 @@ Patch190:	%{name}-newssl.patch
 Patch200:	%{name}-sasl.patch
 Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
 Patch220:	%{name}-empty-referer.patch
+Patch230:	%{name}-apache-like-combined-log.patch
 BuildRequires:	autoconf
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	openldap-devel
@@ -498,6 +503,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch200 -p1
 %patch210 -p1
 %patch220 -p1
+%patch230 -p1
 
 %build
 %{__aclocal}
@@ -529,7 +535,8 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-digest-auth-helpers=yes \
 	--enable-external-acl-helpers=yes \
 	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--enable-linux-netfilter \
+%{?_with_apache_like_combined_log:	--enable-apache-like-combined-log}
 
 mv -f squid/* doc
 %{__make}
