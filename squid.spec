@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	10
+Release:	10.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -513,29 +513,30 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
 	--datadir=%{_datadir}/squid \
-	--enable-icmp \
-	--enable-useragent-log \
-	--enable-snmp \
-	--enable-arp-acl \
-	--enable-err-language=English \
-	--enable-htcp \
-	--enable-carp \
-	--enable-ssl \
-	--enable-forw-via-db \
-	--enable-cache-digests \
-	--enable-storeio="aufs,coss,diskd,null,ufs" \
-	--enable-removal-policies="lru heap" \
-	--enable-referer-log \
 	--disable-ipf-transparent \
-	--enable-delay-pools \
-	--with-pthreads \
+	--enable-arp-acl \
 	--enable-auth=yes \
 	--enable-basic-auth-helpers=yes \
-	--enable-ntlm-auth-helpers=yes \
+	--enable-cache-digests \
+	--enable-carp \
+	--enable-delay-pools \
 	--enable-digest-auth-helpers=yes \
+	--enable-err-language=English \
 	--enable-external-acl-helpers=yes \
+	--enable-forw-via-db \
+	--enable-htcp \
+	--enable-icmp \
+	--enable-linux-netfilter \
+	--enable-ntlm-auth-helpers=yes \
+	--enable-referer-log \
+	--enable-removal-policies="lru heap" \
+	--enable-ssl \
+	--enable-snmp \
+	--enable-storeio="aufs,coss,diskd,null,ufs" \
+	--enable-underscores \
+	--enable-useragent-log \
 	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--with-pthreads 
 
 mv -f squid/* doc
 %{__make}
