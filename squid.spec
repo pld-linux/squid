@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE1
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -230,7 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 # It's absolete while internal-dns is enabled
 #%attr(755,root,root) %{_bindir}/dnsserver
 # YES, it has to be suid root, it sends ICMP packets.
-%attr(4755,root,squid) %{_bindir}/pinger
+%attr(4754,root,squid) %{_bindir}/pinger
 %attr(755,root,root) %{_bindir}/unlinkd
 %attr(755,root,root) %{_sbindir}/*
 
