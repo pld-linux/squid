@@ -1,8 +1,8 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.1.PATCH2
-Release:	6d
+Version:	2.2.DEVEL3
+Release:	1
 Copyright:	GPL
 Group:		Daemons
 Group(pl):	Sieci/Serwery
@@ -122,8 +122,8 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 rm -f $RPM_BUILD_ROOT/usr/bin/R*
 
-bzip2 -9 README ChangeLog QUICKSTART 
-bzip2 -9 contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl
+gzip -9nf README ChangeLog QUICKSTART 
+gzip -9nf contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl
 
 %post
 /sbin/chkconfig --add squid
@@ -142,9 +142,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc faq/* README.bz2 ChangeLog.bz2 QUICKSTART.bz2 doc/*
-%doc contrib/url-normalizer.pl.bz2 contrib/rredir.pl.bz2 
-%doc contrib/user-agents.pl.bz2
+%doc faq/* README* ChangeLog* QUICKSTART* doc/*
+%doc contrib/url-normalizer.pl* contrib/rredir.pl* 
+%doc contrib/user-agents.pl*
 
 %attr(640,root,root) /etc/logrotate.d/squid
 
@@ -176,7 +176,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(750,root,root) /usr/lib/squid/*
 
 %attr(750,nobody,root) %dir /var/log/squid
-%attr(644,nobody,nobody) /var/log/squid/*.log
+%ghost %attr(644,nobody,nobody) /var/log/squid/*.log
 
 %attr(700,nobody,nobody) %dir /var/spool/squid
 
