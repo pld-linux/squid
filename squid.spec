@@ -1,36 +1,27 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.3.STABLE4
-Release:	10
+Version:	2.4.STABLE1
+Release:	1
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
-Source0:	http://www.squid-cache.org/Versions/v2/2.3/%{name}-%{version}-src.tar.gz
+Source0:	http://www.squid-cache.org/Versions/v2/2.4/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
-Patch0:		%{name}-2.0-make.patch
-Patch1:		%{name}-perl.patch
-Patch2:		%{name}-linux.patch
-Patch3:		%{name}-fhs.patch
-Patch4:		%{name}-mktemp.patch
-Patch5:		%{name}-location.patch
-Patch6:		%{name}-domainmatch.patch
+Patch0:		%{name}-perl.patch
+Patch1:		%{name}-linux.patch
+Patch2:		%{name}-fhs.patch
+Patch3:		%{name}-location.patch
+Patch4:		%{name}-domainmatch.patch
 # Bug fixes from Squid home page.
-Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-ftp_icon_not_found.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-internal_dns_rcode_table_formatting.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-ipfw_configure.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-invalid_ip_acl_entry.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-accel_only_access.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-html_quoting.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-carp-assertion.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-snmp-community-null-pointer.patch
+# -- none at the moment ;)
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -90,20 +81,12 @@ zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
 %setup -q -a 1 -a 4
 %patch0 -p1 
 %patch1 -p1 
-%patch2 -p1 
+%patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
-%patch10 -p0
-%patch11 -p0
-%patch12 -p0
-%patch13 -p0
-%patch14 -p0
-%patch15 -p0
-%patch16 -p0
-%patch17 -p0
+# Bug fixes from Squid home page.
+# -- none at the moment ;)
 
 %build
 autoconf
@@ -117,9 +100,12 @@ autoconf
 	--enable-htcp \
 	--enable-carp \
 	--disable-internal-dns \
-	--enable-heap-replacement \
+	--enable-storeio="aufs coss diskd null ufs" \
+	--enable-removal-policies="lru heap" \
 	--enable-ipf-transparent \
-	--enable-delay-pools
+	--enable-delay-pools \
+	--with-pthreads \
+	--enable-cache-digests
 
 mv -f squid/* doc
 %{__make} 
@@ -133,7 +119,7 @@ install -d \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/man1 \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
-	$RPM_BUILD_ROOT/var/{cache,log/archiv}/squid
+	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
 
 %{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
@@ -143,6 +129,9 @@ install -d \
 	libexecdir=$RPM_BUILD_ROOT%{_bindir} \
 	localstatedir=$RPM_BUILD_ROOT/var \
 	datadir=$RPM_BUILD_ROOT%{_datadir}
+
+# We don't use %{__make} install-pinger, because it tries to set it suid root.
+install src/pinger $RPM_BUILD_ROOT%{_bindir}
 
 mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
@@ -158,8 +147,8 @@ for LNG in *; do
 done
 cd ..
 
-cp $RPM_BUILD_ROOT/etc/squid/squid.conf{,.default}
 cd $RPM_BUILD_ROOT/etc/squid
+cp squid.conf{,.default}
 patch -p0 < %{SOURCE5}
 cd -
 
@@ -233,7 +222,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc faq *.gz doc/*
 
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_bindir}/client
+%attr(755,root,root) %{_bindir}/diskd
+%attr(755,root,root) %{_bindir}/dnsserver
+# YES, it has to be suid root, it sends ICMP packets.
+%attr(4755,root,root) %{_bindir}/pinger
+%attr(755,root,root) %{_bindir}/unlinkd
 %attr(755,root,root) %{_sbindir}/*
 
 %attr(755,root,root) %dir %{_sysconfdir}
@@ -241,7 +235,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) /etc/logrotate.d/squid
 %attr(640,root,root) %config(noreplace) /etc/sysconfig/squid
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
+%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
 %attr(640,root,root) %{_sysconfdir}/mime.conf.default
 %attr(640,root,root) %{_sysconfdir}/squid.conf.default
