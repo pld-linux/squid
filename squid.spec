@@ -47,6 +47,7 @@ Patch220:	%{name}-empty-referer.patch
 Patch230:	%{name}-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7c
