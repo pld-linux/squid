@@ -18,10 +18,13 @@ Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
+# Source0-md5:	f4096165619f92847edf34906ad9467b
 Source1:	%{name}-1.1.19-faq.tar.gz
+# Source1-md5:	77d04ae621d19548797e3a0deb540df6
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
+# Source4-md5:	0cfee556bf6394a0bd3c438c89dd2e63
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
