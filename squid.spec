@@ -25,7 +25,7 @@ Patch13:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getMy
 Patch14:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-hostname_whitespace.patch
 Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-netdb_exchange_loop.patch
 Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-redirected_username_logging.patch
-BuildRoot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Prereq:		/sbin/chkconfig
 Requires:	rc-scripts
 
