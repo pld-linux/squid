@@ -64,10 +64,11 @@ URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
+BuildRequires:	findutils
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
-BuildRequires:	perl
+BuildRequires:	perl-base
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
