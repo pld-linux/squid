@@ -286,7 +286,7 @@ fi
 # It's obsolete while internal-dns is enabled
 #%attr(755,root,root) %{_bindir}/dnsserver
 # YES, it has to be suid root, it sends ICMP packets.
-%attr(4750,root,squid) %{_bindir}/pinger
+%attr(4754,root,squid) %{_bindir}/pinger
 %attr(755,root,root) %{_bindir}/unlinkd
 %attr(755,root,root) %{_sbindir}/*
 
