@@ -222,7 +222,7 @@ fi
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/sybsys/squid ]; then
+	if [ -f /var/lock/subsys/squid ]; then
 		/etc/rc.d/init.d/squid stop >&2
 	fi
 	/sbin/chkconfig --del squid
