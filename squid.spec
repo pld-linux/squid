@@ -1,5 +1,5 @@
 Summary:	SQUID Internet Object Cache
-Summary(pl):	Uniwersalny proxy-cache
+Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE1
 Release:	1
