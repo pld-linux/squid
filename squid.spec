@@ -84,7 +84,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_httpdir	/home/httpd
+%define		_cgidir		/home/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -483,15 +483,15 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-digest-auth-helpers=yes \
 	--enable-err-language=English \
 	--enable-external-acl-helpers=yes \
+	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icmp \
-	--enable-forw-via-db \
-	--enable-referer-log \
 	--enable-ntlm-auth-helpers=yes \
+	--enable-referer-log \
 	--enable-removal-policies="lru heap" \
-	--enable-storeio="aufs,coss,diskd,null,ufs" \
-	--enable-snmp \
 	--enable-ssl \
+	--enable-snmp \
+	--enable-storeio="aufs,coss,diskd,null,ufs" \
 	--enable-underscores \
 	--enable-useragent-log \
 	--enable-x-accelerator-vary \
@@ -508,8 +508,7 @@ find helpers/ -type f | xargs perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/pe
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d \
-	$RPM_BUILD_ROOT%{_httpdir}/cgi-bin \
+install -d $RPM_BUILD_ROOT%{_cgidir} \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/man8 \
@@ -525,7 +524,7 @@ install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_httpdir}/cgi-bin
+mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
@@ -605,7 +604,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS doc/*
+%doc RELEASENOTES.html SPONSORS doc/* src/mib.txt
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
@@ -670,7 +669,7 @@ fi
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_httpdir}/cgi-bin/*
+%attr(755,root,root) %{_cgidir}/*
 
 %files ldap_auth
 %defattr(644,root,root,755)
