@@ -1,27 +1,18 @@
-diff -urN squid-2.5.STABLE1.org/src/Makefile.am squid-2.5.STABLE1/src/Makefile.am
---- squid-2.5.STABLE1.org/src/Makefile.am	Fri Jan  3 17:58:35 2003
-+++ squid-2.5.STABLE1/src/Makefile.am	Fri Jan  3 18:35:12 2003
-@@ -269,16 +269,16 @@
- DEFAULT_PREFIX		= $(prefix)
+diff -urN squid-2.5.STABLE2.org/src/Makefile.am squid-2.5.STABLE2/src/Makefile.am
+--- squid-2.5.STABLE2.org/src/Makefile.am	Sat Apr 12 12:06:45 2003
++++ squid-2.5.STABLE2/src/Makefile.am	Sat Apr 12 12:16:25 2003
+@@ -274,12 +274,12 @@
  DEFAULT_CONFIG_FILE     = $(sysconfdir)/squid.conf
  DEFAULT_MIME_TABLE	= $(sysconfdir)/mime.conf
--DEFAULT_DNSSERVER       = $(libexecdir)/@OPT_DNSSERVER_EXE@
+ DEFAULT_DNSSERVER       = $(libexecdir)/dnsserver$(EXEEXT)
 -DEFAULT_LOG_PREFIX	= $(localstatedir)/logs
-+DEFAULT_DNSSERVER       = $(bindir)/@OPT_DNSSERVER_EXE@
 +DEFAULT_LOG_PREFIX	= $(localstatedir)/log/squid
  DEFAULT_CACHE_LOG       = $(DEFAULT_LOG_PREFIX)/cache.log
  DEFAULT_ACCESS_LOG      = $(DEFAULT_LOG_PREFIX)/access.log
  DEFAULT_STORE_LOG       = $(DEFAULT_LOG_PREFIX)/store.log
--DEFAULT_PID_FILE        = $(DEFAULT_LOG_PREFIX)/squid.pid
+ DEFAULT_PID_FILE        = $(DEFAULT_LOG_PREFIX)/squid.pid
 -DEFAULT_SWAP_DIR        = $(localstatedir)/cache
--DEFAULT_PINGER		= $(libexecdir)/@OPT_PINGER_EXE@
--DEFAULT_UNLINKD		= $(libexecdir)/$(UNLINKD_EXE)
--DEFAULT_DISKD		= $(libexecdir)/@OPT_DISKD_EXE@
-+DEFAULT_PID_FILE        = $(localstatedir)/run/squid.pid
 +DEFAULT_SWAP_DIR        = $(localstatedir)/cache/squid
-+DEFAULT_PINGER		= $(bindir)/@OPT_PINGER_EXE@
-+DEFAULT_UNLINKD		= $(bindir)/$(UNLINKD_EXE)
-+DEFAULT_DISKD		= $(bindir)/@OPT_DISKD_EXE@
- DEFAULT_ICON_DIR	= $(datadir)/icons
- DEFAULT_ERROR_DIR	= $(datadir)/errors/@ERR_DEFAULT_LANGUAGE@
- DEFAULT_MIB_PATH	= $(datadir)/mib.txt
+ DEFAULT_PINGER		= $(libexecdir)/pinger$(EXEEXT)
+ DEFAULT_UNLINKD		= $(libexecdir)/unlinkd$(EXEEXT)
+ DEFAULT_DISKD		= $(libexecdir)/diskd$(EXEEXT)
