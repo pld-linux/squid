@@ -1,0 +1,21 @@
+Index: squid/src/icmp.c
+diff -c squid/src/icmp.c:1.73.2.3 squid/src/icmp.c:1.73.2.4
+*** squid/src/icmp.c:1.73.2.3	Thu Jan  2 16:10:46 2003
+--- squid/src/icmp.c	Thu Jun 12 17:55:05 2003
+***************
+*** 78,84 ****
+  	(char *) &preply,
+  	sizeof(pingerReplyData),
+  	0);
+!     if (n < 0) {
+  	debug(50, 1) ("icmpRecv: recv: %s\n", xstrerror());
+  	if (++fail_count == 10 || errno == ECONNREFUSED)
+  	    icmpClose();
+--- 78,84 ----
+  	(char *) &preply,
+  	sizeof(pingerReplyData),
+  	0);
+!     if (n < 0 && EAGAIN != errno) {
+  	debug(50, 1) ("icmpRecv: recv: %s\n", xstrerror());
+  	if (++fail_count == 10 || errno == ECONNREFUSED)
+  	    icmpClose();
