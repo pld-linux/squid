@@ -40,13 +40,6 @@ case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/squid ]; then
-		show "Prepare squid cache"
-		busy
-		if [ ! -d $CACHE_SWAP/00 ]; then
-			squid -z -F &>/dev/null
-		fi
-		deltext;ok
-
 		msg_starting Squid
 		busy		
 		squid -N $SQUID_OPTS &
