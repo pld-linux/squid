@@ -1,0 +1,22 @@
+--- squid-2.4.DEVEL2/src/tools.c.original	Wed Dec 27 11:43:19 2000
++++ squid-2.4.DEVEL2/src/tools.c	Wed Dec 27 11:44:27 2000
+@@ -82,11 +82,15 @@
+ mail_warranty(void)
+ {
+     FILE *fp = NULL;
+-    char *filename;
++    char filename[256];
+     static char command[256];
+-    if ((filename = tempnam(NULL, appname)) == NULL)
++    int tfd;
++
++    strcpy (filename, "/tmp/squid-XXXXXX");
++    tfd = mkstemp(filename);
++    if (tfd < 0)
+ 	return;
+-    if ((fp = fopen(filename, "w")) == NULL)
++    if ((fp = fdopen(tfd, "w")) == NULL)
+ 	return;
+     fprintf(fp, "From: %s\n", appname);
+     fprintf(fp, "To: %s\n", Config.adminEmail);
+

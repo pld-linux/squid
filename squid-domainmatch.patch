@@ -1,0 +1,12 @@
+diff -ru squid-2.3.STABLE4.old/src/acl.c squid-2.3.STABLE4/src/acl.c
+--- squid-2.3.STABLE4.old/src/acl.c	Thu Mar  2 12:29:14 2000
++++ squid-2.3.STABLE4/src/acl.c	Mon Nov  6 22:43:56 2000
+@@ -629,7 +629,7 @@
+     splayNode **Top = curlist;
+     while ((t = strtokFile())) {
+ 	Tolower(t);
+-	*Top = splay_insert(xstrdup(t), *Top, aclDomainCompare);
++	*Top = splay_insert(xstrdup(t), *Top, aclHostDomainCompare);
+     }
+ }
+ 
