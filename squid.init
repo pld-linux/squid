@@ -61,10 +61,7 @@ case "$1" in
 	fi
 	;;
   restart)
-	$0 stop
-	echo -n "Waiting $DELAY_IN_RESTART seconds..."
-	sleep $DELAY_IN_RESTART
-	echo "done."
+	$0 stop && echo -n "Waiting $DELAY_IN_RESTART seconds..." && sleep $DELAY_IN_RESTART && echo "done."
 	$0 start
 	;;
   reload)
