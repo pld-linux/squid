@@ -7,7 +7,7 @@
 #
 # description:	Squid - Internet Object Cache. Internet object caching is \
 # 		a way to store requested Internet objects (i.e., data \
-# 		available \ via the HTTP, FTP, and gopher protocols) on a \
+# 		available via the HTTP, FTP, and gopher protocols) on a \
 # 		system closer to the requesting site than to the source. \
 #		Web browsers can then use the local Squid cache as a proxy \
 #		HTTP server, reducing access time as well as bandwidth \
@@ -27,56 +27,62 @@
 [ -f /etc/sysconfig/squid ] && . /etc/sysconfig/squid
 
 # Check that networking is up.
-if [ "${NETWORKING}" = "no" ]; then
-	echo "WARNING: Networking is down. Squid service can't be runed."
-	exit 1
+if is_no "${NETWORKING}"; then
+        msg_Network_Down Squid
+        exit 1
 fi
 
 # Sanity check
 [ -f /etc/squid/squid.conf ] || exit 0
-
 
 # See how we were called.
 case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/squid ]; then
-		show Prepare squid cache
+		show "Prepare squid cache"
 		busy
 		if [ ! -d $CACHE_SWAP/00 ]; then
 			squid -z -F &>/dev/null
 		fi
 		deltext;ok
 
-		show Starting squid
-		
+		msg_starting Squid
+		busy		
 		squid -N $SQUID_OPTS &
-		busy
-		if ps ax | grep -v grep | grep -q squid ; then
+		if ps -C squid >/dev/null 2>&1; then
 		    deltext;ok
 		else
 		    deltext;fail
 		fi
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
-	    echo "squid already is running"
+	    msg_Already_Running Squid
 	fi
-	touch /var/lock/subsys/squid
 	;;
   stop)
-	show Stopping squid
-	killproc squid  
-	rm -f /var/lock/subsys/squid
+        # Stop daemons.
+	if [ -f /var/lock/subsys/squid ]; then
+	        msg_stopping squid
+	        killproc squid
+	        rm -f /var/lock/subsys/squid >/dev/null 2>&1
+	else
+	        msg_Not_Running squid
+                exit 1
+        fi
 	;;
-  restart|reload)
+  restart)
 	$0 stop
 	$0 start
 	;;
   status)
 	status squid
+	exit $?
 	;;
   *)
-	echo "Usage: $0 {start|stop|status|restart|reload}"
+	msg_Usage "$0 {start|stop|status|restart}"
 	exit 1
 esac
 
-exit 0
+exit $RETVAL
