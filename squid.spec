@@ -3,15 +3,15 @@
 %bcond_with	combined_log	# enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
-Summary(es):	proxy/cache para WWW/FTP/gopher
-Summary(pl):	Uniwersalny serwer proxy-cache
+Summary(es):	proxy/cache para www/ftp/gopher
+Summary(pl):	Uniwersalny proxy-cache server
 Summary(pt_BR):	Cache Squid de objetos Internet
 Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE7
-Release:	10
+Release:	1.5
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -37,34 +37,32 @@ Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-cache
 Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-dothost.patch
 Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-empty_acls.patch
 Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-header_parsing.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-gopher_html_parsing.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-wccp_denial_of_service.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-ldap_spaces.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-response_splitting.patch
 # Other patches:
-Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
-Patch101:	%{name}-fhs.patch
-Patch102:	%{name}-location.patch
-Patch103:	%{name}-domainmatch.patch
-Patch104:	%{name}-libnsl_fixes.patch
-Patch105:	%{name}-ac_fix.patch
-Patch106:	%{name}-crash-on-ENOSPC.patch
-Patch107:	%{name}-newssl.patch
-Patch108:	%{name}-nolibs.patch
-Patch109:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
-Patch110:	%{name}-empty-referer.patch
-Patch111:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
+Patch120:	%{name}-fhs.patch
+Patch130:	%{name}-location.patch
+Patch140:	%{name}-domainmatch.patch
+Patch150:	%{name}-libnsl_fixes.patch
+Patch170:	%{name}-ac_fix.patch
+Patch180:	%{name}-crash-on-ENOSPC.patch
+Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
+Patch220:	%{name}-empty-referer.patch
+Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	pam-devel
-BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.166
-BuildRequires:	unzip
+BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
-PreReq:		setup >= 2.4.6
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
@@ -74,13 +72,11 @@ Requires(post):	grep
 Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
-Provides:	group(squid)
-Provides:	user(squid)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		/home/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -434,21 +430,22 @@ Samba 2.2.4 lub wy¿szego.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6	-p1
+%patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
 # Other patches:
-%patch100 -p1
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
-%patch108 -p1
-%patch109 -p1
 %patch110 -p1
-%{?with_combined_log:%patch111 -p1}
+%patch120 -p1
+%patch130 -p1
+%patch140 -p1
+%patch170 -p1
+%patch180 -p1
+%patch210 -p1
+%patch220 -p1
+%{?with_combined_log:%patch230 -p1}
 
 %build
 %{__aclocal}
@@ -469,7 +466,6 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icmp \
-	--enable-linux-netfilter \
 	--enable-ntlm-auth-helpers=yes \
 	--enable-referer-log \
 	--enable-removal-policies="lru heap" \
@@ -536,27 +532,23 @@ rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- squid < 7:2.5.STABLE7-5
-%addusertogroup stats squid
-
 %pre
-if [ -n "`/usr/bin/getgid squid`" ]; then
-	if [ "`/usr/bin/getgid squid`" != "91" ]; then
+if [ -n "`getgid squid`" ]; then
+	if [ "`getgid squid`" != "91" ]; then
 		echo "Error: group squid doesn't have gid=91. Correct this before installing squid." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 91 squid 1>&2
+	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
 fi
-if [ -n "`/bin/id -u squid 2>/dev/null`" ]; then
-	if [ "`/bin/id -u squid`" != "91" ]; then
+if [ -n "`id -u squid 2>/dev/null`" ]; then
+	if [ "`id -u squid`" != "91" ]; then
 		echo "Error: user squid doesn't have uid=91. Correct this before installing squid." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -o -u 91 -s /bin/false -g squid \
-		-c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2
-	%addusertogroup stats squid
+	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
+		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
@@ -584,8 +576,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	%userremove squid
-	%groupremove squid
+	/usr/sbin/userdel squid
+	/usr/sbin/groupdel squid
 fi
 
 %files
@@ -603,7 +595,7 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
+%attr(640,root,root) %config(noreplace) /etc/logrotate.d/squid
 %attr(640,root,squid) %config(noreplace) /etc/sysconfig/squid
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
@@ -662,7 +654,7 @@ fi
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/LDAP/README
 %attr(755,root,root) %{_libexecdir}/%{name}_ldap_auth
-%{_mandir}/man8/%{name}_ldap_auth.*
+%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
@@ -723,13 +715,13 @@ fi
 %files ldap_acl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/squid_ldap_group
-%{_mandir}/man8/%{name}_ldap_group.*
+%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_group.*
 
 %files unix_acl
 %defattr(644,root,root,755)
 %doc helpers/external_acl/unix_group/README
 %attr(755,root,root) %{_libexecdir}/squid_unix_group
-%{_mandir}/man8/%{name}_unix_group.*
+%attr(644,root,root) %{_mandir}/man8/%{name}_unix_group.*
 
 %files wbinfo_acl
 %defattr(644,root,root,755)
