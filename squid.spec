@@ -21,7 +21,10 @@ Patch2:		%{name}-fhs.patch
 Patch3:		%{name}-location.patch
 Patch4:		%{name}-domainmatch.patch
 Patch5:		%{name}-ftp-bugfix.patch
+Patch6:		%{name}-libnsl_fixes.patch
 BuildRequires:	autoconf
+BuildRequires:	openldap-devel
+BuildRequires:	pam-devel
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -124,6 +127,7 @@ Samba.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 autoconf
