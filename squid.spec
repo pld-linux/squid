@@ -97,6 +97,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
+%define		_cgidir		/home/services/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -536,8 +537,7 @@ find helpers/ -type f | xargs perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g'
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d \
-	$RPM_BUILD_ROOT/home/services/httpd/cgi-bin \
+install -d $RPM_BUILD_ROOT%{_cgidir} \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
@@ -553,7 +553,7 @@ install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
+mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
@@ -686,7 +686,7 @@ fi
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(755,root,root) /home/services/httpd/cgi-bin/*
+%attr(755,root,root) %{_cgidir}/*
 
 %files ldap_auth
 %defattr(644,root,root,755)
