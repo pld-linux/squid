@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE6
-Release:	1.5
+Release:	1.6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -35,6 +35,8 @@ Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-clien
 Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-heap_segfault.patch
 Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_fetch_string.patch
 Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-digest_crash.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ufs_no_valid_dir.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ufs_create_error.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -348,7 +350,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ip_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on IP address.
+access for users based on IP address.
 
 %description ip_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -362,7 +364,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ldap_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on LDAP group membership.
+access for users based on LDAP group membership.
 
 %description ldap_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -377,7 +379,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description unix_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on UNIX group membership.
+access for users based on UNIX group membership.
 
 %description unix_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -392,8 +394,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description wbinfo_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on NT domain group membership using wbinfo.
-
+access for users based on NT domain group membership using wbinfo.
 
 %description wbinfo_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -408,7 +409,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description winbind_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on NT domain group membership based on Samba
+access for users based on NT domain group membership based on Samba
 Winbindd from Samba 2.2.4 or greater.
 
 %description winbind_acl -l pl
@@ -427,6 +428,8 @@ Samba 2.2.4 lub wy¿szego.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 # Other patches:
 %patch110 -p1
@@ -518,7 +521,7 @@ mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
 rm -f doc/Makefile*
 
 # We don't like message: rpm found unpackaged files ...
-rm -f	 $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
+rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
 %clean
