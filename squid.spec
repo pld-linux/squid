@@ -99,13 +99,16 @@ autoconf
 	--enable-err-language=English \
 	--enable-htcp \
 	--enable-carp \
-	--disable-internal-dns \
-	--enable-storeio="aufs coss diskd null ufs" \
+	--enable-storeio="aufs,coss,diskd,null,ufs" \
 	--enable-removal-policies="lru heap" \
 	--enable-ipf-transparent \
 	--enable-delay-pools \
 	--with-pthreads \
 	--enable-cache-digests
+# old dns-checker:
+#	--disable-internal-dns \
+# for 2.4 kernel:
+#	--enable-linux-netfilter\
 
 mv -f squid/* doc
 %{__make} 
@@ -167,7 +170,7 @@ gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 	TODO
 
 %pre
-grep -q squd /etc/group || (
+grep -q squid /etc/group || (
     /usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
 )
 grep -q squid /etc/passwd || (
@@ -224,7 +227,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_bindir}/client
 %attr(755,root,root) %{_bindir}/diskd
-%attr(755,root,root) %{_bindir}/dnsserver
+# It's absolete while internal-dns is enabled
+#%attr(755,root,root) %{_bindir}/dnsserver
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4755,root,root) %{_bindir}/pinger
 %attr(755,root,root) %{_bindir}/unlinkd
