@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE4
-Release:	4
+Release:	5
 License:	GPL
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -101,7 +101,9 @@ LDFLAGS="-s" ; export LDFLAGS
 	--enable-htcp \
 	--enable-carp \
 	--disable-internal-dns \
-	--enable-heap-replacement
+	--enable-heap-replacement \
+	--enable-ipf-transparent \
+	--enable-delay-pools
 
 mv -f squid/* doc
 %{__make} 
