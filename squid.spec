@@ -17,14 +17,17 @@ License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
 # Source0-md5:	bf63e34906c68d716896eec0351108dc
+# Source0-size:	1051830
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
+# Source1-size:	189993
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 # http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
 Source4:	%{name}-book-full-html.zip
 # Source4-md5:	4f3b6dab1de9cbb847df89d8b417378a
+# Source4-size:	120253
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
