@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE1
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
@@ -56,6 +56,7 @@ Patch150:	%{name}-libnsl_fixes.patch
 Patch160:	%{name}-more_FD.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-contrib.patch
+Patch190:	%{name}-crash-on-ENOSPC.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7
@@ -305,6 +306,7 @@ u¿ytkowników proxy poprzez YP.
 #%patch160 -p1
 %patch170 -p1
 %patch180 -p1
+%patch190 -p1
 
 %build
 %{__aclocal}
