@@ -61,6 +61,7 @@ BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
+BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -73,6 +74,8 @@ Requires(post):	grep
 Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
+Provides:	group(squid)
+Provides:	user(squid)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
@@ -534,22 +537,22 @@ rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`getgid squid`" ]; then
-	if [ "`getgid squid`" != "91" ]; then
+if [ -n "`/usr/bin/getgid squid`" ]; then
+	if [ "`/usr/bin/getgid squid`" != "91" ]; then
 		echo "Error: group squid doesn't have gid=91. Correct this before installing squid." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 91 squid 1>&2 || :
+	/usr/sbin/groupadd -g 91 squid 1>&2
 fi
-if [ -n "`id -u squid 2>/dev/null`" ]; then
-	if [ "`id -u squid`" != "91" ]; then
+if [ -n "`/bin/id -u squid 2>/dev/null`" ]; then
+	if [ "`/bin/id -u squid`" != "91" ]; then
 		echo "Error: user squid doesn't have uid=91. Correct this before installing squid." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -M -o -u 91 -s /bin/false \
-		-g squid -c "SQU http caching daemon" -d /var/cache/squid squid 1>&2 || :
+	/usr/sbin/useradd -o -u 91 -s /bin/false -g squid \
+		-c "SQU http caching daemon" -d /var/cache/squid squid 1>&2
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
@@ -577,8 +580,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	/usr/sbin/userdel squid
-	/usr/sbin/groupdel squid
+	%userremove squid
+	%groupremove squid
 fi
 
 %files
