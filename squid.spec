@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE2
-Release:	5
+Release:	6
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -15,13 +15,19 @@ Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
-Patch0:		%{name}-perl.patch
-Patch1:		%{name}-linux.patch
-Patch2:		%{name}-fhs.patch
-Patch3:		%{name}-location.patch
-Patch4:		%{name}-domainmatch.patch
-Patch5:		%{name}-ftp-bugfix.patch
-Patch6:		%{name}-libnsl_fixes.patch
+Patch0:		%{name}-2.4.STABLE2-aufs_fd_leak.patch
+Patch1:		%{name}-2.4.STABLE2-CONNECT_miss_access_core.patch
+Patch2:		%{name}-ftp-bugfix.patch
+Patch3:		%{name}-2.4.STABLE2-ldap_auth_password_spaces.patch
+Patch4:		%{name}-2.4.STABLE2-snmpwalk_coredump.patch
+Patch5:		%{name}-2.4.STABLE2-statHistDump_prototype.patch
+Patch6:		%{name}-2.4.STABLE2-swap_meta.patch
+Patch10:	%{name}-perl.patch
+Patch11:	%{name}-linux.patch
+Patch12:	%{name}-fhs.patch
+Patch13:	%{name}-location.patch
+Patch14:	%{name}-domainmatch.patch
+Patch15:	%{name}-libnsl_fixes.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	pam-devel
@@ -119,15 +125,21 @@ Samba.
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page.
-# None at the moment, but will be here soon... ;)
-
 %patch0 -p1 
-%patch1 -p1 
+%patch1 -p0 
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+
+# Other patches:
+%patch10 -p1 
+%patch11 -p1 
+%patch12 -p1 
+%patch13 -p1 
+%patch14 -p1 
+%patch15 -p1 
 
 %build
 autoconf
