@@ -1,7 +1,3 @@
-#
-# Conditional build:
-# _with_combined_log - enables apache-like combined log format
-#
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
 Summary(pl):	Uniwersalny proxy-cache server
@@ -10,61 +6,41 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE4
-Release:	2
-Epoch:		7
+Version:	3.0
+Release:	0.PRE3.0.1
+Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	9894a1fe855b0cccdc14fbf014060990
-Source1:	%{name}-1.1.19-faq.tar.gz
-# Source1-md5:	77d04ae621d19548797e3a0deb540df6
+Source0:	http://www.squid-cache.org/Versions/v3/3.0/%{name}-%{version}-PRE3.tar.bz2
+# Source0-md5:	f43e08e9aba72e5544910d86f88dc8b6
+Source1:        %{name}-1.1.19-faq.tar.gz
+# Source1-md5:  77d04ae621d19548797e3a0deb540df6
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
-Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
-# Source4-md5:	0cfee556bf6394a0bd3c438c89dd2e63
+Source4:        http://cache.is.co.za/%{name}-docs.tar.gz
+# Source4-md5:  0cfee556bf6394a0bd3c438c89dd2e63
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-reconfigure_message.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-digest_auth_pwchange.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirect_login_space.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdnnegcache.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/pam_auth-2.2.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4_auth_param_doc.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-errorpages.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-error_load_text.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-xpi_mime.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-size_overflow.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-extacl_auth_loop.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-squid_ldap_group.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-positive_dns_ttl.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-gopherhtml.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-netroute.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-synflood.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdn.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-connect_cleanup.patch
-
+#Patch0:	
 # Other patches:
-Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
+Patch100:	%{name}-perl.patch
+Patch110:	%{name}-linux.patch
 Patch120:	%{name}-fhs.patch
 Patch130:	%{name}-location.patch
 Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
+Patch160:	%{name}-more_FD.patch
 Patch170:	%{name}-ac_fix.patch
-Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
-Patch200:	%{name}-sasl.patch
-Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
-Patch220:	%{name}-empty-referer.patch
-Patch230:	%{name}-apache-like-combined-log.patch
-URL:		http://www.squid-cache.org/
+Patch180:	%{name}-contrib.patch
+Patch190:	%{name}-crash-on-ENOSPC.patch
+Patch200:	%{name}-newssl.patch
+Patch210:	%{name}-sasl.patch
 BuildRequires:	autoconf
-BuildRequires:	automake
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7c
+BuildRequires:	openssl-devel >= 0.9.7a
+BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
@@ -75,15 +51,12 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
 Requires(post):	findutils
-Requires(post):	grep
-Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -185,7 +158,7 @@ Squid - ÃÅ ËÅÛÕÀÞÉÊ ÐÒÏËÓ¦-ÓÅÒ×ÅÒ ÄÌÑ web-ËÌ¦¤ÎÔ¦×, ÝÏ Ð¦ÄÔÒÉÍÕ¤
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name} = %{version}
 Requires:	httpd
 
 %description cachemgr
@@ -200,7 +173,7 @@ zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 Summary:	LDAP authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji LDAP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description ldap_auth
 This Squid helper allows authentication against LDAP directories using
@@ -214,8 +187,7 @@ Pakiet ten pozwala na autentykacjê LDAP za pomoc± prostej autentykacji
 Summary:	PAM authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji PAM dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	pam >= 0.77.3
+Requires:	%{name}
 
 %description pam_auth
 This program authenticates users against a PAM configured
@@ -230,7 +202,7 @@ Program ten pozwala na autentykacjê u¿ytkowników squida w dowolnym
 Summary:	SMB authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji SMB dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description smb_auth
 This is a proxy authentication module. With smb_auth you can
@@ -245,10 +217,10 @@ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 Summary:	MSNT domain authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji domen MSNT dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description msnt_auth
-This is an authentication module for the Squid proxy server to
+This is an authentication module for the Squid proxy server to 
 authenticate users on an NT domain.
 
 %description msnt_auth -l pl
@@ -259,7 +231,7 @@ u¿ytkowników proxy w domenie NT.
 Summary:	YP authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji YP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description yp_auth
 This is an authentication module for the Squid proxy server to
@@ -273,7 +245,7 @@ u¿ytkowników proxy poprzez YP.
 Summary:	NCSA httpd style authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji NCSA httpd dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description ncsa_auth
 This module uses a NCSA httpd style password file for authentication.
@@ -285,7 +257,7 @@ Modu³ autentykacji proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
 Summary:	SASL authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji SASL dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description sasl_auth
 This is an authentication module for the Squid proxy server to
@@ -299,7 +271,7 @@ u¿ytkowników proxy poprzez SASL.
 Summary:	WINBIND authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji WINBIND dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description winbind_auth
 This is an authentication module for the Squid proxy server to
@@ -313,7 +285,7 @@ u¿ytkowników proxy poprzez WINBIND.
 Summary:	getpwname authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji getpwname dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description getpwname_auth
 This is an authentication module for the Squid proxy server to
@@ -327,7 +299,7 @@ u¿ytkowników proxy poprzez getpwname.
 Summary:	passwd authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji passwd dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description passwd_auth
 This is an authentication module for the Squid proxy server to
@@ -341,7 +313,7 @@ u¿ytkowników proxy poprzez oddzielny plik passwd.
 Summary:	NTLM authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji NTLM dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description ntlm_auth
 This is an authentication module for the Squid proxy server to
@@ -355,11 +327,11 @@ u¿ytkowników proxy poprzez NTLM.
 Summary:	IP external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez IP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description ip_acl
-This is an external ACL module for the Squid proxy server to limit
-acces for users based on IP address.
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on IP address.
 
 %description ip_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -369,11 +341,11 @@ ograniczenie dostêpu u¿ytkowników proxy na podstawie ich adresu IP.
 Summary:	LDAP group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy LDAP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description ldap_acl
-This is an external ACL module for the Squid proxy server to limit
-acces for users based on LDAP group membership.
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on LDAP group membership.
 
 %description ldap_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -384,11 +356,11 @@ przynale¿no¶ci do grup LDAP.
 Summary:	UNIX group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy UNIX dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description unix_acl
-This is an external ACL module for the Squid proxy server to limit
-acces for users based on UNIX group membership.
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on UNIX group membership.
 
 %description unix_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -399,11 +371,11 @@ przynale¿no¶ci do grup UNIX.
 Summary:	NT domain group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy w domenie NT dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description wbinfo_acl
-This is an external ACL module for the Squid proxy server to limit
-acces for users based on NT domain group membership using wbinfo.
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on NT domain group membership using wbinfo.
 
 
 %description wbinfo_acl -l pl
@@ -415,101 +387,89 @@ przynale¿no¶ci do grup w domenie NT przy u¿yciu wbinfo.
 Summary:	NT domain group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy w domenie NT dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}
 
 %description winbind_acl
-This is an external ACL module for the Squid proxy server to limit
-acces for users based on NT domain group membership based on Samba
-Winbindd from Samba 2.2.4 or greater.
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on NT domain group membership
+based on Samba Winbindd from Samba 2.2.4 or greater.
 
 %description winbind_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
 ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
-przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd z pakietu
-Samba 2.2.4 lub wy¿szego.
+przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd
+z pakietu Samba 2.2.4 lub wy¿szego.
 
 %prep
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page:
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
+#%patch0 -p1
 
 # Other patches:
-%patch110 -p1
+# fixme
+#%patch100 -p1
+# applied?
+#%patch110 -p1
 %patch120 -p1
-%patch130 -p1
+# fixme
+#%patch130 -p1
 %patch140 -p1
+# fixme?
+#%patch150 -p1
+#fixme
+#%patch160 -p1
 %patch170 -p1
 %patch180 -p1
 %patch190 -p1
 %patch200 -p1
 %patch210 -p1
-%patch220 -p1
-%{?_with_combined_log:%patch230 -p1}
 
 %build
 %{__aclocal}
 %{__autoconf}
 %{__automake}
 %configure \
-	--datadir=%{_datadir}/squid \
-	--disable-ipf-transparent \
-	--enable-arp-acl \
-	--enable-auth=yes \
-	--enable-basic-auth-helpers=yes \
-	--enable-cache-digests \
-	--enable-carp \
-	--enable-delay-pools \
-	--enable-digest-auth-helpers=yes \
-	--enable-err-language=English \
-	--enable-external-acl-helpers=yes \
-	--enable-forw-via-db \
-	--enable-htcp \
-	--enable-icmp \
-	--enable-linux-netfilter \
-	--enable-ntlm-auth-helpers=yes \
-	--enable-referer-log \
-	--enable-removal-policies="lru heap" \
-	--enable-ssl \
-	--enable-snmp \
-	--enable-storeio="aufs,coss,diskd,null,ufs" \
-	--enable-underscores \
-	--enable-useragent-log \
-	--enable-x-accelerator-vary \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
-	--with-pthreads
+	--datadir=%{_datadir}/squid \
+	--enable-icmp \
+	--enable-useragent-log \
+	--enable-snmp \
+	--enable-arp-acl \
+	--enable-err-language=English \
+	--enable-htcp \
+	--enable-carp \
+	--enable-ssl \
+	--enable-forw-via-db \
+	--enable-cache-digests \
+	--enable-storeio="aufs,coss,diskd,null,ufs" \
+	--enable-removal-policies="lru heap" \
+	--disable-ipf-transparent \
+	--enable-delay-pools \
+	--with-pthreads \
+	--enable-auth=yes \
+	--enable-basic-auth-helpers=yes \
+	--enable-ntlm-auth-helpers=yes \
+	--enable-digest-auth-helpers=yes \
+	--enable-external-acl-helpers=yes \
+	--enable-x-accelerator-vary \
+	--enable-linux-netfilter
 
 mv -f squid/* doc
 %{__make}
 
-perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' contrib/*
-perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' scripts/*
-find helpers/ -type f | xargs perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g'
+perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g' contrib/*
+perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g' scripts/*
+find helpers/ -type f | xargs perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g'
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_cgidir} \
+install -d \
+	$RPM_BUILD_ROOT/home/services/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
-	$RPM_BUILD_ROOT%{_mandir}/man8 \
+	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
 
@@ -517,12 +477,11 @@ install -d $RPM_BUILD_ROOT%{_cgidir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -a contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
-install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
+mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
@@ -533,20 +492,12 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/squid
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
+install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
+
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 # These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
-
-# dunno why, but manual is not installed
-mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
-
-# We don't want Makefiles as docs...
-rm -f doc/Makefile*
-
-# We don't like message: rpm found unpackaged files ...
-rm -f     $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
-    $RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -569,13 +520,9 @@ else
 	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
 		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
-[ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
+[ -L %{_datadir}/squid/errors ] && rm -f %{_datadir}/squid/errors
 
 %post
-if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
-	echo visible_hostname `/bin/hostname -f` >> /etc/squid/squid.conf
-fi
-
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
@@ -598,17 +545,17 @@ if [ "$1" = "0" ]; then
 	/usr/sbin/userdel squid
 	/usr/sbin/groupdel squid
 fi
-
+				
 %files
 %defattr(644,root,root,755)
-%doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS doc/* src/mib.txt
+%doc faq CONTRIBUTORS COPYRIGHT CREDITS README
+%doc ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
+%doc doc/*
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4754,root,squid) %{_libexecdir}/pinger
 %attr(755,root,root) %{_libexecdir}/unlinkd
-%attr(755,root,root) %{_libexecdir}/fakeauth_auth
 %attr(755,root,root) %{_sbindir}/*
 
 %attr(755,root,root) %dir %{_sysconfdir}
@@ -640,18 +587,17 @@ fi
 %lang(it) %{_datadir}/squid/errors/Italian
 %lang(ja) %{_datadir}/squid/errors/Japanese
 %lang(ko) %{_datadir}/squid/errors/Korean
-%lang(lt) %{_datadir}/squid/errors/Lithuanian
 %lang(pl) %{_datadir}/squid/errors/Polish
 %lang(pt) %{_datadir}/squid/errors/Portuguese
 %lang(ro) %{_datadir}/squid/errors/Romanian
 %lang(ru) %{_datadir}/squid/errors/Russian-1251
 %lang(ru) %{_datadir}/squid/errors/Russian-koi8-r
-%lang(zh_CN) %{_datadir}/squid/errors/Simplify_Chinese
+%lang(zh) %{_datadir}/squid/errors/Simplify_Chinese
 %lang(sk) %{_datadir}/squid/errors/Slovak
 %lang(es) %{_datadir}/squid/errors/Spanish
 %lang(sr) %{_datadir}/squid/errors/Serbian
 %lang(sv) %{_datadir}/squid/errors/Swedish
-%lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
+%lang(zh) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
 
 %attr(755,root,root) %dir %{_libexecdir}
@@ -663,11 +609,10 @@ fi
 %attr(660,root,squid) %ghost /var/log/squid/*
 
 %attr(770,root,squid) %dir /var/cache/squid
-%{_mandir}/man8/squid.8*
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_cgidir}/*
+%attr(755,root,root) /home/services/httpd/cgi-bin/*
 
 %files ldap_auth
 %defattr(644,root,root,755)
@@ -681,7 +626,6 @@ fi
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
 %attr(755,root,root) %{_libexecdir}/pam_auth
-%{_mandir}/man8/pam_auth.8*
 
 %files smb_auth
 %defattr(644,root,root,755)
