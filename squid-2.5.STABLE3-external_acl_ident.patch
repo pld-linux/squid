@@ -1,0 +1,34 @@
+Index: squid/src/external_acl.c
+diff -c squid/src/external_acl.c:1.1.2.25 squid/src/external_acl.c:1.1.2.26
+*** squid/src/external_acl.c:1.1.2.25	Sat May 17 12:35:25 2003
+--- squid/src/external_acl.c	Tue Jun 17 01:18:16 2003
+***************
+*** 417,422 ****
+--- 417,426 ----
+  	}
+      }
+      key = makeExternalAclKey(ch, acl);
++     if (!key) {
++ 	/* Not sufficient data to process */
++ 	return -1;
++     }
+      ch->auth_user_request = NULL;
+      if (entry) {
+  	if (entry->def != acl->def || strcmp(entry->hash.key, key) != 0) {
+***************
+*** 507,513 ****
+  #if USE_IDENT
+  	case EXT_ACL_IDENT:
+  	    str = ch->rfc931;
+! 	    if (!str) {
+  		ch->state[ACL_IDENT] = ACL_LOOKUP_NEEDED;
+  		return NULL;
+  	    }
+--- 511,517 ----
+  #if USE_IDENT
+  	case EXT_ACL_IDENT:
+  	    str = ch->rfc931;
+! 	    if (!str || !*str) {
+  		ch->state[ACL_IDENT] = ACL_LOOKUP_NEEDED;
+  		return NULL;
+  	    }

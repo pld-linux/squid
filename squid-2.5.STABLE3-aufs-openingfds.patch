@@ -1,0 +1,25 @@
+Index: squid/src/fs/aufs/store_io_aufs.c
+diff -c squid/src/fs/aufs/store_io_aufs.c:1.15.2.9 squid/src/fs/aufs/store_io_aufs.c:1.15.2.10
+*** squid/src/fs/aufs/store_io_aufs.c:1.15.2.9	Thu Nov 14 23:33:25 2002
+--- squid/src/fs/aufs/store_io_aufs.c	Wed Jun 18 17:13:40 2003
+***************
+*** 419,427 ****
+      debug(79, 9) ("%s:%d\n", __FILE__, __LINE__);
+      cbdataUnlock(their_data);
+      aiostate->fd = -1;
+-     cbdataFree(sio);
+      if (aiostate->flags.opening)
+  	Opening_FD--;
+      if (fd < 0)
+  	return;
+      debug(79, 9) ("%s:%d\n", __FILE__, __LINE__);
+--- 419,427 ----
+      debug(79, 9) ("%s:%d\n", __FILE__, __LINE__);
+      cbdataUnlock(their_data);
+      aiostate->fd = -1;
+      if (aiostate->flags.opening)
+  	Opening_FD--;
++     cbdataFree(sio);
+      if (fd < 0)
+  	return;
+      debug(79, 9) ("%s:%d\n", __FILE__, __LINE__);
