@@ -1,0 +1,11 @@
+--- ./configure.in.org	Tue Sep  2 10:17:16 2003
++++ ./configure.in	Tue Sep  2 10:23:08 2003
+@@ -1947,7 +1947,7 @@
+ 	exit(0);
+ }
+ ],
+-SQUID_MAXFD=`cat conftestval`,
++SQUID_MAXFD=4096,
+ SQUID_MAXFD=256,
+ SQUID_MAXFD=256)
+ AC_MSG_RESULT($SQUID_MAXFD)
