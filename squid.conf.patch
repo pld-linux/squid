@@ -1,8 +1,8 @@
---- squid.conf.default	Fri Jan  3 18:27:12 2003
-+++ squid.conf	Fri Jan  3 18:28:28 2003
-@@ -665,8 +665,12 @@
- #	the cache_dir lines with the smallest max-size value first and the
- #	ones with no max-size specification last.
+--- squid.conf.default	2004-08-24 11:51:14.723512904 +0200
++++ squid.conf	2004-08-24 11:51:29.986192624 +0200
+@@ -688,8 +688,12 @@
+ #	Note that for coss, max-size must be less than COSS_MEMBUF_SZ
+ #	(hard coded at 1 MB).
  #
 +#	NOTE: Remeber to initialize cache directories:
 +#	      squid -z -F
@@ -13,7 +13,15 @@
  
  #  TAG: cache_access_log
  #	Logs the client request activity.  Contains an entry for
-@@ -1934,6 +1938,8 @@
+@@ -804,6 +808,7 @@
+ #
+ #Default:
+ # pid_filename /var/log/squid/squid.pid
++pid_filename /var/run/squid.pid
+ 
+ #  TAG: debug_options
+ #	Logging options are set as section,level where each source file
+@@ -2025,6 +2030,8 @@
  #
  #Default:
  # cache_effective_user nobody
@@ -22,7 +30,7 @@
  
  #  TAG: visible_hostname
  #	If you want to present a special hostname in error messages, etc,
-@@ -2109,8 +2115,14 @@
+@@ -2200,8 +2207,14 @@
  #	in the habit of using 'squid -k rotate' instead of 'kill -USR1
  #	<pid>'.
  #
