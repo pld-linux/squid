@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE4
-Release:	3
+Release:	4
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -54,6 +54,9 @@ Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn
 Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-cache_peer_maxconn.patch
 Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pid_filename_none.patch
 Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-dns_namelength.patch
+Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-urllogin_acl.patch
+Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-russian.patch
+Patch29:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirlog.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -468,6 +471,9 @@ Samba 2.2.4 lub wy¿szego.
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
+%patch27 -p1
+%patch28 -p1
+%patch29 -p1
 
 # Other patches:
 %patch110 -p1
