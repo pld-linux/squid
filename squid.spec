@@ -21,6 +21,7 @@ Patch12:	%{name}-fhs.patch
 Patch13:	%{name}-location.patch
 Patch14:	%{name}-domainmatch.patch
 Patch15:	%{name}-libnsl_fixes.patch
+Patch16:	%{name}-more_FD.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	pam-devel
@@ -152,6 +153,7 @@ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
+%patch16 -p1
 
 %build
 autoconf
