@@ -665,12 +665,12 @@ fi
 %lang(ro) %{_datadir}/squid/errors/Romanian
 %lang(ru) %{_datadir}/squid/errors/Russian-1251
 %lang(ru) %{_datadir}/squid/errors/Russian-koi8-r
-%lang(zh) %{_datadir}/squid/errors/Simplify_Chinese
+%lang(zh_CN) %{_datadir}/squid/errors/Simplify_Chinese
 %lang(sk) %{_datadir}/squid/errors/Slovak
 %lang(es) %{_datadir}/squid/errors/Spanish
 %lang(sr) %{_datadir}/squid/errors/Serbian
 %lang(sv) %{_datadir}/squid/errors/Swedish
-%lang(zh) %{_datadir}/squid/errors/Traditional_Chinese
+%lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
 
 %attr(755,root,root) %dir %{_libexecdir}
