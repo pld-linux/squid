@@ -1,0 +1,15 @@
+Index: squid/helpers/basic_auth/LDAP/squid_ldap_auth.c
+diff -c squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.3 squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.4
+*** squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.3	Sat Mar  1 07:55:26 2003
+--- squid/helpers/basic_auth/LDAP/squid_ldap_auth.c	Mon May  5 18:37:31 2003
+***************
+*** 324,329 ****
+--- 324,331 ----
+  		 */
+  	    } else {
+  		fprintf(stderr, "squid_ldap_auth: WARNING, LDAP search error '%s'\n", ldap_err2string(rc));
++ 		ldap_msgfree(res);
++ 		return 1;
+  	    }
+  	}
+  	entry = ldap_first_entry(ld, res);
