@@ -1,5 +1,7 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
+Summary(ru):	Squid - кэш объектов Internet
+Summary(uk):	Squid - кеш об'╓кт╕в Internet
 Name:		squid
 Version:	2.4.STABLE6
 Release:	1
@@ -59,6 +61,25 @@ squid obejmuje: gЁСwny program serwera squid, program dostarczaj╠cy
 informacji z DNS dnsserver, program odbieraj╠cy dane FTP ftpget, oraz
 pomocnicze programy do zarz╠dzania. Squid wywodzi siЙ ze
 sponsorowanego przez ARPA projektu Harvest.
+
+%description -l ru
+Squid - это высокопроизводительный кэширующий прокси-сервер для
+клиентов web, поддерживающий объекты данных типа FTP, gopher и HTTP. В
+отличие от традиционных кэширующих программ, Squid обрабатывает все
+запросы при помощи одного неблокирующегося, управляемого
+вводом-выводом процесса.
+
+Этот пакет имеет встроенную поддержку базы данных сетевых ICMP-проб
+(Netdb).
+
+%description -l uk
+Squid - це кешуючий прокс╕-сервер для web-кл╕╓нт╕в, що п╕дтриму╓
+об'╓кти даних типу FTP, gopher та HTTP. На в╕дм╕ну в╕д традиц╕йних
+кешуючих програм, Squid обробля╓ вс╕ запити за допомогою одного
+неблокуючого, керованого вводом-виводом процесу.
+
+Цей пакет ма╓ вбудовану п╕дтримку бази даних мережевих ICMP-проб
+(Netdb).
 
 %package cachemgr
 Summary:	CGI script for Squid management
