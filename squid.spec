@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE5
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -45,6 +45,7 @@ Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-spell
 Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-digest_ERR.patch
 Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-turkish_ERR_DNS_FAIL.patch
 Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-vary_negatively.patch
+Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-range_offset_limit.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -451,6 +452,7 @@ Samba 2.2.4 lub wy¿szego.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 
 # Other patches:
 %patch110 -p1
