@@ -1,0 +1,21 @@
+Index: squid/lib/rfc1035.c
+diff -c squid/lib/rfc1035.c:1.22.2.4 squid/lib/rfc1035.c:1.22.2.5
+*** squid/lib/rfc1035.c:1.22.2.4	Fri Apr 25 06:09:57 2003
+--- squid/lib/rfc1035.c	Sun Apr 11 03:14:52 2004
+***************
+*** 337,343 ****
+  		break;
+  	    if (len > (ns - no - 1))	/* label won't fit */
+  		return 1;
+! 	    if ((*off) + len > sz)	/* message is too short */
+  		return 1;
+  	    memcpy(name + no, buf + (*off), len);
+  	    (*off) += len;
+--- 337,343 ----
+  		break;
+  	    if (len > (ns - no - 1))	/* label won't fit */
+  		return 1;
+! 	    if ((*off) + len >= sz)	/* message is too short */
+  		return 1;
+  	    memcpy(name + no, buf + (*off), len);
+  	    (*off) += len;

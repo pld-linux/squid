@@ -1,0 +1,21 @@
+Index: squid/src/auth/ntlm/auth_ntlm.c
+diff -c squid/src/auth/ntlm/auth_ntlm.c:1.17.2.10 squid/src/auth/ntlm/auth_ntlm.c:1.17.2.11
+*** squid/src/auth/ntlm/auth_ntlm.c:1.17.2.10	Mon Mar  1 16:50:54 2004
+--- squid/src/auth/ntlm/auth_ntlm.c	Tue Apr  6 08:06:32 2004
+***************
+*** 656,662 ****
+      assert(ntlm_request);
+      assert(handler);
+      assert(data);
+!     assert(auth_user->auth_type = AUTH_NTLM);
+      debug(29, 9) ("authenticateNTLMStart: auth state '%d'\n", ntlm_request->auth_state);
+      switch (ntlm_request->auth_state) {
+      case AUTHENTICATE_STATE_NEGOTIATE:
+--- 656,662 ----
+      assert(ntlm_request);
+      assert(handler);
+      assert(data);
+!     assert(auth_user->auth_type == AUTH_NTLM);
+      debug(29, 9) ("authenticateNTLMStart: auth state '%d'\n", ntlm_request->auth_state);
+      switch (ntlm_request->auth_state) {
+      case AUTHENTICATE_STATE_NEGOTIATE:

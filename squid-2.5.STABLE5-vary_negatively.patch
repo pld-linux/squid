@@ -1,0 +1,78 @@
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.14 squid/src/http.c:1.384.2.15
+*** squid/src/http.c:1.384.2.14	Sun Apr 18 17:43:30 2004
+--- squid/src/http.c	Sat Apr 24 08:07:08 2004
+***************
+*** 442,476 ****
+      debug(11, 3) ("httpProcessReplyHeader: HTTP CODE: %d\n", reply->sline.status);
+      if (neighbors_do_private_keys)
+  	httpMaybeRemovePublic(entry, reply->sline.status);
+!     switch (httpCachableReply(httpState)) {
+!     case 1:
+! 	if (httpHeaderHas(&reply->header, HDR_VARY)
+  #if X_ACCELERATOR_VARY
+! 	    || httpHeaderHas(&reply->header, HDR_X_ACCELERATOR_VARY)
+  #endif
+! 	    ) {
+! 	    const char *vary = httpMakeVaryMark(httpState->orig_request, reply);
+! 	    if (vary) {
+! 		entry->mem_obj->vary_headers = xstrdup(vary);
+! 		/* Kill the old base object if a change in variance is detected */
+! 		httpMakePublic(entry);
+! 	    } else {
+! 		httpMakePrivate(entry);
+! 	    }
+! 	} else {
+! 	    httpMakePublic(entry);
+  	}
+  	break;
+      case 0:
+  	httpMakePrivate(entry);
+  	break;
+      case -1:
+! 	httpCacheNegatively(entry);
+  	break;
+      default:
+  	assert(0);
+  	break;
+      }
+      if (reply->cache_control) {
+  	if (EBIT_TEST(reply->cache_control->mask, CC_PROXY_REVALIDATE))
+  	    EBIT_SET(entry->flags, ENTRY_REVALIDATE);
+--- 442,477 ----
+      debug(11, 3) ("httpProcessReplyHeader: HTTP CODE: %d\n", reply->sline.status);
+      if (neighbors_do_private_keys)
+  	httpMaybeRemovePublic(entry, reply->sline.status);
+!     if (httpHeaderHas(&reply->header, HDR_VARY)
+  #if X_ACCELERATOR_VARY
+! 	|| httpHeaderHas(&reply->header, HDR_X_ACCELERATOR_VARY)
+  #endif
+! 	) {
+! 	const char *vary = httpMakeVaryMark(httpState->orig_request, reply);
+! 	if (!vary) {
+! 	    httpMakePrivate(entry);
+! 	    goto no_cache;
+  	}
++ 	entry->mem_obj->vary_headers = xstrdup(vary);
++     }
++     switch (httpCachableReply(httpState)) {
++     case 1:
++ 	httpMakePublic(entry);
+  	break;
+      case 0:
+  	httpMakePrivate(entry);
+  	break;
+      case -1:
+! 	if (Config.negativeTtl > 0)
+! 	    httpCacheNegatively(entry);
+! 	else
+! 	    httpMakePrivate(entry);
+  	break;
+      default:
+  	assert(0);
+  	break;
+      }
++   no_cache:
+      if (reply->cache_control) {
+  	if (EBIT_TEST(reply->cache_control->mask, CC_PROXY_REVALIDATE))
+  	    EBIT_SET(entry->flags, ENTRY_REVALIDATE);

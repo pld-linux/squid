@@ -1,0 +1,20 @@
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.12 squid/src/http.c:1.384.2.13
+*** squid/src/http.c:1.384.2.12	Fri Jan 30 16:09:12 2004
+--- squid/src/http.c	Fri Mar 19 01:56:55 2004
+***************
+*** 348,353 ****
+--- 348,360 ----
+  	char *name = xmalloc(ilen + 1);
+  	xstrncpy(name, item, ilen + 1);
+  	Tolower(name);
++ 	if (strcmp(name, "*") == 0) {
++ 	    /* Can not handle "Vary: *" withtout ETag support */
++ 	    safe_free(name);
++ 	    stringClean(&vary);
++ 	    stringClean(&vstr);
++ 	    break;
++ 	}
+  	strListAdd(&vstr, name, ',');
+  	hdr = httpHeaderGetByName(&request->header, name);
+  	safe_free(name);
