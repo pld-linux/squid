@@ -5,7 +5,7 @@ diff -Nur squid-2.2.STABLE3/include/version.h squid-2.2.STABLE3.pld/include/vers
   *  SQUID_VERSION - String for version id of this distribution
   */
  #ifndef SQUID_VERSION
--#define SQUID_VERSION	"2.2.STABLE3"
+-#define SQUID_VERSION	"2.2.STABLE4"
 +#define SQUID_VERSION	"PLD Linux"
  #endif
  
