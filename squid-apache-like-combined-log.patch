@@ -1,6 +1,6 @@
 diff -Nur squid-2.5.STABLE3.orig/configure.in squid-2.5.STABLE3/configure.in
---- squid-2.5.STABLE3.orig/configure.in	Mon Sep  8 17:05:29 2003
-+++ squid-2.5.STABLE3/configure.in	Mon Sep  8 17:40:31 2003
+--- squid-2.5.STABLE3.orig/configure.in	2003-09-08 16:16:03.000000000 +0200
++++ squid-2.5.STABLE3/configure.in	2003-09-08 16:20:20.000000000 +0200
 @@ -1100,6 +1100,20 @@
    fi
  ])
@@ -23,14 +23,16 @@ diff -Nur squid-2.5.STABLE3.orig/configure.in squid-2.5.STABLE3/configure.in
  #
  case "$host" in
 diff -Nur squid-2.5.STABLE3.orig/src/access_log.c squid-2.5.STABLE3/src/access_log.c
---- squid-2.5.STABLE3.orig/src/access_log.c	Mon Sep  8 17:05:28 2003
-+++ squid-2.5.STABLE3/src/access_log.c	Mon Sep  8 17:30:10 2003
-@@ -268,12 +268,33 @@
+--- squid-2.5.STABLE3.orig/src/access_log.c	2003-09-08 16:16:03.000000000 +0200
++++ squid-2.5.STABLE3/src/access_log.c	2003-09-08 16:23:16.000000000 +0200
+@@ -268,12 +268,35 @@
  {
      const char *client = NULL;
      char *user1 = NULL, *user2 = NULL;
++#ifdef REIF_LOGS
 +    request_t * request = al->request;
 +    const HttpHeader *req_hdr = &request->header;
++#endif
 +
      if (Config.onoff.log_fqdn)
  	client = fqdncache_gethostbyaddr(al->cache.caddr, 0);
@@ -59,7 +61,7 @@ diff -Nur squid-2.5.STABLE3.orig/src/access_log.c squid-2.5.STABLE3/src/access_l
      logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %ld %s:%s",
  	client,
  	user2 ? user2 : dash_str,
-@@ -286,6 +307,7 @@
+@@ -286,6 +309,7 @@
  	(long int) al->cache.size,
  	log_tags[al->cache.code],
  	hier_strings[al->hier.code]);
@@ -68,8 +70,8 @@ diff -Nur squid-2.5.STABLE3.orig/src/access_log.c squid-2.5.STABLE3/src/access_l
      safe_free(user2);
  }
 diff -Nur squid-2.5.STABLE3.orig/src/client_side.c squid-2.5.STABLE3/src/client_side.c
---- squid-2.5.STABLE3.orig/src/client_side.c	Mon Sep  8 17:05:29 2003
-+++ squid-2.5.STABLE3/src/client_side.c	Mon Sep  8 17:31:31 2003
+--- squid-2.5.STABLE3.orig/src/client_side.c	2003-09-08 16:16:03.000000000 +0200
++++ squid-2.5.STABLE3/src/client_side.c	2003-09-08 16:20:20.000000000 +0200
 @@ -815,6 +815,9 @@
  	    http->al.http.version = request->http_ver;
  	    http->al.headers.request = xstrdup(mb.buf);
@@ -81,8 +83,8 @@ diff -Nur squid-2.5.STABLE3.orig/src/client_side.c squid-2.5.STABLE3/src/client_
  		if (authenticateUserRequestUsername(request->auth_user_request))
  		    http->al.cache.authuser = xstrdup(authenticateUserRequestUsername(request->auth_user_request));
 diff -Nur squid-2.5.STABLE3.orig/src/defines.h squid-2.5.STABLE3/src/defines.h
---- squid-2.5.STABLE3.orig/src/defines.h	Mon Sep  8 17:05:29 2003
-+++ squid-2.5.STABLE3/src/defines.h	Mon Sep  8 17:42:01 2003
+--- squid-2.5.STABLE3.orig/src/defines.h	2003-09-08 16:16:03.000000000 +0200
++++ squid-2.5.STABLE3/src/defines.h	2003-09-08 16:20:20.000000000 +0200
 @@ -309,4 +309,8 @@
  #define FILE_MODE(x) ((x)&(O_RDONLY|O_WRONLY|O_RDWR))
  #endif
@@ -93,8 +95,8 @@ diff -Nur squid-2.5.STABLE3.orig/src/defines.h squid-2.5.STABLE3/src/defines.h
 +
  #endif /* SQUID_DEFINES_H */
 diff -Nur squid-2.5.STABLE3.orig/src/structs.h squid-2.5.STABLE3/src/structs.h
---- squid-2.5.STABLE3.orig/src/structs.h	Mon Sep  8 17:05:28 2003
-+++ squid-2.5.STABLE3/src/structs.h	Mon Sep  8 17:32:30 2003
+--- squid-2.5.STABLE3.orig/src/structs.h	2003-09-08 16:16:03.000000000 +0200
++++ squid-2.5.STABLE3/src/structs.h	2003-09-08 16:20:20.000000000 +0200
 @@ -1043,6 +1043,9 @@
      struct {
  	const char *method_str;
