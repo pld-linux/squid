@@ -1,0 +1,100 @@
+diff -r -c squid-2.4-200208212300/src/client_side.c squid-2.4-200208212300.fixed/src/client_side.c
+*** squid-2.4-200208212300/src/client_side.c	Mon Jun 24 08:10:51 2002
+--- squid-2.4-200208212300.fixed/src/client_side.c	Mon Sep  2 12:56:23 2002
+***************
+*** 1765,1770 ****
+--- 1765,1773 ----
+  	/* Avoid copying to MemBuf for non-range requests */
+  	/* Note, if we're here, then 'rep' is known to be NULL */
+  	http->out.offset += body_size;
++ 	{   int tos=isTcpHit(http->log_type) ? 0 : 8;
++ 	    setsockopt(fd,SOL_IP,IP_TOS,&tos,4);
++ 	}
+  	comm_write(fd, buf, size, clientWriteBodyComplete, http, NULL);
+  	/* NULL because clientWriteBodyComplete frees it */
+  	return;
+***************
+*** 1817,1822 ****
+--- 1820,1828 ----
+      if (!http->request->range && http->request->method == METHOD_GET)
+  	assert(check_size == size);
+      /* write */
++     {	int tos=isTcpHit(http->log_type) ? 0 : 8;
++ 	setsockopt(fd,SOL_IP,IP_TOS,&tos,4);
++     }
+      comm_write_mbuf(fd, mb, clientWriteComplete, http);
+      /* if we don't do it, who will? */
+      memFree(buf, MEM_CLIENT_SOCK_BUF);
+diff -r -c squid-2.4-200208212300/src/defines.h squid-2.4-200208212300.fixed/src/defines.h
+*** squid-2.4-200208212300/src/defines.h	Fri Jan 12 01:51:46 2001
+--- squid-2.4-200208212300.fixed/src/defines.h	Mon Sep  2 13:15:36 2002
+***************
+*** 38,43 ****
+--- 38,45 ----
+  #define FALSE 0
+  #endif
+  
++ #define SQUID_TCP_RCVBUF SQUID_TCP_SO_RCVBUF
++ 
+  #define ACL_NAME_SZ 32
+  #define BROWSERNAMELEN 128
+  
+diff -r -c squid-2.4-200208212300/src/ftp.c squid-2.4-200208212300.fixed/src/ftp.c
+*** squid-2.4-200208212300/src/ftp.c	Sun Jun 23 22:18:58 2002
+--- squid-2.4-200208212300.fixed/src/ftp.c	Mon Sep  2 14:15:11 2002
+***************
+*** 1116,1123 ****
+      ftpState->ctrl.freefunc = memFree4K;
+      ftpState->ctrl.size = 4096;
+      ftpState->ctrl.offset = 0;
+!     ftpState->data.buf = xmalloc(SQUID_TCP_SO_RCVBUF);
+!     ftpState->data.size = SQUID_TCP_SO_RCVBUF;
+      ftpState->data.freefunc = xfree;
+      ftpScheduleReadControlReply(ftpState, 0);
+  }
+--- 1116,1123 ----
+      ftpState->ctrl.freefunc = memFree4K;
+      ftpState->ctrl.size = 4096;
+      ftpState->ctrl.offset = 0;
+!     ftpState->data.buf = xmalloc(SQUID_TCP_RCVBUF < SQUID_TCP_SO_RCVBUF ? SQUID_TCP_RCVBUF : SQUID_TCP_SO_RCVBUF);
+!     ftpState->data.size = (SQUID_TCP_RCVBUF < SQUID_TCP_SO_RCVBUF ? SQUID_TCP_RCVBUF : SQUID_TCP_SO_RCVBUF);
+      ftpState->data.freefunc = xfree;
+      ftpScheduleReadControlReply(ftpState, 0);
+  }
+diff -r -c squid-2.4-200208212300/src/http.c squid-2.4-200208212300.fixed/src/http.c
+*** squid-2.4-200208212300/src/http.c	Fri Jun 28 01:32:46 2002
+--- squid-2.4-200208212300.fixed/src/http.c	Mon Sep  2 14:15:11 2002
+***************
+*** 456,462 ****
+  httpReadReply(int fd, void *data)
+  {
+      HttpStateData *httpState = data;
+!     LOCAL_ARRAY(char, buf, SQUID_TCP_SO_RCVBUF);
+      StoreEntry *entry = httpState->entry;
+      const request_t *request = httpState->request;
+      int len;
+--- 456,462 ----
+  httpReadReply(int fd, void *data)
+  {
+      HttpStateData *httpState = data;
+!     LOCAL_ARRAY(char, buf, SQUID_TCP_RCVBUF < SQUID_TCP_SO_RCVBUF ? SQUID_TCP_RCVBUF : SQUID_TCP_SO_RCVBUF);
+      StoreEntry *entry = httpState->entry;
+      const request_t *request = httpState->request;
+      int len;
+***************
+*** 478,484 ****
+      }
+      /* check if we want to defer reading */
+      errno = 0;
+!     read_sz = SQUID_TCP_SO_RCVBUF;
+  #if DELAY_POOLS
+      read_sz = delayBytesWanted(delay_id, 1, read_sz);
+  #endif
+--- 478,484 ----
+      }
+      /* check if we want to defer reading */
+      errno = 0;
+!     read_sz = (SQUID_TCP_RCVBUF < SQUID_TCP_SO_RCVBUF ? SQUID_TCP_RCVBUF : SQUID_TCP_SO_RCVBUF);
+  #if DELAY_POOLS
+      read_sz = delayBytesWanted(delay_id, 1, read_sz);
+  #endif
