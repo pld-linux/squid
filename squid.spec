@@ -125,7 +125,7 @@ install %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/squid
 install calamaris-%{calamaris_ver}/calamaris $RPM_BUILD_ROOT/usr/bin
 install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
-install scripts/*.pl $RPM_BUILD_ROOT/usr/lib/squid
+install scripts/*.pl $RPM_BUILD_ROOT%{_libdir}/squid
 
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
@@ -181,8 +181,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(750,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) /etc/sysconfig/squid
 
-%attr(750,root,root) %dir /usr/lib/squid
-%attr(750,root,root) /usr/lib/squid/*
+%attr(750,root,root) %dir %{_libdir}/squid
+%attr(750,root,root) %{_libdir}/squid/*
 
 %attr(750,nobody,root) %dir /var/log/squid
 %ghost %attr(644,nobody,nobody) /var/log/squid/*.log
