@@ -1,0 +1,37 @@
+Index: squid/configure.in
+diff -c squid/configure.in:1.251.2.46 squid/configure.in:1.251.2.47
+*** squid/configure.in:1.251.2.46	Tue Apr 29 10:09:38 2003
+--- squid/configure.in	Sun May  4 15:21:41 2003
+***************
+*** 594,599 ****
+--- 594,605 ----
+    if test -z "$SSLLIB"; then
+      SSLLIB="-lcrypto" # for MD5 routines
+    fi
++   dnl This is a workaround for RedHat 9 brain damage..
++   if test -d /usr/kerberos/include && test -z "$SSLLIBDIR" && test -f /usr/include/openssl/kssl.h; then
++     echo "OpenSSL depends on Kerberos"
++     SSLLIBDIR="/usr/kerberos/lib"
++     CPPFLAGS="$CPPFLAGS -I/usr/kerberos/include"
++   fi
+  fi
+  if test -n "$SSLLIBDIR"; then
+    SSLLIB="-L$SSLLIBDIR $SSLLIB"
+Index: squid/configure
+diff -c squid/configure:1.248.2.48 squid/configure:1.248.2.49
+*** squid/configure:1.248.2.48	Tue Apr 29 10:16:11 2003
+--- squid/configure	Sun May  4 15:25:08 2003
+***************
+*** 2365,2370 ****
+--- 2365,2375 ----
+    if test -z "$SSLLIB"; then
+      SSLLIB="-lcrypto" # for MD5 routines
+    fi
++     if test -d /usr/kerberos/include && test -z "$SSLLIBDIR" && test -f /usr/include/openssl/kssl.h; then
++     echo "OpenSSL depends on Kerberos"
++     SSLLIBDIR="/usr/kerberos/lib"
++     CPPFLAGS="$CPPFLAGS -I/usr/kerberos/include"
++   fi
+  fi
+  if test -n "$SSLLIBDIR"; then
+    SSLLIB="-L$SSLLIBDIR $SSLLIB"
