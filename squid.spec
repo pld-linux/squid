@@ -6,12 +6,12 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.4.STABLE7
-Release:	6
+Version:	2.5.STABLE1
+Release:	1
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v2/2.4/%{name}-%{version}-src.tar.gz
+Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -20,18 +20,45 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.STABLE7-msntauth.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ldap_group-compile.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-flags_open.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ldap_group.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-spaces.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-dnsserver.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-auth-proxy.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-cachemgr.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-uninstall.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ext_acl_exit.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-request_entity.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ext_acl_comma.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-acl_leak.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-aufs.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-memstat.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-wccp.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-strwordtok.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-pthreads.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-addlang.patch
+Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ldap_auth.patch
+Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-referer_log.patch
+Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-load_icons.patch
+Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-cache_dir_docs.patch
+Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-max_user_ip.patch
+Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-proxy_auth.patch
+Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-disable-http-violations.patch
+Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-disable-ident-lookups.patch
 # Other patches:
-Patch10:	%{name}-perl.patch
-Patch11:	%{name}-linux.patch
-Patch12:	%{name}-fhs.patch
-Patch13:	%{name}-location.patch
-Patch14:	%{name}-domainmatch.patch
-Patch15:	%{name}-libnsl_fixes.patch
-Patch16:	%{name}-more_FD.patch
-Patch17:	%{name}-ac_fix.patch
+Patch100:	%{name}-perl.patch
+Patch110:	%{name}-linux.patch
+Patch120:	%{name}-fhs.patch
+Patch130:	%{name}-location.patch
+Patch140:	%{name}-domainmatch.patch
+Patch150:	%{name}-libnsl_fixes.patch
+Patch160:	%{name}-more_FD.patch
+Patch170:	%{name}-ac_fix.patch
+Patch180:	%{name}-contrib.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
+BuildRequires:	openssl-devel
 BuildRequires:	pam-devel
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
@@ -236,8 +263,15 @@ u¿ytkowników proxy poprzez YP.
 
 # Bug fixes from Squid home page:
 %patch0 -p1
-
-# Other patches:
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
@@ -246,11 +280,38 @@ u¿ytkowników proxy poprzez YP.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch22 -p1
+
+# Other patches:
+# fixme
+#%patch100 -p1
+# applied?
+#%patch110 -p1
+%patch120 -p1
+# fixme
+#%patch130 -p1
+%patch140 -p1
+# fixme?
+#%patch150 -p1
+#fixme
+#%patch160 -p1
+%patch170 -p1
+%patch180 -p1
 
 %build
+%{__aclocal}
 %{__autoconf}
+%{__automake}
 %configure \
 	--localstatedir=/var \
+	--sysconfdir=%{_sysconfdir} \
 	--enable-icmp \
 	--enable-useragent-log \
 	--enable-snmp \
@@ -271,7 +332,7 @@ u¿ytkowników proxy poprzez YP.
 mv -f squid/* doc
 %{__make}
 
-%{__make} -C auth_modules SUBDIRS="LDAP MSNT NCSA PAM SMB YP getpwnam"
+perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g' contrib/*
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -284,26 +345,13 @@ install -d \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
 
 %{__make} install \
-	prefix=$RPM_BUILD_ROOT%{_prefix} \
-	sysconfdir=$RPM_BUILD_ROOT/etc/squid \
-	bindir=$RPM_BUILD_ROOT%{_bindir} \
-	libdir=$RPM_BUILD_ROOT%{_libdir} \
-	libexecdir=$RPM_BUILD_ROOT%{_bindir} \
-	localstatedir=$RPM_BUILD_ROOT/var \
-	datadir=$RPM_BUILD_ROOT%{_datadir}
+	DESTDIR=$RPM_BUILD_ROOT
 
 # We don't use %{__make} install-pinger, because it tries to set it suid root.
 install src/pinger $RPM_BUILD_ROOT%{_bindir}
 
 mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
-# auth modules
-install auth_modules/LDAP/squid_ldap_auth	$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-install auth_modules/LDAP/squid_ldap_auth.8	$RPM_BUILD_ROOT%{_mandir}/man8
-install auth_modules/SMB/smb_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-install auth_modules/MSNT/msnt_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-install auth_modules/YP/yp_auth			$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-install auth_modules/PAM/pam_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
 install %{SOURCE7}				$RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
