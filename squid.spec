@@ -10,13 +10,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE4
-Release:	8
+Version:	2.5.STABLE5
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	9894a1fe855b0cccdc14fbf014060990
+# Source0-md5:	45ed1b1cd492e3f529085d09c3ffc1b8
 Source1:	%{name}-1.1.19-faq.tar.gz
 # Source1-md5:	77d04ae621d19548797e3a0deb540df6
 Source2:	%{name}.init
@@ -27,40 +27,24 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-reconfigure_message.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-digest_auth_pwchange.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirect_login_space.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdnnegcache.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/pam_auth-2.2.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4_auth_param_doc.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-errorpages.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-error_load_text.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-xpi_mime.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-size_overflow.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-extacl_auth_loop.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-squid_ldap_group.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-positive_dns_ttl.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-gopherhtml.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-netroute.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-synflood.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdn.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-connect_cleanup.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn_post.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-ftp_put.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn-load.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-icon_urls.patch
-Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirector_access.patch
-Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn-lifo.patch
-Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-cache_peer_maxconn.patch
-Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pid_filename_none.patch
-Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-dns_namelength.patch
-Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-urllogin_acl.patch
-Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-russian.patch
-Patch29:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirlog.patch
-Patch30:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pinger.patch
-Patch31:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-partial_reload.patch
-Patch32:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-ldap_tls.patch
-Patch33:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-ldap_group_bufsize.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-ntlm_assert.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-ldap.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-helper_warning.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-pkgconfig.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-vary.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-lin22_poll.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-version.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-deny_info.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-CONNECT_timeout.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-cache_swap_log.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-ntlm_warning.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-rfc1035NameUnpack.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-digest_blank.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-post_assert.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-spelling.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-digest_ERR.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-turkish_ERR_DNS_FAIL.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-vary_negatively.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -74,7 +58,7 @@ Patch190:	%{name}-newssl.patch
 Patch200:	%{name}-sasl.patch
 Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch220:	%{name}-empty-referer.patch
-Patch230:	%{name}-%{version}-apache-like-combined-log.patch
+Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -466,22 +450,6 @@ Samba 2.2.4 lub wy¿szego.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
-%patch29 -p1
-%patch30 -p1
-%patch31 -p1
-%patch32 -p1
-%patch33 -p1
 
 # Other patches:
 %patch110 -p1
