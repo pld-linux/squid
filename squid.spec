@@ -72,13 +72,11 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
-Patch200:	%{name}-sasl.patch
-Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
+Patch190:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
 BuildRequires:	autoconf
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7a
+BuildRequires:	openssl-devel >= 0.9.6j
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
@@ -97,6 +95,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
+%define		_httpdir	/home/httpd
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -524,8 +523,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-ntlm-auth-helpers=yes \
 	--enable-digest-auth-helpers=yes \
 	--enable-external-acl-helpers=yes \
-	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--enable-x-accelerator-vary
 
 mv -f squid/* doc
 %{__make}
@@ -537,7 +535,7 @@ find helpers/ -type f | xargs perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g'
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
-	$RPM_BUILD_ROOT/home/services/httpd/cgi-bin \
+	$RPM_BUILD_ROOT%{_httpdir}/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
@@ -553,7 +551,7 @@ install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
+mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_httpdir}/cgi-bin
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
@@ -686,7 +684,7 @@ fi
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(755,root,root) /home/services/httpd/cgi-bin/*
+%attr(755,root,root) %{_httpdir}/cgi-bin/*
 
 %files ldap_auth
 %defattr(644,root,root,755)
