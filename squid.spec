@@ -1,3 +1,7 @@
+#
+# Conditional build:
+%bcond_with	esi	# build ESI support (www.esi.org)
+#
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
 Summary(pl):	Uniwersalny proxy-cache server
@@ -23,9 +27,43 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-#Patch0:	
+Patch0:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-russian.patch
+Patch1:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-resolver-length.patch
+Patch2:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-extacl_auth.patch
+Patch3:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-epoll-100cpu.patch
+Patch4:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-originserver_port.patch
+Patch5:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-digest_auth_pwchange.patch
+Patch6:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-cachemgr_accel.patch
+Patch7:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-pam_auth.patch
+Patch8:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-fqdnnegcache.patch
+Patch9:		http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-memidle.patch
+Patch10:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-winbind.patch
+Patch11:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-https_accel_doc.patch
+Patch12:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-ftp_abort_closing.patch
+Patch13:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-swapoutcbdata.patch
+Patch14:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-PURIFY.patch
+Patch15:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-cbdatadebugleak.patch
+Patch16:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-httpversion.patch
+Patch17:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-cossParsing.patch
+Patch18:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-coss-options.patch
+Patch19:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-debug-parsing.patch
+Patch20:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-ufs-race.patch
+Patch21:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-windows-dup2.patch
+Patch22:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-mount-sys-detection.patch
+Patch23:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-coss-postmerge.patch
+Patch24:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-inprogressios.patch
+Patch25:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-access_log_none.patch
+Patch26:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-ncsa_auth_passwdfile.patch
+Patch27:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-hugeobjects-detection.patch
+Patch28:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-ssl-session-reuse.patch
+Patch29:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-Solaris-gethostname.patch
+Patch30:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-main-pid.patch
+Patch31:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-endian-bracket.patch
+Patch32:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-accel_cache_peer_name.patch
+Patch33:	http://www.squid-cache.org/Versions/v3/3.0/bugs/squid-3.0.PRE3-pconn.patch
 # Other patches:
-#Patch100:	%{name}-perl.patch
+Patch100:	%{name}-types.patch
+Patch101:	%{name}-sasl.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7a
@@ -390,18 +428,49 @@ przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd
 z pakietu Samba 2.2.4 lub wy¿szego.
 
 %prep
-%setup -q -a 1 -a 4
+%setup -q -n %{name}-%{version}-PRE3 -a 1 -a 4
 
 # Bug fixes from Squid home page:
-#%patch0 -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+#%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+#%patch13 -p1
+#%patch14 -p1
+%patch15 -p1
+#%patch16 -p1
+#%patch17 -p1
+#%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+#%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
+#%patch27 -p1
+%patch28 -p1
+%patch29 -p1
+%patch30 -p1
+%patch31 -p1
+%patch32 -p1
+%patch33 -p1
 
 # Other patches:
-#%patch100 -p1
+%patch100 -p1
+%patch101 -p1
 
 %build
-%{__aclocal}
-%{__autoconf}
-%{__automake}
 %configure \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
@@ -410,9 +479,8 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-useragent-log \
 	--enable-snmp \
 	--enable-arp-acl \
-	--enable-err-language=English \
+	--enable-default-err-language=English \
 	--enable-htcp \
-	--enable-carp \
 	--enable-ssl \
 	--enable-forw-via-db \
 	--enable-cache-digests \
@@ -421,13 +489,18 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--disable-ipf-transparent \
 	--enable-delay-pools \
 	--with-pthreads \
-	--enable-auth=yes \
-	--enable-basic-auth-helpers=yes \
-	--enable-ntlm-auth-helpers=yes \
-	--enable-digest-auth-helpers=yes \
-	--enable-external-acl-helpers=yes \
+	--enable-auth="basic digest ntlm" \
+	--enable-basic-auth-helpers="LDAP MSNT NCSA PAM SASL SMB YP getpwnam multi-domain-NTLM winbind" \
+	--enable-ntlm-auth-helpers="SMB fakeauth no_check winbind" \
+	--enable-digest-auth-helpers=password \
+	--enable-external-acl-helpers="ip_user ldap_group unix_group wbinfo_group winbind_group" \
 	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--enable-linux-netfilter \
+	--enable-delay-pools \
+	%{?with_esi:--enable-esi} \
+	--enable-large-files \
+	--with-openssl
+	
 
 mv -f squid/* doc
 %{__make}
@@ -560,6 +633,7 @@ fi
 %lang(it) %{_datadir}/squid/errors/Italian
 %lang(ja) %{_datadir}/squid/errors/Japanese
 %lang(ko) %{_datadir}/squid/errors/Korean
+%lang(lt) %{_datadir}/squid/errors/Lithuanian
 %lang(pl) %{_datadir}/squid/errors/Polish
 %lang(pt) %{_datadir}/squid/errors/Portuguese
 %lang(ro) %{_datadir}/squid/errors/Romanian
@@ -576,6 +650,8 @@ fi
 %attr(755,root,root) %dir %{_libexecdir}
 %attr(755,root,root) %{_libexecdir}/*.pl
 %attr(755,root,root) %{_libexecdir}/contrib
+
+%attr(644,root,root) %{_mandir}/man8/squid.*
 
 %attr(770,root,squid) %dir /var/log/archiv/squid
 %attr(770,root,squid) %dir /var/log/squid
@@ -599,6 +675,7 @@ fi
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
 %attr(755,root,root) %{_libexecdir}/pam_auth
+%attr(644,root,root) %{_mandir}/man8/pam_auth.*
 
 %files smb_auth
 %defattr(644,root,root,755)
@@ -642,6 +719,7 @@ fi
 %doc helpers/ntlm_auth/no_check/{README*,no_check.pl}
 %attr(755,root,root) %{_libexecdir}/wb_ntlmauth
 %attr(755,root,root) %{_libexecdir}/ntlm_auth
+%attr(755,root,root) %{_libexecdir}/fakeauth_auth
 
 %files ip_acl
 %defattr(644,root,root,755)
