@@ -684,6 +684,7 @@ fi
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/MSNT/README*
 %attr(755,root,root) %{_libexecdir}/msnt_auth
+%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/msntauth.conf
 
 %files yp_auth
 %defattr(644,root,root,755)
