@@ -28,7 +28,7 @@
 
 # Check that networking is up.
 if is_no "${NETWORKING}"; then
-	msg_Network_Down Squid
+	msg_network_down Squid
 	exit 1
 fi
 
@@ -46,7 +46,7 @@ case "$1" in
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
-		msg_Already_Running Squid
+		msg_already_running Squid
 	fi
 	;;
   stop)
@@ -56,7 +56,7 @@ case "$1" in
 		killproc squid
 		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
-		msg_Not_Running squid
+		msg_not_running squid
 		exit 1
 	fi
 	;;
@@ -71,7 +71,7 @@ case "$1" in
 		squid -k reconfigure
 		ok
 	else
-		msg_Not_Running squid
+		msg_not_running squid
 		exit 1
 	fi
   	;;
@@ -84,7 +84,7 @@ case "$1" in
 	squid -z
 	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart|reload|init}"
+	msg_usage "$0 {start|stop|status|restart|reload|init}"
 	exit 1
 esac
 
