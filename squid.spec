@@ -6,12 +6,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE1
-Release:	1
+Version:	3.0
+Release:	0.PRE3.0.1
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
+Source0:	http://www.squid-cache.org/Versions/v3/3.0/%{name}-%{version}-PRE3.tar.bz2
+# Source0-md5:	f43e08e9aba72e5544910d86f88dc8b6
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -20,32 +21,7 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ldap_group-compile.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-flags_open.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ldap_group.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-spaces.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-dnsserver.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-auth-proxy.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-cachemgr.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-uninstall.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ext_acl_exit.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-request_entity.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ext_acl_comma.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-acl_leak.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-aufs.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-memstat.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-wccp.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-strwordtok.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-pthreads.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-addlang.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-ldap_auth.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-referer_log.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-load_icons.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-cache_dir_docs.patch
-Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-max_user_ip.patch
-Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-proxy_auth.patch
-Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-disable-http-violations.patch
-Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE1-disable-ident-lookups.patch
+#Patch0:	
 # Other patches:
 Patch100:	%{name}-perl.patch
 Patch110:	%{name}-linux.patch
@@ -426,32 +402,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page:
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch22 -p1
+#%patch0 -p1
 
 # Other patches:
 # fixme
