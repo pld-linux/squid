@@ -1,0 +1,42 @@
+Index: squid/auth_modules/MSNT/usersfile.c
+diff -c squid/auth_modules/MSNT/usersfile.c:1.1.2.1 squid/auth_modules/MSNT/usersfile.c:1.1.2.2
+*** squid/auth_modules/MSNT/usersfile.c:1.1.2.1	Wed Jun 26 13:24:46 2002
+--- squid/auth_modules/MSNT/usersfile.c	Fri Jul  5 08:34:21 2002
+***************
+*** 28,36 ****
+  static int
+  name_cmp(const void *a, const void *b)
+  {
+!     const char *A = a;
+!     const char *B = b;
+!     return strcasecmp(A, B);
+  }
+  
+  static void
+--- 28,36 ----
+  static int
+  name_cmp(const void *a, const void *b)
+  {
+!     const char * const *A = a;
+!     const char * const *B = b;
+!     return strcasecmp(*A, *B);
+  }
+  
+  static void
+***************
+*** 148,154 ****
+       * If so, allow. If not, deny. Reconstruct the username
+       * to have whitespace, to avoid finding wrong string subsets. */
+  
+!     p = bsearch(User,
+  	uf->names,
+  	uf->Inuse,
+  	sizeof(*uf->names),
+--- 148,154 ----
+       * If so, allow. If not, deny. Reconstruct the username
+       * to have whitespace, to avoid finding wrong string subsets. */
+  
+!     p = bsearch(&User,
+  	uf->names,
+  	uf->Inuse,
+  	sizeof(*uf->names),
