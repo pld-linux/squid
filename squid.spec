@@ -1,9 +1,3 @@
-# 
-# TODO:
-# Conditional build:
-# _without_samba		- without samba auth
-# _without_ldap			- without ldap auth
-#
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
 Summary(pl):	Uniwersalny proxy-cache server
@@ -12,13 +6,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE2
-Release:	3
+Version:	2.5.STABLE3
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	f4096165619f92847edf34906ad9467b
+# Source0-md5:	ed5eb7835d00fdecc7dd7c1837542df2
 Source1:	%{name}-1.1.19-faq.tar.gz
 # Source1-md5:	77d04ae621d19548797e3a0deb540df6
 Source2:	%{name}.init
@@ -29,35 +23,9 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-deny_info_reset.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-digestcomma.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-digest_nonce_count.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-external_acl_ttl0.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-smb_auth_pl.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-smb_auth.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-authdebug.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-unreachcode.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-comm-select.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-acl_lookup_loop.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-reply_body_max_size.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-ident_REQUIRED.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-msntauth.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-ldap_auth_unavail.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-reconfig_logs.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-redhat9-ssl.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-snmp_gauges.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-aix5.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-dns_root_label.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-header_access_paranoid.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-cache_peer_docs.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-cache_effective_user_docs.patch
-Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-external_acl_overload.patch
-Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-shutdown.patch
-Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-external_acl_crash.patch
-Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-concurrent_external_acl.patch
-Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-aclregression.patch
-Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-external_lookup.patch
-Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE2-squid_ldap_auth.patch
+Patch0:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-HttpHeaderTools.patch
+Patch1:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-deny_info.patch
+Patch2:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
 
 # Other patches:
 Patch120:	%{name}-fhs.patch
@@ -438,32 +406,6 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
 # Other patches:
 %patch120 -p1
 %patch130 -p1
@@ -635,6 +577,7 @@ fi
 %lang(it) %{_datadir}/squid/errors/Italian
 %lang(ja) %{_datadir}/squid/errors/Japanese
 %lang(ko) %{_datadir}/squid/errors/Korean
+%lang(lt) %{_datadir}/squid/errors/Lithuanian
 %lang(pl) %{_datadir}/squid/errors/Polish
 %lang(pt) %{_datadir}/squid/errors/Portuguese
 %lang(ro) %{_datadir}/squid/errors/Romanian
