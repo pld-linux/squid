@@ -1,0 +1,36 @@
+Index: squid/src/main.c
+diff -c squid/src/main.c:1.345.2.8 squid/src/main.c:1.345.2.9
+*** squid/src/main.c:1.345.2.8	Wed Jan 29 15:33:49 2003
+--- squid/src/main.c	Wed Apr  9 06:07:49 2003
+***************
+*** 726,738 ****
+  	    do_shutdown = 0;
+  	    shutting_down = 1;
+  	    serverConnectionsClose();
+- #if USE_DNSSERVERS
+- 	    dnsShutdown();
+- #else
+- 	    idnsShutdown();
+- #endif
+- 	    redirectShutdown();
+- 	    externalAclShutdown();
+  	    eventAdd("SquidShutdown", SquidShutdown, NULL, (double) (wait + 1), 1);
+  	}
+  	eventRun();
+--- 726,731 ----
+***************
+*** 950,955 ****
+--- 943,955 ----
+  SquidShutdown(void *unused)
+  {
+      debug(1, 1) ("Shutting down...\n");
++ #if USE_DNSSERVERS
++     dnsShutdown();
++ #else
++     idnsShutdown();
++ #endif
++     redirectShutdown();
++     externalAclShutdown();
+      icpConnectionClose();
+  #if USE_HTCP
+      htcpSocketClose();

@@ -1,0 +1,41 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.36 squid/src/cf.data.pre:1.245.2.38
+*** squid/src/cf.data.pre:1.245.2.36	Tue Feb  4 22:27:50 2003
+--- squid/src/cf.data.pre	Tue Apr  1 21:28:15 2003
+***************
+*** 2296,2310 ****
+  LOC: Config.effectiveGroup
+  DOC_START
+  
+! 	If the cache is run as root, it will change its effective/real
+  	UID/GID to the UID/GID specified below.  The default is to
+! 	change to UID to nobody and GID to the default group of nobody.
+  
+! 	If Squid is not started as root, the default is to keep the
+! 	current UID/GID, and only the GID can be changed to any of
+! 	the groups the user starting Squid is member of.  Note that if
+! 	Squid is not started as root then you cannot set http_port to
+! 	a value lower than 1024.
+  DOC_END
+  
+  
+--- 2296,2314 ----
+  LOC: Config.effectiveGroup
+  DOC_START
+  
+! 	If you start Squid as root, it will change its effective/real
+  	UID/GID to the UID/GID specified below.  The default is to
+! 	change to UID to nobody.  If you define cache_effective_user,
+! 	but not cache_effective_group, Squid sets the GID the
+! 	effective user's default group ID (taken from the password
+! 	file).
+  
+! 	If Squid is not started as root, the cache_effective_user
+! 	value is ignored and the GID value is unchanged by default.
+! 	However, you can make Squid change its GID to another group
+! 	that the process owner is a member of.  Note that if Squid
+! 	is not started as root then you cannot set http_port to a
+! 	value lower than 1024.
+  DOC_END
+  
+  
