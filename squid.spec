@@ -8,7 +8,7 @@ Summary(zh_CN):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.5.STABLE2
 Release:	2
-Epoch:		6
+Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
