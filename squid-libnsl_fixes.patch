@@ -13,29 +13,20 @@
  
  dnl Check for needed libraries
 -AC_CHECK_LIB(nsl, main)
- AC_CHECK_LIB(socket, main)
+-AC_CHECK_LIB(socket, main)
 +AC_CHECK_FUNC(gethostbyname, [], AC_CHECK_LIB(nsl, gethostbyname)) 
 +AC_CHECK_LIB(nsl, yp_match, NSLLIB="-lnsl")
 +AC_SUBST(NSLLIB)
++AC_SEARCH_LIBS(socket, socket)
  
  if test "x$ac_cv_enabled_dlmalloc" = "xyes" ; then
    echo "skipping libmalloc check (--enable-dlmalloc specified)"
---- squid-2.4.STABLE2/auth_modules/YP/Makefile.in~	Tue Jan 16 22:12:28 2001
-+++ squid-2.4.STABLE2/auth_modules/YP/Makefile.in	Fri Oct 12 19:35:32 2001
-@@ -35,6 +35,7 @@
- PERL            = @PERL@
- CRYPTLIB	= @CRYPTLIB@
- REGEXLIB	= @REGEXLIB@
-+NSLLIB		= @NSLLIB@
- PTHREADLIB	= @PTHREADLIB@
- SNMPLIB		= @SNMPLIB@
- MALLOCLIB	= @LIB_MALLOC@
-@@ -49,7 +49,7 @@
+--- squid-2.5.STABLE7/helpers/basic_auth/YP/Makefile.am.orig	2002-08-12 03:13:45.000000000 +0200
++++ squid-2.5.STABLE7/helpers/basic_auth/YP/Makefile.am	2004-10-23 16:34:34.132980809 +0200
+@@ -7,5 +7,5 @@
  
- INCLUDE		= -I. -I../../include -I$(top_srcdir)/include
- CFLAGS 		= $(AC_CFLAGS) $(INCLUDE) $(DEFINES)
--AUTH_LIBS	= -L../../lib -lmiscutil $(CRYPTLIB) $(XTRA_LIBS)
-+AUTH_LIBS	= -L../../lib -lmiscutil $(CRYPTLIB) $(NSLLIB) $(XTRA_LIBS)
- 
- PROGS           = $(YP_AUTH_EXE)
- OBJS	 	= yp_auth.o nis_support.o
+ libexec_PROGRAMS = yp_auth
+ yp_auth_SOURCES	= yp_auth.c nis_support.h nis_support.c
+-LDADD	= -L$(top_builddir)/lib -lmiscutil $(CRYPTLIB) $(XTRA_LIBS)
++LDADD	= -L$(top_builddir)/lib -lmiscutil $(CRYPTLIB) $(NSLLIB) $(XTRA_LIBS)
+ INCLUDES	= -I$(top_srcdir)/include
