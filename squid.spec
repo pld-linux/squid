@@ -29,6 +29,7 @@ Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-snmp-
 Patch18:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getpwnam_return_value.patch
 Patch19:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-mimeGetIconURL_returns_NULL.patch
 Patch20:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-Solaris_malloc_link.patch
+Patch21:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-ims_hit_age.patch
 Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -102,6 +103,7 @@ cd src
 %patch19 -p1
 cd ..
 %patch20 -p0
+%patch21 -p0
 
 %build
 autoconf
