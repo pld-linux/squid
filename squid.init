@@ -28,8 +28,8 @@
 
 # Check that networking is up.
 if is_no "${NETWORKING}"; then
-        msg_Network_Down Squid
-        exit 1
+	msg_Network_Down Squid
+	exit 1
 fi
 
 # Sanity check
@@ -44,26 +44,26 @@ case "$1" in
 		busy		
 		squid -N $SQUID_OPTS &
 		if ps -C squid >/dev/null 2>&1; then
-		    deltext;ok
+			deltext;ok
 		else
-		    deltext;fail
+			deltext;fail
 		fi
-                RETVAL=$?
-                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
-	    msg_Already_Running Squid
+		msg_Already_Running Squid
 	fi
 	;;
   stop)
-        # Stop daemons.
+	# Stop daemons.
 	if [ -f /var/lock/subsys/squid ]; then
-	        msg_stopping squid
-	        killproc squid
-	        rm -f /var/lock/subsys/squid >/dev/null 2>&1
+		msg_stopping squid
+		killproc squid
+		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
-	        msg_Not_Running squid
-                exit 1
-        fi
+		msg_Not_Running squid
+		exit 1
+	fi
 	;;
   restart)
 	$0 stop
