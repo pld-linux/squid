@@ -1,6 +1,6 @@
 #
 # Conditional build:
-# _with_combined_log - enables apache-like combined log format
+%bcond_with	combined_log	# enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
@@ -198,7 +198,7 @@ zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji LDAP dla squida
+Summary(pl):	Obs³uga uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -207,12 +207,12 @@ This Squid helper allows authentication against LDAP directories using
 the "simple authentication" (plain-text).
 
 %description ldap_auth -l pl
-Pakiet ten pozwala na autentykacjê LDAP za pomoc± prostej autentykacji
-(otwartym tekstem).
+Pakiet ten pozwala na uwierzytelnianie przez LDAP za pomoc± prostego
+uwierzytelniania (otwartym tekstem).
 
 %package pam_auth
 Summary:	PAM authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji PAM dla squida
+Summary(pl):	Obs³uga uwierzytelniania PAM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	pam >= 0.77.3
@@ -223,12 +223,12 @@ authentication service "squid". This allows you to authenticate Squid
 users to any authentication source for which you have a PAM module.
 
 %description pam_auth -l pl
-Program ten pozwala na autentykacjê u¿ytkowników squida w dowolnym
+Program ten pozwala na uwierzytelnianie u¿ytkowników squida w dowolnym
 ¼ródle posiadaj±cym modu³ PAM.
 
 %package smb_auth
 Summary:	SMB authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji SMB dla squida
+Summary(pl):	Obs³uga uwierzytelniania SMB dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -238,12 +238,13 @@ authenticate proxy users against an SMB server like Windows NT or
 Samba.
 
 %description smb_auth -l pl
-To jest modu³ autentykacji proxy. Z smb_auth mo¿esz autentyfikowaæ
-u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
+To jest modu³ uwierzytelniania proxy. Przy pomocy smb_auth mo¿na
+uwierzytelniaæ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy
+Samba.
 
 %package msnt_auth
 Summary:	MSNT domain authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji domen MSNT dla squida
+Summary(pl):	Obs³uga uwierzytelniania w domenie MSNT dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -252,12 +253,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users on an NT domain.
 
 %description msnt_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy w domenie NT.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy w domenie NT.
 
 %package yp_auth
 Summary:	YP authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji YP dla squida
+Summary(pl):	Obs³uga uwierzytelniania YP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -266,12 +267,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users on YP.
 
 %description yp_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez YP.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez YP.
 
 %package ncsa_auth
 Summary:	NCSA httpd style authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji NCSA httpd dla squida
+Summary(pl):	Obs³uga uwierzytelniania NCSA httpd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -279,11 +280,11 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This module uses a NCSA httpd style password file for authentication.
 
 %description ncsa_auth -l pl
-Modu³ autentykacji proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
+Modu³ uwierzytelniania proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
 
 %package sasl_auth
 Summary:	SASL authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji SASL dla squida
+Summary(pl):	Obs³uga uwierzytelniania SASL dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -292,12 +293,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users via SASL.
 
 %description sasl_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez SASL.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez SASL.
 
 %package winbind_auth
 Summary:	WINBIND authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji WINBIND dla squida
+Summary(pl):	Obs³uga uwierzytelniania WINBIND dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -306,12 +307,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users via WINBIND.
 
 %description winbind_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez WINBIND.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez WINBIND.
 
 %package getpwname_auth
 Summary:	getpwname authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji getpwname dla squida
+Summary(pl):	Obs³uga uwierzytelniania getpwname dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -320,12 +321,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users using getpwname.
 
 %description getpwname_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez getpwname.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez getpwname.
 
 %package passwd_auth
 Summary:	passwd authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji passwd dla squida
+Summary(pl):	Obs³uga uwierzytelniania passwd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -334,12 +335,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users with separate passwd file.
 
 %description passwd_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez oddzielny plik passwd.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez oddzielny plik passwd.
 
 %package ntlm_auth
 Summary:	NTLM authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji NTLM dla squida
+Summary(pl):	Obs³uga uwierzytelniania NTLM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -348,8 +349,8 @@ This is an authentication module for the Squid proxy server to
 authenticate users on NTLM.
 
 %description ntlm_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez NTLM.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez NTLM.
 
 %package ip_acl
 Summary:	IP external ACL helper for Squid
@@ -462,7 +463,7 @@ Samba 2.2.4 lub wy¿szego.
 %patch200 -p1
 %patch210 -p1
 %patch220 -p1
-%{?_with_combined_log:%patch230 -p1}
+%{?with_combined_log:%patch230 -p1}
 
 %build
 %{__aclocal}
