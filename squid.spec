@@ -1,5 +1,7 @@
 Summary:	SQUID Internet Object Cache
+Summary(es):	proxy/cache para www/ftp/gopher
 Summary(pl):	Uniwersalny proxy-cache server
+Summary(pt_BR):	Cache Squid de objetos Internet
 Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Name:		squid
@@ -51,6 +53,27 @@ perform a single, blocking Domain Name System (DNS) lookup. This
 reduces the amount of time the cache waits for DNS lookups. Squid is
 derived from the ARPA-funded Harvest project.
 
+%description -l es
+Squid es un servidor proxy con caché de alto desempeño para clientes
+web, soportando FTP, gopher y HTTP. Diferentemente de softwares
+tradicionales de caché squid manipula todas las requisiciones en un
+único proceso sin bloqueos, direccionado a E/S. Mantienen metadatos y
+objetos frecuentemente pedidos en uno caché en memoria RAM. Hace caché
+de resoluciones DNS, soporta resoluciones DNS sin bloqueo y implementa
+un caché negativo de requisiciones que fallen. Si tiene poca memoria
+da un vistazo en la versión NOVM de este paquete. También soporta SSL,
+controles extensivos de acceso y registro (log) completo de las
+requisiciones. Usando el ligero Protocolo de Caches Internet (ICP)
+puede ser usado en una jerarquía de servidores para mayor ahorro de la
+banda de comunicación. Está compuesto del programa squid (servidor
+principal), del programa dnsserver (para resolución DNS), del programa
+ftpget (para transmisiones ftp) y otras herramientas clientes y para
+administración. Cuando squid se inicia, dispara un número configurable
+de procesos dnsserver, cada uno pudiendo ejecutar solamente una
+resolución DNS con poder de bloquear. Esto reduce el tiempo que el
+caché espera por resoluciones DNS. Fue derivado del proyecto Harvest,
+financiado por la ARPA.
+
 %description -l pl
 Squid jest wysoce wydajnym serwerem proxy-cache dla przegl±darek WWW,
 klientów FTP i gopher. Squid przechowuje najczê¶ciej pobierane dane w
@@ -62,6 +85,31 @@ squid obejmuje: g³ówny program serwera squid, program dostarczaj±cy
 informacji z DNS dnsserver, program odbieraj±cy dane FTP ftpget, oraz
 pomocnicze programy do zarz±dzania. Squid wywodzi siê ze
 sponsorowanego przez ARPA projektu Harvest.
+
+%description -l pt_BR
+O Squid é um servidor proxy com cache de alta performance para
+clientes web, suportando FTP, gopher e HTTP. Diferentemente de
+softwares tradicionais de cache o squid manipula todas as requisições
+em um único processo sem bloqueios, direcionado a E/S.
+
+Mantém meta dados e objetos freqüentemente pedidos num cache em
+memória RAM. Faz cache de resoluções DNS, suporta resoluções DNS sem
+bloqueio e implementa um cache negativo de requisições que falharem.
+Se você tem pouca memória dê uma olhada na versão NOVM deste pacote.
+
+Também suporta SSL, controles extensivos de acesso e registro (log)
+completo das requisições. Usando o leve Protocolo de Caches Internet
+(ICP) ele pode ser usado em uma hierarquia de servidores para maior
+economia de banda de comunicação.
+
+Ele consiste do programa squid (servidor principal), do programa
+dnsserver (para resolução DNS), do programa ftpget (para transmissões
+ftp) e outras ferramentas clientes e para gerenciamento. Quando o
+squid é inicializado ele dispara um número configurável de processos
+dnsserver, cada um podendo executar somente uma resolução DNS
+bloqueante. Isto reduz o tempo que o cache espera por resoluções DNS.
+
+Foi derivado do projeto Harvest, financiado pela ARPA.
 
 %description -l ru
 Squid - ÜÔÏ ×ÙÓÏËÏĞÒÏÉÚ×ÏÄÉÔÅÌØÎÙÊ ËÜÛÉÒÕÀİÉÊ ĞÒÏËÓÉ-ÓÅÒ×ÅÒ ÄÌÑ
