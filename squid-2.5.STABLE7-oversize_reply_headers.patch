@@ -1,0 +1,89 @@
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.25 squid/src/http.c:1.384.2.26
+*** squid/src/http.c:1.384.2.25	Fri Jan 21 05:39:37 2005
+--- squid/src/http.c	Mon Jan 31 15:44:18 2005
+***************
+*** 401,407 ****
+      size_t hdr_len;
+      size_t hdr_size = headersEnd(buf, size);
+      HttpReply *reply = entry->mem_obj->reply;
+!     Ctx ctx;
+      debug(11, 3) ("httpProcessReplyHeader: key '%s'\n",
+  	storeKeyText(entry->hash.key));
+      if (memBufIsNull(&httpState->reply_hdr))
+--- 401,407 ----
+      size_t hdr_len;
+      size_t hdr_size = headersEnd(buf, size);
+      HttpReply *reply = entry->mem_obj->reply;
+!     Ctx ctx = ctx_enter(entry->mem_obj->url);
+      debug(11, 3) ("httpProcessReplyHeader: key '%s'\n",
+  	storeKeyText(entry->hash.key));
+      if (memBufIsNull(&httpState->reply_hdr))
+***************
+*** 418,423 ****
+--- 418,424 ----
+  	memBufClean(&httpState->reply_hdr);
+  	httpBuildVersion(&reply->sline.version, 0, 9);
+  	reply->sline.status = HTTP_INVALID_HEADER;
++ 	ctx_exit(ctx);
+  	return;
+      }
+      if (hdr_size != hdr_len)
+***************
+*** 429,449 ****
+  	if (!memBufIsNull(&httpState->reply_hdr))
+  	    memBufClean(&httpState->reply_hdr);
+  	reply->sline.status = HTTP_HEADER_TOO_LARGE;
+  	return;
+      }
+      /* headers can be incomplete only if object still arriving */
+      if (!hdr_size) {
+  	if (httpState->eof)
+  	    hdr_size = hdr_len;
+! 	else
+  	    return;		/* headers not complete */
+      }
+      /* Cut away any excess body data (only needed for debug?) */
+      memBufAppend(&httpState->reply_hdr, "\0", 1);
+      httpState->reply_hdr.buf[hdr_size] = '\0';
+      httpState->reply_hdr_state++;
+      assert(httpState->reply_hdr_state == 1);
+-     ctx = ctx_enter(entry->mem_obj->url);
+      httpState->reply_hdr_state++;
+      debug(11, 9) ("GOT HTTP REPLY HDR:\n---------\n%s\n----------\n",
+  	httpState->reply_hdr.buf);
+--- 430,453 ----
+  	if (!memBufIsNull(&httpState->reply_hdr))
+  	    memBufClean(&httpState->reply_hdr);
+  	reply->sline.status = HTTP_HEADER_TOO_LARGE;
++ 	httpState->reply_hdr_state += 2;
++ 	ctx_exit(ctx);
+  	return;
+      }
+      /* headers can be incomplete only if object still arriving */
+      if (!hdr_size) {
+  	if (httpState->eof)
+  	    hdr_size = hdr_len;
+! 	else {
+! 	    ctx_exit(ctx);
+  	    return;		/* headers not complete */
++ 	}
+      }
+      /* Cut away any excess body data (only needed for debug?) */
+      memBufAppend(&httpState->reply_hdr, "\0", 1);
+      httpState->reply_hdr.buf[hdr_size] = '\0';
+      httpState->reply_hdr_state++;
+      assert(httpState->reply_hdr_state == 1);
+      httpState->reply_hdr_state++;
+      debug(11, 9) ("GOT HTTP REPLY HDR:\n---------\n%s\n----------\n",
+  	httpState->reply_hdr.buf);
+***************
+*** 453,458 ****
+--- 457,463 ----
+      if (reply->sline.status >= HTTP_INVALID_HEADER) {
+  	debug(11, 3) ("httpProcessReplyHeader: Non-HTTP-compliant header: '%s'\n", httpState->reply_hdr.buf);
+  	memBufClean(&httpState->reply_hdr);
++ 	ctx_exit(ctx);
+  	return;
+      }
+      storeTimestampsSet(entry);
