@@ -32,6 +32,16 @@ Source7:	%{name}.pamd
 Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-setcookie.patch
 Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-ftp_EPLF.patch
 Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-ftp_base_href.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-acl_error.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-date.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-reload_into_ims.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-config_overflow.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-bzero.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-pid_t.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-ctype.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-defer_digest_fetch.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-dup_content_length.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-excess_data.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -427,6 +437,16 @@ Samba 2.2.4 lub wy¿szego.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
