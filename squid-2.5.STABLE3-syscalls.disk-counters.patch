@@ -1,0 +1,85 @@
+Index: squid/src/unlinkd.c
+diff -c squid/src/unlinkd.c:1.44.2.1 squid/src/unlinkd.c:1.44.2.2
+*** squid/src/unlinkd.c:1.44.2.1	Sat Jul 20 18:30:03 2002
+--- squid/src/unlinkd.c	Mon Jul 21 16:34:50 2003
+***************
+*** 139,144 ****
+--- 139,145 ----
+  	return;
+      }
+      statCounter.unlink.requests++;
++     statCounter.syscalls.disk.unlinks++;
+      queuelen++;
+  }
+  
+Index: squid/src/fs/aufs/store_io_aufs.c
+diff -c squid/src/fs/aufs/store_io_aufs.c:1.15.2.10 squid/src/fs/aufs/store_io_aufs.c:1.15.2.11
+*** squid/src/fs/aufs/store_io_aufs.c:1.15.2.10	Wed Jun 18 17:13:40 2003
+--- squid/src/fs/aufs/store_io_aufs.c	Mon Jul 21 16:34:53 2003
+***************
+*** 66,71 ****
+--- 66,72 ----
+      sio->e = e;
+      cbdataLock(callback_data);
+      Opening_FD++;
++     statCounter.syscalls.disk.opens++;
+  #if ASYNC_OPEN
+      aioOpen(path, O_RDONLY | O_BINARY, 0644, storeAufsOpenDone, sio);
+  #else
+***************
+*** 120,125 ****
+--- 121,127 ----
+      sio->e = (StoreEntry *) e;
+      cbdataLock(callback_data);
+      Opening_FD++;
++     statCounter.syscalls.disk.opens++;
+  #if ASYNC_CREATE
+      aioOpen(path, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, 0644, storeAufsOpenDone, sio);
+  #else
+***************
+*** 182,189 ****
+--- 184,193 ----
+      aiostate->flags.reading = 1;
+  #if ASYNC_READ
+      aioRead(aiostate->fd, offset, size, storeAufsReadDone, sio);
++     statCounter.syscalls.disk.reads++;
+  #else
+      file_read(aiostate->fd, buf, size, offset, storeAufsReadDone, sio);
++     /* file_read() increments syscalls.disk.reads */
+  #endif
+  }
+  
+***************
+*** 222,230 ****
+--- 226,236 ----
+      aiostate->flags.writing = 1;
+      aioWrite(aiostate->fd, offset, buf, size, storeAufsWriteDone, sio,
+  	free_func);
++     statCounter.syscalls.disk.writes++;
+  #else
+      file_write(aiostate->fd, offset, buf, size, storeAufsWriteDone, sio,
+  	free_func);
++     /* file_write() increments syscalls.disk.writes */
+  #endif
+  }
+  
+***************
+*** 236,241 ****
+--- 242,248 ----
+      storeAufsDirReplRemove(e);
+      storeAufsDirMapBitReset(SD, e->swap_filen);
+      storeAufsDirUnlinkFile(SD, e->swap_filen);
++     statCounter.syscalls.disk.unlinks++;
+  }
+  
+  /*  === STATIC =========================================================== */
+***************
+*** 428,433 ****
+--- 435,441 ----
+      aioClose(fd);
+      fd_close(fd);
+      store_open_disk_fd--;
++     statCounter.syscalls.disk.closes++;
+      debug(79, 9) ("%s:%d\n", __FILE__, __LINE__);
+  }
+  
