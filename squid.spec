@@ -168,7 +168,7 @@ grep -q squd /etc/group || (
     /usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
 )
 grep -q squid /etc/passwd || (
-    /usr/sbin/useradd -M -o -r -u 91 \
+    /usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
         -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 )
 
