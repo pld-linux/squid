@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	5
+Release:	6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -76,7 +76,7 @@ Patch190:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
 BuildRequires:	autoconf
 BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.6j
+BuildRequires:	openssl-devel >= 0.9.6k
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
