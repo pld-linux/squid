@@ -247,7 +247,7 @@ Group:		Networking/Admin
 Requires:	%{name}
 
 %description msnt_auth
-This is an authentication module for the Squid proxy server to 
+This is an authentication module for the Squid proxy server to
 authenticate users on an NT domain.
 
 %description msnt_auth -l pl
@@ -461,7 +461,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch27 -p1
 
 # Other patches:
-%patch110 -p1 
+%patch110 -p1
 %patch120 -p1
 %patch130 -p1
 %patch140 -p1
@@ -594,7 +594,7 @@ if [ "$1" = "0" ]; then
 	/usr/sbin/userdel squid
 	/usr/sbin/groupdel squid
 fi
-				
+
 %files
 %defattr(644,root,root,755)
 %doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
