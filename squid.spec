@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE7
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -42,6 +42,7 @@ Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
 Patch190:	%{name}-newssl.patch
+Patch200:	%{name}-nolibs.patch
 Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch220:	%{name}-empty-referer.patch
 Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
@@ -428,9 +429,11 @@ Samba 2.2.4 lub wy¿szego.
 %patch120 -p1
 %patch130 -p1
 %patch140 -p1
+%patch150 -p1
 %patch170 -p1
 %patch180 -p1
 %patch190 -p1
+%patch200 -p1
 %patch210 -p1
 %patch220 -p1
 %{?with_combined_log:%patch230 -p1}
