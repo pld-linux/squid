@@ -27,6 +27,7 @@ BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
 Requires:	/etc/crontab.d
 Requires:	crontabs
+Requires:	rc-scripts
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
