@@ -238,7 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) /etc/logrotate.d/squid
-%attr(640,root,root) %config(noreplace) /etc/sysconfig/squid
+%attr(640,root,squid) %config(noreplace) /etc/sysconfig/squid
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
 %attr(640,root,root) %{_sysconfdir}/mime.conf.default
