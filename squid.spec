@@ -1,8 +1,8 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.3.STABLE3
-Release:	3
+Version:	2.3.STABLE4
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Group(pl):	Sieciowe/Serwery
@@ -18,9 +18,7 @@ Patch1:		squid-perl.patch
 Patch2:		squid-linux.patch
 Patch3:		squid-fhs.patch
 # Bug fixes from Squid home page.
-Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable3-storeExpiredReferenceAge.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable3-carp_compile.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable3-zero-content-length.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable4-ftp_icon_not_found.patch
 Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -83,8 +81,6 @@ zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
 %patch3 -p1
 
 %patch10 -p0
-%patch11 -p0
-%patch12 -p0
 
 %build
 autoconf
