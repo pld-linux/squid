@@ -42,12 +42,7 @@ case "$1" in
 	if [ ! -f /var/lock/subsys/squid ]; then
 		msg_starting Squid
 		busy		
-		squid -N $SQUID_OPTS &
-		if ps -C squid >/dev/null 2>&1; then
-			deltext;ok
-		else
-			deltext;fail
-		fi
+		daemon $SERVICE_RUN_NICE_LEVEL squid $SQUID_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
