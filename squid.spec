@@ -498,30 +498,31 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %{__autoconf}
 %{__automake}
 %configure \
-	--localstatedir=/var \
-	--sysconfdir=%{_sysconfdir} \
 	--datadir=%{_datadir}/squid \
-	--enable-icmp \
-	--enable-useragent-log \
-	--enable-snmp \
-	--enable-arp-acl \
-	--enable-err-language=English \
-	--enable-htcp \
-	--enable-carp \
-	--enable-ssl \
-	--enable-forw-via-db \
-	--enable-cache-digests \
-	--enable-storeio="aufs,coss,diskd,null,ufs" \
-	--enable-removal-policies="lru heap" \
 	--disable-ipf-transparent \
-	--enable-delay-pools \
-	--with-pthreads \
+	--enable-arp-acl \
 	--enable-auth=yes \
 	--enable-basic-auth-helpers=yes \
-	--enable-ntlm-auth-helpers=yes \
+	--enable-cache-digests \
+	--enable-carp \
+	--enable-delay-pools \
 	--enable-digest-auth-helpers=yes \
+	--enable-err-language=English \
 	--enable-external-acl-helpers=yes \
-	--enable-x-accelerator-vary
+	--enable-htcp \
+	--enable-icmp \
+	--enable-forw-via-db \
+	--enable-ntlm-auth-helpers=yes \
+	--enable-removal-policies="lru heap" \
+	--enable-storeio="aufs,coss,diskd,null,ufs" \
+	--enable-snmp \
+	--enable-ssl \
+	--enable-underscores \
+	--enable-useragent-log \
+	--enable-x-accelerator-vary \
+	--localstatedir=/var \
+	--sysconfdir=%{_sysconfdir} \
+	--with-pthreads 
 
 mv -f squid/* doc
 %{__make}
