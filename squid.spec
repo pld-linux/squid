@@ -73,6 +73,7 @@ Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
 Patch190:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
+URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
@@ -197,7 +198,7 @@ Squid - ÃÅ ËÅÛÕÀÞÉÊ ÐÒÏËÓ¦-ÓÅÒ×ÅÒ ÄÌÑ web-ËÌ¦¤ÎÔ¦×, ÝÏ Ð¦ÄÔÒÉÍÕ¤
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}
+Requires:   %{name} = %{epoch}:%{version}-%{release} = %{epoch}:%{version}
 Requires:	httpd
 
 %description cachemgr
@@ -212,7 +213,7 @@ zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 Summary:	LDAP authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji LDAP dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description ldap_auth
 This Squid helper allows authentication against LDAP directories using
@@ -226,7 +227,7 @@ Pakiet ten pozwala na autentykacjê LDAP za pomoc± prostej autentykacji
 Summary:	PAM authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji PAM dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description pam_auth
 This program authenticates users against a PAM configured
@@ -241,7 +242,7 @@ Program ten pozwala na autentykacjê u¿ytkowników squida w dowolnym
 Summary:	SMB authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji SMB dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description smb_auth
 This is a proxy authentication module. With smb_auth you can
@@ -256,7 +257,7 @@ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 Summary:	MSNT domain authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji domen MSNT dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description msnt_auth
 This is an authentication module for the Squid proxy server to
@@ -270,7 +271,7 @@ u¿ytkowników proxy w domenie NT.
 Summary:	YP authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji YP dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description yp_auth
 This is an authentication module for the Squid proxy server to
@@ -284,7 +285,7 @@ u¿ytkowników proxy poprzez YP.
 Summary:	NCSA httpd style authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji NCSA httpd dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description ncsa_auth
 This module uses a NCSA httpd style password file for authentication.
@@ -296,7 +297,7 @@ Modu³ autentykacji proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
 Summary:	SASL authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji SASL dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description sasl_auth
 This is an authentication module for the Squid proxy server to
@@ -310,7 +311,7 @@ u¿ytkowników proxy poprzez SASL.
 Summary:	WINBIND authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji WINBIND dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description winbind_auth
 This is an authentication module for the Squid proxy server to
@@ -324,7 +325,7 @@ u¿ytkowników proxy poprzez WINBIND.
 Summary:	getpwname authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji getpwname dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description getpwname_auth
 This is an authentication module for the Squid proxy server to
@@ -338,7 +339,7 @@ u¿ytkowników proxy poprzez getpwname.
 Summary:	passwd authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji passwd dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description passwd_auth
 This is an authentication module for the Squid proxy server to
@@ -352,7 +353,7 @@ u¿ytkowników proxy poprzez oddzielny plik passwd.
 Summary:	NTLM authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji NTLM dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description ntlm_auth
 This is an authentication module for the Squid proxy server to
@@ -366,7 +367,7 @@ u¿ytkowników proxy poprzez NTLM.
 Summary:	IP external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez IP dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description ip_acl
 This is an external ACL module for the Squid proxy server to
@@ -380,7 +381,7 @@ ograniczenie dostêpu u¿ytkowników proxy na podstawie ich adresu IP.
 Summary:	LDAP group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy LDAP dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description ldap_acl
 This is an external ACL module for the Squid proxy server to
@@ -395,7 +396,7 @@ przynale¿no¶ci do grup LDAP.
 Summary:	UNIX group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy UNIX dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description unix_acl
 This is an external ACL module for the Squid proxy server to
@@ -410,7 +411,7 @@ przynale¿no¶ci do grup UNIX.
 Summary:	NT domain group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy w domenie NT dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description wbinfo_acl
 This is an external ACL module for the Squid proxy server to
@@ -426,7 +427,7 @@ przynale¿no¶ci do grup w domenie NT przy u¿yciu wbinfo.
 Summary:	NT domain group external ACL helper for Squid
 Summary(pl):	Wsparcie kontroli dostêpu przez grupy w domenie NT dla squida
 Group:		Networking/Admin
-Requires:	%{name}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 
 %description winbind_acl
 This is an external ACL module for the Squid proxy server to
@@ -537,7 +538,7 @@ install -d \
 	$RPM_BUILD_ROOT%{_httpdir}/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
-	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
+	$RPM_BUILD_ROOT%{_mandir}/man8 \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
 
@@ -565,6 +566,16 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 # These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
+
+# dunno why, but manual is not installed
+mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
+
+# We don't want Makefiles as docs...
+rm -f doc/Makefile*
+
+# We don't like message: rpm found unpackaged files ...
+rm -f     $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
+    $RPM_BUILD_ROOT/etc/squid/squid.conf.orig 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -626,6 +637,7 @@ fi
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4754,root,squid) %{_libexecdir}/pinger
 %attr(755,root,root) %{_libexecdir}/unlinkd
+%attr(755,root,root) %{_libexecdir}/fakeauth_auth
 %attr(755,root,root) %{_sbindir}/*
 
 %attr(755,root,root) %dir %{_sysconfdir}
@@ -680,6 +692,7 @@ fi
 %attr(660,root,squid) %ghost /var/log/squid/*
 
 %attr(770,root,squid) %dir /var/cache/squid
+%{_mandir}/man8/squid.8*
 
 %files cachemgr
 %defattr(644,root,root,755)
@@ -697,6 +710,7 @@ fi
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
 %attr(755,root,root) %{_libexecdir}/pam_auth
+%{_mandir}/man8/pam_auth.8*
 
 %files smb_auth
 %defattr(644,root,root,755)
