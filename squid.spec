@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE7
-Release:	1.5
+Release:	1.6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -41,6 +41,7 @@ Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-gophe
 Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-wccp_denial_of_service.patch
 Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-ldap_spaces.patch
 Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-response_splitting.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-wccp_buffer_overflow.patch
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch120:	%{name}-fhs.patch
@@ -436,6 +437,7 @@ Samba 2.2.4 lub wy¿szego.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 # Other patches:
 %patch110 -p1
 %patch120 -p1
