@@ -1,0 +1,37 @@
+Index: squid/src/access_log.c
+diff -c squid/src/access_log.c:1.72.2.2 squid/src/access_log.c:1.72.2.3
+*** squid/src/access_log.c:1.72.2.2	Sun Jun 16 05:25:40 2002
+--- squid/src/access_log.c	Mon Jun  9 15:54:04 2003
+***************
+*** 147,156 ****
+  #endif
+  	    if (c <= 0x1F
+  		|| c >= 0x7F
+  #if OLD_LOG_MIME
+  		|| c == '"'
+  		|| c == '#'
+- 		|| c == '%'
+  		|| c == ';'
+  		|| c == '<'
+  		|| c == '>'
+--- 147,156 ----
+  #endif
+  	    if (c <= 0x1F
+  		|| c >= 0x7F
++ 		|| c == '%'
+  #if OLD_LOG_MIME
+  		|| c == '"'
+  		|| c == '#'
+  		|| c == ';'
+  		|| c == '<'
+  		|| c == '>'
+***************
+*** 210,215 ****
+--- 210,216 ----
+  	    *buf_cursor++ = 'n';
+  	} else if (c <= 0x1F
+  		|| c >= 0x7F
++ 		|| c == '%'
+  	    || c == ' ') {
+  	    *buf_cursor++ = '%';
+  	    i = c * 2;
