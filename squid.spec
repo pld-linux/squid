@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE4
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -45,6 +45,15 @@ Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-netro
 Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-synflood.patch
 Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdn.patch
 Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-connect_cleanup.patch
+Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn_post.patch
+Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-ftp_put.patch
+Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn-load.patch
+Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-icon_urls.patch
+Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirector_access.patch
+Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pconn-lifo.patch
+Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-cache_peer_maxconn.patch
+Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pid_filename_none.patch
+Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-dns_namelength.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -450,6 +459,15 @@ Samba 2.2.4 lub wy¿szego.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
 
 # Other patches:
 %patch110 -p1
