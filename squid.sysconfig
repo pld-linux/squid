@@ -1,8 +1,5 @@
 # Squid startup configuration file
 
-# define the cache_swap location
-CACHE_SWAP=/var/cache/squid
-
 # Try to define nice-level for running squid
 SERVICE_RUN_NICE_LEVEL="+5"
 
