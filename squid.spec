@@ -3,6 +3,7 @@ Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE4
 Release:	6
+Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
@@ -203,7 +204,7 @@ else
 fi
 
 %preun
-if [ "$1" = 0 ]; then
+if [ "$1" = "0" ]; then
 	if [ -f /var/lock/sybsys/squid ]; then
 		/etc/rc.d/init.d/squid stop >&2
 	fi
