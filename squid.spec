@@ -76,6 +76,8 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
 Requires(post):	findutils
+Requires(post):	grep
+Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
