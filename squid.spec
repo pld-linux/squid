@@ -1,5 +1,3 @@
-# TODO:
-# - SECURITY: http://securitytracker.com/alerts/2004/Sep/1011214.html
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
