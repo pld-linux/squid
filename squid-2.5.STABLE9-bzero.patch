@@ -1,0 +1,274 @@
+Index: squid/helpers/basic_auth/MSNT/rfcnb-util.c
+diff -c squid/helpers/basic_auth/MSNT/rfcnb-util.c:1.1.2.1 squid/helpers/basic_auth/MSNT/rfcnb-util.c:1.1.2.2
+*** squid/helpers/basic_auth/MSNT/rfcnb-util.c:1.1.2.1	Wed Jun 26 13:11:16 2002
+--- squid/helpers/basic_auth/MSNT/rfcnb-util.c	Wed Mar  9 07:28:32 2005
+***************
+*** 410,416 ****
+  	RFCNB_saved_errno = errno;
+  	return (RFCNBE_Bad);
+      }
+!     bzero((char *) &Socket, sizeof(Socket));
+      memcpy((char *) &Socket.sin_addr, (char *) &Dest_IP, sizeof(Dest_IP));
+  
+      Socket.sin_port = htons(port);
+--- 410,416 ----
+  	RFCNB_saved_errno = errno;
+  	return (RFCNBE_Bad);
+      }
+!     memset((char *) &Socket, 0, sizeof(Socket));
+      memcpy((char *) &Socket.sin_addr, (char *) &Dest_IP, sizeof(Dest_IP));
+  
+      Socket.sin_port = htons(port);
+Index: squid/helpers/basic_auth/MSNT/smbencrypt.c
+diff -c squid/helpers/basic_auth/MSNT/smbencrypt.c:1.1.2.2 squid/helpers/basic_auth/MSNT/smbencrypt.c:1.1.2.3
+*** squid/helpers/basic_auth/MSNT/smbencrypt.c:1.1.2.2	Wed Jun 26 13:11:17 2002
+--- squid/helpers/basic_auth/MSNT/smbencrypt.c	Wed Mar  9 07:28:32 2005
+***************
+*** 158,164 ****
+      E_P16((uchar *) passwd, (uchar *) p16);
+  
+      /* clear out local copy of user's password (just being paranoid). */
+!     bzero(passwd, sizeof(passwd));
+  }
+  
+  /****************************************************************************
+--- 158,164 ----
+      E_P16((uchar *) passwd, (uchar *) p16);
+  
+      /* clear out local copy of user's password (just being paranoid). */
+!     memset(passwd, 0, sizeof(passwd));
+  }
+  
+  /****************************************************************************
+Index: squid/helpers/basic_auth/MSNT/smblib-util.c
+diff -c squid/helpers/basic_auth/MSNT/smblib-util.c:1.1.2.2 squid/helpers/basic_auth/MSNT/smblib-util.c:1.1.2.3
+*** squid/helpers/basic_auth/MSNT/smblib-util.c:1.1.2.2	Wed Jun 26 13:11:17 2002
+--- squid/helpers/basic_auth/MSNT/smblib-util.c	Wed Mar  9 07:28:32 2005
+***************
+*** 146,152 ****
+      }
+      /* Now plug in the bits we need */
+  
+!     bzero(SMB_Hdr(pkt), SMB_negp_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBnegprot;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 146,152 ----
+      }
+      /* Now plug in the bits we need */
+  
+!     memset(SMB_Hdr(pkt), 0, SMB_negp_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBnegprot;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+***************
+*** 397,403 ****
+  
+      /* Now plug in the values ... */
+  
+!     bzero(SMB_Hdr(pkt), SMB_tcon_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBtcon;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 397,403 ----
+  
+      /* Now plug in the values ... */
+  
+!     memset(SMB_Hdr(pkt), 0, SMB_tcon_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBtcon;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+Index: squid/helpers/basic_auth/MSNT/smblib.c
+diff -c squid/helpers/basic_auth/MSNT/smblib.c:1.1.2.2 squid/helpers/basic_auth/MSNT/smblib.c:1.1.2.3
+*** squid/helpers/basic_auth/MSNT/smblib.c:1.1.2.2	Wed Jun 26 13:11:17 2002
+--- squid/helpers/basic_auth/MSNT/smblib.c	Wed Mar  9 07:28:32 2005
+***************
+*** 330,336 ****
+  	    return (SMBlibE_BAD);	/* Should handle the error */
+  
+  	}
+! 	bzero(SMB_Hdr(pkt), SMB_ssetpLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 330,336 ----
+  	    return (SMBlibE_BAD);	/* Should handle the error */
+  
+  	}
+! 	memset(SMB_Hdr(pkt), 0, SMB_ssetpLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+***************
+*** 393,399 ****
+  	    return (-1);	/* Should handle the error */
+  
+  	}
+! 	bzero(SMB_Hdr(pkt), SMB_ssetpNTLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 393,399 ----
+  	    return (-1);	/* Should handle the error */
+  
+  	}
+! 	memset(SMB_Hdr(pkt), 0, SMB_ssetpNTLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+Index: squid/helpers/ntlm_auth/SMB/smbval/rfcnb-util.c
+diff -c squid/helpers/ntlm_auth/SMB/smbval/rfcnb-util.c:1.1.2.1 squid/helpers/ntlm_auth/SMB/smbval/rfcnb-util.c:1.1.2.2
+*** squid/helpers/ntlm_auth/SMB/smbval/rfcnb-util.c:1.1.2.1	Tue Feb 17 16:09:56 2004
+--- squid/helpers/ntlm_auth/SMB/smbval/rfcnb-util.c	Wed Mar  9 07:28:32 2005
+***************
+*** 384,390 ****
+  	RFCNB_saved_errno = errno;
+  	return (RFCNBE_Bad);
+      }
+!     bzero((char *) &Socket, sizeof(Socket));
+      memcpy((char *) &Socket.sin_addr, (char *) &Dest_IP, sizeof(Dest_IP));
+  
+      Socket.sin_port = htons(port);
+--- 384,390 ----
+  	RFCNB_saved_errno = errno;
+  	return (RFCNBE_Bad);
+      }
+!     memset((char *) &Socket, 0, sizeof(Socket));
+      memcpy((char *) &Socket.sin_addr, (char *) &Dest_IP, sizeof(Dest_IP));
+  
+      Socket.sin_port = htons(port);
+Index: squid/helpers/ntlm_auth/SMB/smbval/smbencrypt.c
+diff -c squid/helpers/ntlm_auth/SMB/smbval/smbencrypt.c:1.3 squid/helpers/ntlm_auth/SMB/smbval/smbencrypt.c:1.3.2.1
+*** squid/helpers/ntlm_auth/SMB/smbval/smbencrypt.c:1.3	Wed Aug 29 08:57:37 2001
+--- squid/helpers/ntlm_auth/SMB/smbval/smbencrypt.c	Wed Mar  9 07:28:32 2005
+***************
+*** 149,155 ****
+      E_P16((uchar *) passwd, (uchar *) p16);
+  
+      /* clear out local copy of user's password (just being paranoid). */
+!     bzero(passwd, sizeof(passwd));
+  }
+  
+  /****************************************************************************
+--- 149,155 ----
+      E_P16((uchar *) passwd, (uchar *) p16);
+  
+      /* clear out local copy of user's password (just being paranoid). */
+!     memset(passwd, 0, sizeof(passwd));
+  }
+  
+  /****************************************************************************
+Index: squid/helpers/ntlm_auth/SMB/smbval/smblib-util.c
+diff -c squid/helpers/ntlm_auth/SMB/smbval/smblib-util.c:1.1.2.1 squid/helpers/ntlm_auth/SMB/smbval/smblib-util.c:1.1.2.2
+*** squid/helpers/ntlm_auth/SMB/smbval/smblib-util.c:1.1.2.1	Tue Feb 17 16:09:56 2004
+--- squid/helpers/ntlm_auth/SMB/smbval/smblib-util.c	Wed Mar  9 07:28:32 2005
+***************
+*** 269,275 ****
+      }
+      /* Now plug in the bits we need */
+  
+!     bzero(SMB_Hdr(pkt), SMB_negp_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBnegprot;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 269,275 ----
+      }
+      /* Now plug in the bits we need */
+  
+!     memset(SMB_Hdr(pkt), 0, SMB_negp_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBnegprot;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+***************
+*** 520,526 ****
+  
+      /* Now plug in the values ... */
+  
+!     bzero(SMB_Hdr(pkt), SMB_tcon_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBtcon;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 520,526 ----
+  
+      /* Now plug in the values ... */
+  
+!     memset(SMB_Hdr(pkt), 0, SMB_tcon_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBtcon;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+***************
+*** 637,643 ****
+      }
+      /* Now plug in the values ... */
+  
+!     bzero(SMB_Hdr(pkt), SMB_tdis_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBtdis;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Tree_Handle->con->pid);
+--- 637,643 ----
+      }
+      /* Now plug in the values ... */
+  
+!     memset(SMB_Hdr(pkt), 0, SMB_tdis_len);
+      SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+      *(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBtdis;
+      SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Tree_Handle->con->pid);
+Index: squid/helpers/ntlm_auth/SMB/smbval/smblib.c
+diff -c squid/helpers/ntlm_auth/SMB/smbval/smblib.c:1.3.2.1 squid/helpers/ntlm_auth/SMB/smbval/smblib.c:1.3.2.2
+*** squid/helpers/ntlm_auth/SMB/smbval/smblib.c:1.3.2.1	Tue Feb 17 16:09:56 2004
+--- squid/helpers/ntlm_auth/SMB/smbval/smblib.c	Wed Mar  9 07:28:32 2005
+***************
+*** 374,380 ****
+  	    fprintf(stderr, "SMB_Logon_server: Couldn't allocate packet\n");
+  	    return (SMBlibE_BAD);	/* Should handle the error */
+  	}
+! 	bzero(SMB_Hdr(pkt), SMB_ssetpLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 374,380 ----
+  	    fprintf(stderr, "SMB_Logon_server: Couldn't allocate packet\n");
+  	    return (SMBlibE_BAD);	/* Should handle the error */
+  	}
+! 	memset(SMB_Hdr(pkt), 0, SMB_ssetpLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+***************
+*** 437,443 ****
+  	    fprintf(stderr, "SMB_Logon_server: Couldn't allocate packet\n");
+  	    return (-1);	/* Should handle the error */
+  	}
+! 	bzero(SMB_Hdr(pkt), SMB_ssetpNTLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+--- 437,443 ----
+  	    fprintf(stderr, "SMB_Logon_server: Couldn't allocate packet\n");
+  	    return (-1);	/* Should handle the error */
+  	}
+! 	memset(SMB_Hdr(pkt), 0, SMB_ssetpNTLM_len);
+  	SIVAL(SMB_Hdr(pkt), SMB_hdr_idf_offset, SMB_DEF_IDF);	/* Plunk in IDF */
+  	*(SMB_Hdr(pkt) + SMB_hdr_com_offset) = SMBsesssetupX;
+  	SSVAL(SMB_Hdr(pkt), SMB_hdr_pid_offset, Con_Handle->pid);
+Index: squid/src/fs/coss/async_io.c
+diff -c squid/src/fs/coss/async_io.c:1.7.2.4 squid/src/fs/coss/async_io.c:1.7.2.5
+*** squid/src/fs/coss/async_io.c:1.7.2.4	Tue Jul 29 15:44:47 2003
+--- squid/src/fs/coss/async_io.c	Wed Mar  9 07:28:32 2005
+***************
+*** 197,203 ****
+  		type = aqe->aq_e_type;
+  
+  		/* Free slot */
+! 		bzero(aqe, sizeof(async_queue_entry_t));
+  		aqe->aq_e_state = AQ_ENTRY_FREE;
+  		q->aq_numpending--;
+  
+--- 197,203 ----
+  		type = aqe->aq_e_type;
+  
+  		/* Free slot */
+! 		memset(aqe, 0, sizeof(async_queue_entry_t));
+  		aqe->aq_e_state = AQ_ENTRY_FREE;
+  		q->aq_numpending--;
+  
