@@ -1,7 +1,7 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
-Version:	2.4.STABLE4
+Version:	2.4.STABLE6
 Release:	1
 Epoch:		6
 License:	GPL
