@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	5
+Release:	6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -517,6 +517,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-cache-digests \
 	--enable-storeio="aufs,coss,diskd,null,ufs" \
 	--enable-removal-policies="lru heap" \
+	--enable-referer-log \
 	--disable-ipf-transparent \
 	--enable-delay-pools \
 	--with-pthreads \
