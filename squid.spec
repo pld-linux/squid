@@ -1,25 +1,30 @@
+%define	calamaris_ver	2.23
+
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.2.DEVEL3
+Version:	2.2.STABLE2
 Release:	1
 Copyright:	GPL
-Group:		Daemons
-Group(pl):	Sieci/Serwery
-########	ftp://squid.nlanr.net/pub/Squid/squid-2/
-Source0:	%{name}-%{version}-src.tar.gz
+Group:		Networking/Daemons
+Group(pl):	Sieciowe/Serwery
+Source0:	ftp://squid.nlanr.net/pub/Squid/squid-2/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
-Source3:	http://home.pages.de/~cord/tools/calamaris.pl
-Source4:	%{name}.log
+Source3:	http://www.detmold.netsurf.de/homepages/cord/tools/squid/calamaris/calamaris-%{calamaris_ver}.tar.gz
+Source4:	%{name}.crontab
 Source5:	fix.pl
 Source6:	%{name}.conf
 Source7:	http://cache.is.co.za/squid-docs.tar.gz
+Source8:	calamaris.crontab
+Source9:	%{name}.sysconfig
 Patch0:		%{name}-2.0-make.patch
 Patch1:		%{name}-perl.patch
-Patch2:		%{name}-glibc.patch
-BuildRoot:	/tmp/%{name}-%{version}-buildroot
+BuildPrereq:	autoconf
+BuildPrereq:	perl
+BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
+Requires:	crontabs
 
 %description
 Squid is a high-performance proxy caching server for web clients, supporting
@@ -59,10 +64,9 @@ ftpget, oraz pomocnicze programy do zarz±dzania.
 Squid wywodzi siê ze sponsorowanego przez ARPA projektu Harvest.
 
 %prep
-%setup -q -a 1 -a 7
+%setup -q -a 1 -a 7 -a 3
 %patch0 -p1 
 %patch1 -p1 
-%patch2 -p1
 
 %build
 install -d  $RPM_BUILD_DIR/%{name}-%{version}/errors/{English.Polish,tmp}
@@ -74,12 +78,12 @@ cat $i ../tmp/$i > ../English.Polish/$i
 done 
 
 cd ../English.Polish 
-$RPM_SOURCE_DIR/fix.pl +m ERR* 
+perl %{SOURCE5} +m ERR* 
 
 cd ../..
 pwd
 autoconf
-CFLAGS=$RPM_OPT_FLAGS LDFLAGS=-s \
+CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
     ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc/squid \
@@ -99,9 +103,10 @@ make
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT/home/httpd/cgi-bin
-install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,logrotate.d}
-install -d $RPM_BUILD_ROOT/usr/{sbin,lib/squid}
+install -d \
+	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
+	$RPM_BUILD_ROOT/etc/{rc.d/init.d,crontab.d,sysconfig} \
+	$RPM_BUILD_ROOT/usr/{sbin,lib/squid,man/man1}
 
 make install \
 	prefix=$RPM_BUILD_ROOT/usr \
@@ -112,9 +117,13 @@ mv $RPM_BUILD_ROOT/usr/bin/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
 mv $RPM_BUILD_ROOT/usr/bin/squid $RPM_BUILD_ROOT/usr/sbin/
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/squid
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/squid
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/crontab.d/squid
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/crontab.d/calamaris
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/squid
+install %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/squid
+
+install calamaris-%{calamaris_ver}/calamaris $RPM_BUILD_ROOT/usr/bin
+install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT/usr/man/man1
 
 install scripts/*.pl $RPM_BUILD_ROOT/usr/lib/squid
 
@@ -122,8 +131,9 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 rm -f $RPM_BUILD_ROOT/usr/bin/R*
 
-gzip -9nf README ChangeLog QUICKSTART 
-gzip -9nf contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl
+gzip -9nf README ChangeLog QUICKSTART \
+	contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl \
+	$RPM_BUILD_ROOT/usr/man/man*/*
 
 %post
 /sbin/chkconfig --add squid
@@ -146,14 +156,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc contrib/url-normalizer.pl* contrib/rredir.pl* 
 %doc contrib/user-agents.pl*
 
-%attr(640,root,root) /etc/logrotate.d/squid
+%attr(755,root,root) /usr/bin/*
+%attr(755,root,root) /usr/sbin/*
 
 %dir /etc/squid
 
-%attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/squid.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/squid/squid.conf
 %config %verify(not md5 mtime size) /etc/squid/mime.conf
-
-%attr(750,root,root) /etc/squid/calamaris.pl
 
 /etc/squid/mib.txt
 /etc/squid/mime.conf.default
@@ -165,12 +174,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/squid/errors
 /etc/squid/errors/*
 
-%attr(755,root,root) /usr/bin/*
-%attr(755,root,root) /usr/sbin/*
+%attr(640,root,root) /etc/crontab.d/*
 
 %attr(755,nobody,nobody) /home/httpd/cgi-bin/*
 
-%attr(750,root,root) %config %verify(not size mtime md5) /etc/rc.d/init.d/squid
+%attr(750,root,root) /etc/rc.d/init.d/squid
+%attr(640,root,root) /etc/sysconfig/squid
 
 %attr(750,root,root) %dir /usr/lib/squid
 %attr(750,root,root) /usr/lib/squid/*
