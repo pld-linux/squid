@@ -1,0 +1,18 @@
+Index: src/ssl.c
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/ssl.c,v
+retrieving revision 1.108.2.1
+retrieving revision 1.108.2.2
+diff -c -r1.108.2.1 -r1.108.2.2
+*** src/ssl.c	2001/01/12 00:51:52	1.108.2.1
+--- src/ssl.c	2001/10/25 19:52:14	1.108.2.2
+***************
+*** 455,461 ****
+  	answer = aclCheckFast(Config.accessList.miss, &ch);
+  	if (answer == 0) {
+  	    err = errorCon(ERR_FORWARDING_DENIED, HTTP_FORBIDDEN);
+- 	    *sslState->status_ptr = HTTP_FORBIDDEN;
+  	    err->request = requestLink(request);
+  	    err->src_addr = request->client_addr;
+  	    errorSend(fd, err);
+--- 455,460 ----
