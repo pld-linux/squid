@@ -32,8 +32,8 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-half_closed_POST.patch
-Patch1:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7_req_resp_header.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-half_closed_POST.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7_req_resp_header.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
