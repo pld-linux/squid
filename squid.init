@@ -99,7 +99,7 @@ case "$1" in
 		msg_not_running Squid >&2
 		exit 7
 	fi
-  	;;
+	;;
   status)
 	status squid
 	exit $?
