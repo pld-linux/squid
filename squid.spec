@@ -1,3 +1,7 @@
+#
+# Conditional build:
+%bcond_with	combined_log	# enables apache-like combined log format
+#
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
 Summary(pl):	Uniwersalny proxy-cache server
@@ -6,13 +10,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE3
-Release:	6
+Version:	2.5.STABLE5
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	ed5eb7835d00fdecc7dd7c1837542df2
+# Source0-md5:	45ed1b1cd492e3f529085d09c3ffc1b8
 Source1:	%{name}-1.1.19-faq.tar.gz
 # Source1-md5:	77d04ae621d19548797e3a0deb540df6
 Source2:	%{name}.init
@@ -23,46 +27,25 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-ncsa_auth_passwdfile.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-multicast-ICP-timeout.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-407_user_name.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-digest_compile.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-aufs_threads.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-aufs_open_fail.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-mem_cfd.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-blank-username-log.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-coss-improvements.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-syscalls.disk-counters.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-round_robin_max_size.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-peer_digest_not_found_assertion.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-SENT_PASV.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-ie_refresh.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-reply_body_max_size.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-hostheader.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-tcp_reset_leak.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-ERR_TOO_BIG_Spanish.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-minimum_retry_timeout.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-cachePeerPingsSentsnmp.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-store_check_cachable_stats.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-hostscomments.patch
-Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-memwarnsbrk.patch
-Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-header_access_peer.patch
-Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-neighbor_type_domain.patch
-Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-carpfactor.patch
-Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-gcc-3_3.patch
-Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-aufs-openingfds.patch
-Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-external_acl_ident.patch
-Patch29:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-icmpRecv.patch
-Patch30:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-rfc_reference.patch
-Patch31:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-log_quote.patch
-Patch32:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-devnull.patch
-Patch33:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-cache_dir_doc.patch
-Patch34:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-deny_info.patch
-Patch35:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-HttpHeaderTools.patch
-Patch36:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-Lithuanian.patch
-Patch37:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-forwarded_for.patch
-Patch38:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-coss-improvements-2.patch
-Patch39:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-http_reply_access-denied.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-ntlm_assert.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-ldap.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-helper_warning.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-pkgconfig.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-vary.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-lin22_poll.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-version.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-deny_info.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-CONNECT_timeout.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-cache_swap_log.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-ntlm_warning.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-rfc1035NameUnpack.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-digest_blank.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-post_assert.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-spelling.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-digest_ERR.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-turkish_ERR_DNS_FAIL.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-vary_negatively.patch
+Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-range_offset_limit.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -72,9 +55,13 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
+Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
+Patch220:	%{name}-empty-referer.patch
+Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch231:	%{name}-libntlmssp.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.6m
@@ -211,7 +198,7 @@ zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji LDAP dla squida
+Summary(pl):	Obs³uga uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -220,14 +207,15 @@ This Squid helper allows authentication against LDAP directories using
 the "simple authentication" (plain-text).
 
 %description ldap_auth -l pl
-Pakiet ten pozwala na autentykacjê LDAP za pomoc± prostej autentykacji
-(otwartym tekstem).
+Pakiet ten pozwala na uwierzytelnianie przez LDAP za pomoc± prostego
+uwierzytelniania (otwartym tekstem).
 
 %package pam_auth
 Summary:	PAM authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji PAM dla squida
+Summary(pl):	Obs³uga uwierzytelniania PAM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	pam >= 0.77.3
 
 %description pam_auth
 This program authenticates users against a PAM configured
@@ -235,12 +223,12 @@ authentication service "squid". This allows you to authenticate Squid
 users to any authentication source for which you have a PAM module.
 
 %description pam_auth -l pl
-Program ten pozwala na autentykacjê u¿ytkowników squida w dowolnym
+Program ten pozwala na uwierzytelnianie u¿ytkowników squida w dowolnym
 ¼ródle posiadaj±cym modu³ PAM.
 
 %package smb_auth
 Summary:	SMB authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji SMB dla squida
+Summary(pl):	Obs³uga uwierzytelniania SMB dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -250,12 +238,13 @@ authenticate proxy users against an SMB server like Windows NT or
 Samba.
 
 %description smb_auth -l pl
-To jest modu³ autentykacji proxy. Z smb_auth mo¿esz autentyfikowaæ
-u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
+To jest modu³ uwierzytelniania proxy. Przy pomocy smb_auth mo¿na
+uwierzytelniaæ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy
+Samba.
 
 %package msnt_auth
 Summary:	MSNT domain authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji domen MSNT dla squida
+Summary(pl):	Obs³uga uwierzytelniania w domenie MSNT dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -264,12 +253,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users on an NT domain.
 
 %description msnt_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy w domenie NT.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy w domenie NT.
 
 %package yp_auth
 Summary:	YP authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji YP dla squida
+Summary(pl):	Obs³uga uwierzytelniania YP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -278,12 +267,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users on YP.
 
 %description yp_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez YP.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez YP.
 
 %package ncsa_auth
 Summary:	NCSA httpd style authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji NCSA httpd dla squida
+Summary(pl):	Obs³uga uwierzytelniania NCSA httpd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -291,11 +280,11 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This module uses a NCSA httpd style password file for authentication.
 
 %description ncsa_auth -l pl
-Modu³ autentykacji proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
+Modu³ uwierzytelniania proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
 
 %package sasl_auth
 Summary:	SASL authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji SASL dla squida
+Summary(pl):	Obs³uga uwierzytelniania SASL dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -304,12 +293,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users via SASL.
 
 %description sasl_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez SASL.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez SASL.
 
 %package winbind_auth
 Summary:	WINBIND authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji WINBIND dla squida
+Summary(pl):	Obs³uga uwierzytelniania WINBIND dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -318,12 +307,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users via WINBIND.
 
 %description winbind_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez WINBIND.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez WINBIND.
 
 %package getpwname_auth
 Summary:	getpwname authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji getpwname dla squida
+Summary(pl):	Obs³uga uwierzytelniania getpwname dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -332,12 +321,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users using getpwname.
 
 %description getpwname_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez getpwname.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez getpwname.
 
 %package passwd_auth
 Summary:	passwd authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji passwd dla squida
+Summary(pl):	Obs³uga uwierzytelniania passwd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -346,12 +335,12 @@ This is an authentication module for the Squid proxy server to
 authenticate users with separate passwd file.
 
 %description passwd_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez oddzielny plik passwd.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez oddzielny plik passwd.
 
 %package ntlm_auth
 Summary:	NTLM authentication helper for Squid
-Summary(pl):	Wsparcie autentykacji NTLM dla squida
+Summary(pl):	Obs³uga uwierzytelniania NTLM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -360,8 +349,8 @@ This is an authentication module for the Squid proxy server to
 authenticate users on NTLM.
 
 %description ntlm_auth -l pl
-Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
-u¿ytkowników proxy poprzez NTLM.
+Jest to modu³ uwierzytelniania proxy, który pozwala na
+uwierzytelnianie u¿ytkowników proxy poprzez NTLM.
 
 %package ip_acl
 Summary:	IP external ACL helper for Squid
@@ -463,27 +452,6 @@ Samba 2.2.4 lub wy¿szego.
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
-%patch29 -p1
-%patch30 -p1
-%patch31 -p1
-%patch32 -p1
-%patch33 -p1
-%patch34 -p1
-%patch35 -p1
-%patch36 -p1
-%patch37 -p1
-%patch38 -p1
-%patch39 -p1
 
 # Other patches:
 %patch110 -p1
@@ -492,7 +460,10 @@ Samba 2.2.4 lub wy¿szego.
 %patch140 -p1
 %patch170 -p1
 %patch180 -p1
-%patch190 -p1
+%patch210 -p1
+%patch220 -p1
+%{?with_combined_log:%patch230 -p1}
+%patch231 -p1
 
 %build
 %{__aclocal}
@@ -513,6 +484,7 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-htcp \
 	--enable-icmp \
 	--enable-forw-via-db \
+	--enable-referer-log \
 	--enable-ntlm-auth-helpers=yes \
 	--enable-removal-policies="lru heap" \
 	--enable-storeio="aufs,coss,diskd,null,ufs" \
