@@ -276,7 +276,7 @@ mv -f squid/* doc
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
-	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
+	$RPM_BUILD_ROOT/home/services/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/{contrib,auth_modules}} \
 	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
@@ -307,7 +307,7 @@ install auth_modules/PAM/pam_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
 install %{SOURCE7}				$RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
+mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
 mv -f $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
 mv -f $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
 
@@ -467,7 +467,7 @@ fi
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(755,root,root) /home/httpd/cgi-bin/*
+%attr(755,root,root) /home/services/httpd/cgi-bin/*
 
 %files ldap_auth
 %defattr(644,root,root,755)
