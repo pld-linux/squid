@@ -508,7 +508,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d \
 	$RPM_BUILD_ROOT/home/services/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/{contrib}} \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
@@ -518,7 +518,7 @@ install -d \
 
 mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
-install %{SOURCE7}				$RPM_BUILD_ROOT/etc/pam.d/squid
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
@@ -697,7 +697,7 @@ fi
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/SMB/{README,Changelog,smb_auth.sh}
 %doc helpers/basic_auth/multi-domain-NTLM/*
-%attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth*
+%attr(755,root,root) %{_libexecdir}/smb_auth*
 
 %files msnt_auth
 %defattr(644,root,root,755)
@@ -748,7 +748,7 @@ fi
 %files unix_acl
 %defattr(644,root,root,755)
 %doc helpers/external_acl/unix_group/README
-%attr(755,root,root) %{_libexecdir}squid_unix_group
+%attr(755,root,root) %{_libexecdir}/squid_unix_group
 %attr(644,root,root) %{_mandir}/man8/%{name}_unix_group.*
 
 %files wbinfo_acl
