@@ -1,0 +1,21 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.44 squid/src/cf.data.pre:1.245.2.45
+*** squid/src/cf.data.pre:1.245.2.44	Wed May 28 20:59:46 2003
+--- squid/src/cf.data.pre	Tue Jun 10 14:45:58 2003
+***************
+*** 3466,3472 ****
+  	URI.  Options:
+  
+  	strip:  The whitespace characters are stripped out of the URL.
+! 		This is the behavior recommended by RFC2616.
+  	deny:   The request is denied.  The user receives an "Invalid
+  		Request" message.
+  	allow:  The request is allowed and the URI is not changed.  The
+--- 3466,3472 ----
+  	URI.  Options:
+  
+  	strip:  The whitespace characters are stripped out of the URL.
+! 		This is the behavior recommended by RFC2396.
+  	deny:   The request is denied.  The user receives an "Invalid
+  		Request" message.
+  	allow:  The request is allowed and the URI is not changed.  The
