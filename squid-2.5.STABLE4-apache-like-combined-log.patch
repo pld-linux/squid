@@ -1,0 +1,73 @@
+diff -Nur squid-2.5.STABLE4.orig/src/access_log.c squid-2.5.STABLE4/src/access_log.c
+--- squid-2.5.STABLE4.orig/src/access_log.c	2003-07-28 10:59:28.000000000 +0200
++++ squid-2.5.STABLE4/src/access_log.c	2004-01-24 19:52:12.000000000 +0100
+@@ -268,24 +268,32 @@
+ {
+     const char *client = NULL;
+     char *user1 = NULL, *user2 = NULL;
++    request_t * request = al->request;
++    const HttpHeader *req_hdr = &request->header;
++
+     if (Config.onoff.log_fqdn)
+ 	client = fqdncache_gethostbyaddr(al->cache.caddr, 0);
+     if (client == NULL)
+ 	client = inet_ntoa(al->cache.caddr);
+     user1 = accessLogFormatName(al->cache.authuser);
+     user2 = accessLogFormatName(al->cache.rfc931);
+-    logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %ld %s:%s",
++
++    logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %ld \"%s\" \"%s\"",
+ 	client,
+-	user2 ? user2 : dash_str,
+-	user1 ? user1 : dash_str,
+-	mkhttpdlogtime(&squid_curtime),
+-	al->private.method_str,
+-	al->url,
+-	al->http.version.major, al->http.version.minor,
+-	al->http.code,
+-	(long int) al->cache.size,
+-	log_tags[al->cache.code],
+-	hier_strings[al->hier.code]);
++       user2 ? user2 : dash_str,
++       user1 ? user1 : dash_str,
++       mkhttpdlogtime(&squid_curtime),
++       al->private.method_str,
++       (al->http_uri ? al->http_uri : al->url),
++       al->http.version.major, al->http.version.minor,
++       al->http.code,
++       (long int) al->cache.size,
++       httpHeaderHas( req_hdr, HDR_REFERER ) ?
++         httpHeaderGetStr( req_hdr, HDR_REFERER ) :
++         dash_str,     // Referer if we have it, else dash_str.
++       httpHeaderHas( req_hdr, HDR_USER_AGENT ) ?
++         httpHeaderGetStr( req_hdr, HDR_USER_AGENT ) :
++         dash_str );   // User-Agent if we have it, else dash_str.
+     safe_free(user1);
+     safe_free(user2);
+ }
+diff -Nur squid-2.5.STABLE4.orig/src/client_side.c squid-2.5.STABLE4/src/client_side.c
+--- squid-2.5.STABLE4.orig/src/client_side.c	2004-01-24 19:11:23.000000000 +0100
++++ squid-2.5.STABLE4/src/client_side.c	2004-01-24 19:58:22.000000000 +0100
+@@ -845,7 +845,9 @@
+ 	    http->al.http.method = request->method;
+ 	    http->al.http.version = request->http_ver;
+ 	    http->al.headers.request = xstrdup(mb.buf);
+-	    http->al.hier = request->hier;
++	    http->al.hier = request->hier;	/* apache-like combined-log */
++	    http->al.request = request;         /* apache-like combined-log */
++	    http->al.http_uri = http->uri;      /* apache-like combined-log */
+ 	    if (request->auth_user_request) {
+ 		if (authenticateUserRequestUsername(request->auth_user_request))
+ 		    http->al.cache.authuser = xstrdup(authenticateUserRequestUsername(request->auth_user_request));
+diff -Nur squid-2.5.STABLE4.orig/src/structs.h squid-2.5.STABLE4/src/structs.h
+--- squid-2.5.STABLE4.orig/src/structs.h	2004-01-24 19:11:23.000000000 +0100
++++ squid-2.5.STABLE4/src/structs.h	2004-01-24 19:59:56.000000000 +0100
+@@ -1045,6 +1045,8 @@
+     struct {
+ 	const char *method_str;
+     } private;
++    request_t *request;		/* apache-like combined-log */
++    char *http_uri;  		/* apache-like combined-log */
+     HierarchyLogEntry hier;
+ };
+ 
