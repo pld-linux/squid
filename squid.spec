@@ -555,7 +555,7 @@ if [ -n "`/bin/id -u squid 2>/dev/null`" ]; then
 	fi
 else
 	/usr/sbin/useradd -o -u 91 -s /bin/false -g squid \
-		-c "SQU http caching daemon" -d /var/cache/squid squid 1>&2
+		-c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2
 	%addusertogroup stats squid
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
