@@ -1,0 +1,21 @@
+Index: squid3/include/rfc1035.h
+diff -c squid3/include/rfc1035.h:1.9 squid3/include/rfc1035.h:1.10
+*** squid3/include/rfc1035.h:1.9	Wed Jan 22 17:36:47 2003
+--- squid3/include/rfc1035.h	Wed Dec 17 18:16:01 2003
+***************
+*** 46,52 ****
+  #endif
+  
+  /* rfc1035 - DNS */
+! #define RFC1035_MAXHOSTNAMESZ 128
+  typedef struct _rfc1035_rr rfc1035_rr;
+  struct _rfc1035_rr {
+      char name[RFC1035_MAXHOSTNAMESZ];
+--- 46,52 ----
+  #endif
+  
+  /* rfc1035 - DNS */
+! #define RFC1035_MAXHOSTNAMESZ 250
+  typedef struct _rfc1035_rr rfc1035_rr;
+  struct _rfc1035_rr {
+      char name[RFC1035_MAXHOSTNAMESZ];

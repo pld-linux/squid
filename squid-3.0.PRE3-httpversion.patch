@@ -1,0 +1,1224 @@
+Index: squid3/src/HttpHeader.h
+diff -c squid3/src/HttpHeader.h:1.6 squid3/src/HttpHeader.h:1.7
+*** squid3/src/HttpHeader.h:1.6	Tue Jul 15 00:50:39 2003
+--- squid3/src/HttpHeader.h	Sun Aug 31 21:49:37 2003
+***************
+*** 46,57 ****
+--- 46,60 ----
+      field_type type;
+  };
+  
++ class HttpVersion;
++ 
+  extern int httpHeaderParseQuotedString (const char *start, String *val);
+  extern void httpHeaderPutSc(HttpHeader *hdr, const HttpHdrSc *sc);
+  extern HttpHdrSc *httpHeaderGetSc(const HttpHeader *hdr);
+  SQUIDCEXTERN void httpHeaderAddContRange(HttpHeader *, HttpHdrRangeSpec, ssize_t);
+  extern int httpHeaderHasListMember(const HttpHeader * hdr, http_hdr_type id, const char *member, const char separator);
+  SQUIDCEXTERN void httpHeaderUpdate(HttpHeader * old, const HttpHeader * fresh, const HttpHeaderMask * denied_mask);
++ int httpMsgIsPersistent(HttpVersion const &http_ver, const HttpHeader * hdr);
+  
+  class HttpHeader
+  {
+Index: squid3/src/HttpMsg.cc
+diff -c squid3/src/HttpMsg.cc:1.12 squid3/src/HttpMsg.cc:1.13
+*** squid3/src/HttpMsg.cc:1.12	Fri Feb 21 15:50:05 2003
+--- squid3/src/HttpMsg.cc	Sun Aug 31 21:49:37 2003
+***************
+*** 34,40 ****
+   */
+  
+  #include "squid.h"
+! 
+  
+  /* find end of headers */
+  int
+--- 34,40 ----
+   */
+  
+  #include "squid.h"
+! #include "HttpVersion.h"
+  
+  /* find end of headers */
+  int
+***************
+*** 99,105 ****
+  /* returns true if connection should be "persistent"
+   * after processing this message */
+  int
+! httpMsgIsPersistent(http_version_t http_ver, const HttpHeader * hdr)
+  {
+      if ((http_ver.major >= 1) && (http_ver.minor >= 1)) {
+          /*
+--- 99,105 ----
+  /* returns true if connection should be "persistent"
+   * after processing this message */
+  int
+! httpMsgIsPersistent(HttpVersion const &http_ver, const HttpHeader * hdr)
+  {
+      if ((http_ver.major >= 1) && (http_ver.minor >= 1)) {
+          /*
+Index: squid3/src/HttpReply.cc
+diff -c squid3/src/HttpReply.cc:1.62 squid3/src/HttpReply.cc:1.63
+*** squid3/src/HttpReply.cc:1.62	Tue Jul 15 00:50:39 2003
+--- squid3/src/HttpReply.cc	Sun Aug 31 21:49:37 2003
+***************
+*** 207,213 ****
+  }
+  
+  MemBuf
+! httpPackedReply(http_version_t ver, http_status status, const char *ctype,
+                  int clen, time_t lmt, time_t expires)
+  {
+      HttpReply *rep = httpReplyCreate();
+--- 207,213 ----
+  }
+  
+  MemBuf
+! httpPackedReply(HttpVersion ver, http_status status, const char *ctype,
+                  int clen, time_t lmt, time_t expires)
+  {
+      HttpReply *rep = httpReplyCreate();
+***************
+*** 226,232 ****
+      HttpReply *rv;
+      int t;
+      HttpHeaderEntry *e;
+-     http_version_t ver;
+      assert(rep);
+  
+      rv = httpReplyCreate ();
+--- 226,231 ----
+***************
+*** 238,244 ****
+      /* rv->cache_control */
+      /* rv->content_range */
+      /* rv->keep_alive */
+!     httpBuildVersion(&ver, 1, 0);
+      httpStatusLineSet(&rv->sline, ver,
+                        HTTP_NOT_MODIFIED, "");
+  
+--- 237,243 ----
+      /* rv->cache_control */
+      /* rv->content_range */
+      /* rv->keep_alive */
+!     HttpVersion ver(1,0);
+      httpStatusLineSet(&rv->sline, ver,
+                        HTTP_NOT_MODIFIED, "");
+  
+***************
+*** 266,272 ****
+  }
+  
+  void
+! httpReplySetHeaders(HttpReply * reply, http_version_t ver, http_status status, const char *reason,
+                      const char *ctype, int clen, time_t lmt, time_t expires)
+  {
+      HttpHeader *hdr;
+--- 265,271 ----
+  }
+  
+  void
+! httpReplySetHeaders(HttpReply * reply, HttpVersion ver, http_status status, const char *reason,
+                      const char *ctype, int clen, time_t lmt, time_t expires)
+  {
+      HttpHeader *hdr;
+***************
+*** 305,313 ****
+  httpRedirectReply(HttpReply * reply, http_status status, const char *loc)
+  {
+      HttpHeader *hdr;
+-     http_version_t ver;
+      assert(reply);
+!     httpBuildVersion(&ver, 1, 0);
+      httpStatusLineSet(&reply->sline, ver, status, httpStatusString(status));
+      hdr = &reply->header;
+      httpHeaderPutStr(hdr, HDR_SERVER, full_appname_string);
+--- 304,311 ----
+  httpRedirectReply(HttpReply * reply, http_status status, const char *loc)
+  {
+      HttpHeader *hdr;
+      assert(reply);
+!     HttpVersion ver(1,0);
+      httpStatusLineSet(&reply->sline, ver, status, httpStatusString(status));
+      hdr = &reply->header;
+      httpHeaderPutStr(hdr, HDR_SERVER, full_appname_string);
+Index: squid3/src/HttpReply.h
+diff -c squid3/src/HttpReply.h:1.5 squid3/src/HttpReply.h:1.6
+*** squid3/src/HttpReply.h:1.5	Tue Jul 15 00:50:39 2003
+--- squid3/src/HttpReply.h	Sun Aug 31 21:49:37 2003
+***************
+*** 36,41 ****
+--- 36,42 ----
+  
+  #include "typedefs.h"
+  #include "HttpHeader.h"
++ #include "HttpStatusLine.h"
+  
+  /* Http Reply */
+  extern void httpReplyInitModule(void);
+***************
+*** 56,65 ****
+  /* swap: create swap-based packer, pack, destroy packer */
+  extern void httpReplySwapOut(HttpReply * rep, StoreEntry * e);
+  /* set commonly used info with one call */
+! extern void httpReplySetHeaders(HttpReply * rep, http_version_t ver, http_status status,
+                                      const char *reason, const char *ctype, int clen, time_t lmt, time_t expires);
+  /* do everything in one call: init, set, pack, clean, return MemBuf */
+! extern MemBuf httpPackedReply(http_version_t ver, http_status status, const char *ctype,
+                                    int clen, time_t lmt, time_t expires);
+  /* construct 304 reply and pack it into MemBuf, return MemBuf */
+  extern MemBuf httpPacked304Reply(const HttpReply * rep);
+--- 57,66 ----
+  /* swap: create swap-based packer, pack, destroy packer */
+  extern void httpReplySwapOut(HttpReply * rep, StoreEntry * e);
+  /* set commonly used info with one call */
+! extern void httpReplySetHeaders(HttpReply * rep, HttpVersion ver, http_status status,
+                                      const char *reason, const char *ctype, int clen, time_t lmt, time_t expires);
+  /* do everything in one call: init, set, pack, clean, return MemBuf */
+! extern MemBuf httpPackedReply(HttpVersion ver, http_status status, const char *ctype,
+                                    int clen, time_t lmt, time_t expires);
+  /* construct 304 reply and pack it into MemBuf, return MemBuf */
+  extern MemBuf httpPacked304Reply(const HttpReply * rep);
+Index: squid3/src/HttpRequest.cc
+diff -c squid3/src/HttpRequest.cc:1.44 squid3/src/HttpRequest.cc:1.45
+*** squid3/src/HttpRequest.cc:1.44	Thu Aug 14 06:15:04 2003
+--- squid3/src/HttpRequest.cc	Sun Aug 31 21:49:37 2003
+***************
+*** 76,82 ****
+      request_flags flags;
+      HttpHdrCc *cache_control;
+      HttpHdrRange *range;
+!     http_version_t http_ver;
+      time_t ims;
+      int imslen;
+      int max_forwards;
+--- 76,82 ----
+      request_flags flags;
+      HttpHdrCc *cache_control;
+      HttpHdrRange *range;
+!     HttpVersion http_ver;
+      time_t ims;
+      int imslen;
+      int max_forwards;
+Index: squid3/src/HttpRequest.h
+diff -c squid3/src/HttpRequest.h:1.7 squid3/src/HttpRequest.h:1.8
+*** squid3/src/HttpRequest.h:1.7	Sun Aug 10 05:00:40 2003
+--- squid3/src/HttpRequest.h	Sun Aug 31 21:49:37 2003
+***************
+*** 37,42 ****
+--- 37,43 ----
+  #include "typedefs.h"
+  #include "HttpHeader.h"
+  #include "client_side.h"
++ #include "HttpVersion.h"
+  
+  /*  Http Request */
+  extern HttpRequest *requestCreate(method_t, protocol_t, const char *urlpath);
+***************
+*** 75,81 ****
+      request_flags flags;
+      HttpHdrCc *cache_control;
+      HttpHdrRange *range;
+!     http_version_t http_ver;
+      time_t ims;
+      int imslen;
+      int max_forwards;
+--- 76,82 ----
+      request_flags flags;
+      HttpHdrCc *cache_control;
+      HttpHdrRange *range;
+!     HttpVersion http_ver;
+      time_t ims;
+      int imslen;
+      int max_forwards;
+Index: squid3/src/HttpStatusLine.cc
+diff -c squid3/src/HttpStatusLine.cc:1.27 squid3/src/HttpStatusLine.cc:1.28
+*** squid3/src/HttpStatusLine.cc:1.27	Fri Feb 21 15:50:05 2003
+--- squid3/src/HttpStatusLine.cc	Sun Aug 31 21:49:37 2003
+***************
+*** 34,40 ****
+   */
+  
+  #include "squid.h"
+! 
+  
+  /* local constants */
+  const char *HttpStatusLineFormat = "HTTP/%d.%d %3d %s\r\n";
+--- 34,40 ----
+   */
+  
+  #include "squid.h"
+! #include "HttpStatusLine.h"
+  
+  /* local constants */
+  const char *HttpStatusLineFormat = "HTTP/%d.%d %3d %s\r\n";
+***************
+*** 42,63 ****
+  void
+  httpStatusLineInit(HttpStatusLine * sline)
+  {
+!     http_version_t version;
+!     httpBuildVersion(&version, 0, 0);
+      httpStatusLineSet(sline, version, HTTP_STATUS_NONE, NULL);
+  }
+  
+  void
+  httpStatusLineClean(HttpStatusLine * sline)
+  {
+!     http_version_t version;
+!     httpBuildVersion(&version, 0, 0);
+      httpStatusLineSet(sline, version, HTTP_INTERNAL_SERVER_ERROR, NULL);
+  }
+  
+  /* set values */
+  void
+! httpStatusLineSet(HttpStatusLine * sline, http_version_t version, http_status status, const char *reason)
+  {
+      assert(sline);
+      sline->version = version;
+--- 42,61 ----
+  void
+  httpStatusLineInit(HttpStatusLine * sline)
+  {
+!     HttpVersion version;
+      httpStatusLineSet(sline, version, HTTP_STATUS_NONE, NULL);
+  }
+  
+  void
+  httpStatusLineClean(HttpStatusLine * sline)
+  {
+!     HttpVersion version;
+      httpStatusLineSet(sline, version, HTTP_INTERNAL_SERVER_ERROR, NULL);
+  }
+  
+  /* set values */
+  void
+! httpStatusLineSet(HttpStatusLine * sline, HttpVersion version, http_status status, const char *reason)
+  {
+      assert(sline);
+      sline->version = version;
+Index: squid3/src/access_log.cc
+diff -c squid3/src/access_log.cc:1.94 squid3/src/access_log.cc:1.95
+*** squid3/src/access_log.cc:1.94	Wed Aug 20 07:34:41 2003
+--- squid3/src/access_log.cc	Sun Aug 31 21:49:37 2003
+***************
+*** 35,40 ****
+--- 35,41 ----
+  
+  
+  #include "squid.h"
++ #include "AccessLogEntry.h"
+  
+  // Store.h Required by configuration directives parsing/dumping only
+  #include "Store.h"
+Index: squid3/src/cache_cf.cc
+diff -c squid3/src/cache_cf.cc:1.449 squid3/src/cache_cf.cc:1.450
+*** squid3/src/cache_cf.cc:1.449	Sun Aug 31 15:20:08 2003
+--- squid3/src/cache_cf.cc	Sun Aug 31 21:49:37 2003
+***************
+*** 2987,2992 ****
+--- 2987,2994 ----
+      }
+  }
+  
++ #include "AccessLogEntry.h"
++ /* TODO: split out parsing somehow ...*/
+  static void
+  parse_logformat(logformat ** logformat_definitions)
+  {
+Index: squid3/src/Makefile.am
+diff -c squid3/src/Makefile.am:1.89 squid3/src/Makefile.am:1.90
+*** squid3/src/Makefile.am:1.89	Thu Aug 14 17:21:51 2003
+--- squid3/src/Makefile.am	Sun Aug 31 21:49:37 2003
+***************
+*** 293,298 ****
+--- 293,299 ----
+  
+  squid_SOURCES = \
+  	access_log.cc \
++ 	AccessLogEntry.h \
+  	acl.cc \
+  	ACL.h \
+  	ACLChecklist.cc \
+***************
+*** 355,360 ****
+--- 356,362 ----
+  	http.cc \
+  	http.h \
+  	HttpStatusLine.cc \
++ 	HttpStatusLine.h \
+  	HttpHdrCc.cc \
+  	HttpHdrRange.cc \
+  	HttpHdrSc.cc \
+***************
+*** 371,376 ****
+--- 373,379 ----
+  	HttpReply.h \
+  	HttpRequest.cc \
+  	HttpRequest.h \
++ 	HttpVersion.h \
+  	icmp.cc \
+  	ICP.h \
+  	icp_v2.cc \
+Index: squid3/src/cache_manager.cc
+diff -c squid3/src/cache_manager.cc:1.30 squid3/src/cache_manager.cc:1.31
+*** squid3/src/cache_manager.cc:1.30	Sun Aug 10 05:00:42 2003
+--- squid3/src/cache_manager.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 316,324 ****
+          storeBuffer(entry);
+  
+      {
+!         http_version_t version;
+          HttpReply *rep = httpReplyCreate();
+-         httpBuildVersion(&version, 1, 0);
+          httpReplySetHeaders(rep,
+                              version,
+                              HTTP_OK,
+--- 316,323 ----
+          storeBuffer(entry);
+  
+      {
+!         HttpVersion version(1,0);
+          HttpReply *rep = httpReplyCreate();
+          httpReplySetHeaders(rep,
+                              version,
+                              HTTP_OK,
+Index: squid3/src/client_side.cc
+diff -c squid3/src/client_side.cc:1.657 squid3/src/client_side.cc:1.658
+*** squid3/src/client_side.cc:1.657	Thu Aug 14 06:15:04 2003
+--- squid3/src/client_side.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 153,159 ****
+  #if UNUSED_CODE
+  static void trimTrailingSpaces(char *aString, size_t len);
+  #endif
+! static ClientSocketContext *parseURIandHTTPVersion(char **url_p, http_version_t * http_ver_p, ConnStateData::Pointer& conn, char *http_version_str);
+  static void setLogUri(clientHttpRequest * http, char const *uri);
+  static int connReadWasError(ConnStateData::Pointer& conn, comm_err_t, int size, int xerrno);
+  static int connFinishedWithConn(ConnStateData::Pointer& conn, int size);
+--- 153,159 ----
+  #if UNUSED_CODE
+  static void trimTrailingSpaces(char *aString, size_t len);
+  #endif
+! static ClientSocketContext *parseURIandHTTPVersion(char **url_p, HttpVersion * http_ver_p, ConnStateData::Pointer& conn, char *http_version_str);
+  static void setLogUri(clientHttpRequest * http, char const *uri);
+  static int connReadWasError(ConnStateData::Pointer& conn, comm_err_t, int size, int xerrno);
+  static int connFinishedWithConn(ConnStateData::Pointer& conn, int size);
+***************
+*** 640,647 ****
+      if (!Config.onoff.client_pconns)
+          request->flags.proxy_keepalive = 0;
+      else {
+!         http_version_t http_ver;
+!         httpBuildVersion(&http_ver, 1, 0);
+          /* we are HTTP/1.0, no matter what the client requests... */
+  
+          if (httpMsgIsPersistent(http_ver, req_hdr))
+--- 640,646 ----
+      if (!Config.onoff.client_pconns)
+          request->flags.proxy_keepalive = 0;
+      else {
+!         HttpVersion http_ver(1,0);
+          /* we are HTTP/1.0, no matter what the client requests... */
+  
+          if (httpMsgIsPersistent(http_ver, req_hdr))
+***************
+*** 1601,1607 ****
+  #endif
+  
+  static ClientSocketContext *
+! parseURIandHTTPVersion(char **url_p, http_version_t * http_ver_p,
+                         ConnStateData::Pointer & conn, char *http_version_str)
+  {
+      char *url;
+--- 1600,1606 ----
+  #endif
+  
+  static ClientSocketContext *
+! parseURIandHTTPVersion(char **url_p, HttpVersion * http_ver_p,
+                         ConnStateData::Pointer & conn, char *http_version_str)
+  {
+      char *url;
+***************
+*** 1643,1649 ****
+          debug(33, 6) ("parseHttpRequest: Client HTTP version %d.%d.\n",
+                        http_ver_p->major, http_ver_p->minor);
+      } else {
+!         httpBuildVersion(http_ver_p, 0, 9);	/* wild guess */
+      }
+  
+      return NULL;
+--- 1642,1648 ----
+          debug(33, 6) ("parseHttpRequest: Client HTTP version %d.%d.\n",
+                        http_ver_p->major, http_ver_p->minor);
+      } else {
+!         *http_ver_p = HttpVersion(0,9);	/* wild guess */
+      }
+  
+      return NULL;
+***************
+*** 1652,1658 ****
+  /* Utility function to perform part of request parsing */
+  static ClientSocketContext *
+  clientParseHttpRequestLine(char *reqline, ConnStateData::Pointer &conn,
+!                            method_t * method_p, char **url_p, http_version_t * http_ver_p, char * http_version_str)
+  {
+      ClientSocketContext *result = NULL;
+      /* XXX: This sequence relies on strtok() */
+--- 1651,1657 ----
+  /* Utility function to perform part of request parsing */
+  static ClientSocketContext *
+  clientParseHttpRequestLine(char *reqline, ConnStateData::Pointer &conn,
+!                            method_t * method_p, char **url_p, HttpVersion * http_ver_p, char * http_version_str)
+  {
+      ClientSocketContext *result = NULL;
+      /* XXX: This sequence relies on strtok() */
+***************
+*** 1798,1804 ****
+      char *url = NULL;
+      char *req_hdr = NULL;
+      char *t;
+!     http_version_t http_ver;
+      char *end;
+      size_t header_sz;		/* size of headers, not including first line */
+      size_t prefix_sz;		/* size of whole request (req-line + headers) */
+--- 1797,1803 ----
+      char *url = NULL;
+      char *req_hdr = NULL;
+      char *t;
+!     HttpVersion http_ver;
+      char *end;
+      size_t header_sz;		/* size of headers, not including first line */
+      size_t prefix_sz;		/* size of whole request (req-line + headers) */
+Index: squid3/src/client_side_reply.cc
+diff -c squid3/src/client_side_reply.cc:1.66 squid3/src/client_side_reply.cc:1.67
+*** squid3/src/client_side_reply.cc:1.66	Tue Aug 19 16:30:36 2003
+--- squid3/src/client_side_reply.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 973,979 ****
+      }
+  
+      HttpReply *r;
+-     http_version_t version;
+  
+      /* And for Vary, release the base URI if none of the headers was included in the request */
+  
+--- 973,978 ----
+***************
+*** 1011,1017 ****
+  
+      r = httpReplyCreate();
+  
+!     httpBuildVersion(&version, 1, 0);
+  
+      httpReplySetHeaders(r, version, purgeStatus, NULL, NULL, 0, 0, -1);
+  
+--- 1010,1016 ----
+  
+      r = httpReplyCreate();
+  
+!     HttpVersion version(1,0);
+  
+      httpReplySetHeaders(r, version, purgeStatus, NULL, NULL, 0, 0, -1);
+  
+***************
+*** 1024,1030 ****
+  clientReplyContext::traceReply(clientStreamNode * node)
+  {
+      HttpReply *rep;
+-     http_version_t version;
+      clientStreamNode *next = (clientStreamNode *)node->node.next->data;
+      StoreIOBuffer tempBuffer;
+      assert(http->request->max_forwards == 0);
+--- 1023,1028 ----
+***************
+*** 1037,1043 ****
+      storeReleaseRequest(http->storeEntry());
+      storeBuffer(http->storeEntry());
+      rep = httpReplyCreate();
+!     httpBuildVersion(&version, 1, 0);
+      httpReplySetHeaders(rep, version, HTTP_OK, NULL, "text/plain",
+                          httpRequestPrefixLen(http->request), 0, squid_curtime);
+      httpReplySwapOut(rep, http->storeEntry());
+--- 1035,1041 ----
+      storeReleaseRequest(http->storeEntry());
+      storeBuffer(http->storeEntry());
+      rep = httpReplyCreate();
+!     HttpVersion version(1,0);
+      httpReplySetHeaders(rep, version, HTTP_OK, NULL, "text/plain",
+                          httpRequestPrefixLen(http->request), 0, squid_curtime);
+      httpReplySwapOut(rep, http->storeEntry());
+***************
+*** 1457,1463 ****
+      }
+  
+      /* enforce 1.0 reply version */
+!     httpBuildVersion(&holdingReply->sline.version, 1, 0);
+  
+      /* do header conversions */
+      buildReplyHeader();
+--- 1455,1461 ----
+      }
+  
+      /* enforce 1.0 reply version */
+!     holdingReply->sline.version = HttpVersion(1,0);
+  
+      /* do header conversions */
+      buildReplyHeader();
+Index: squid3/src/client_side_request.cc
+diff -c squid3/src/client_side_request.cc:1.32 squid3/src/client_side_request.cc:1.33
+*** squid3/src/client_side_request.cc:1.32	Tue Aug 12 18:17:26 2003
+--- squid3/src/client_side_request.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 276,283 ****
+                     char *tailbuf, size_t taillen)
+  {
+      size_t url_sz;
+!     http_version_t http_ver =
+!         {1, 0};
+      clientHttpRequest *http = new ClientHttpRequest;
+      HttpRequest *request;
+      StoreIOBuffer tempBuffer;
+--- 276,282 ----
+                     char *tailbuf, size_t taillen)
+  {
+      size_t url_sz;
+!     HttpVersion http_ver (1, 0);
+      clientHttpRequest *http = new ClientHttpRequest;
+      HttpRequest *request;
+      StoreIOBuffer tempBuffer;
+Index: squid3/src/client_side_request.h
+diff -c squid3/src/client_side_request.h:1.18 squid3/src/client_side_request.h:1.19
+*** squid3/src/client_side_request.h:1.18	Tue Aug 12 18:17:26 2003
+--- squid3/src/client_side_request.h	Sun Aug 31 21:49:38 2003
+***************
+*** 37,42 ****
+--- 37,43 ----
+  #include "HttpHeader.h"
+  #include "clientStream.h"
+  #include "client_side.h"
++ #include "AccessLogEntry.h"
+  
+  /* client_side_request.c - client side request related routines (pure logic) */
+  extern int clientBeginRequest(method_t, char const *, CSCB *, CSD *, ClientStreamData, HttpHeader const *, char *, size_t);
+***************
+*** 95,101 ****
+      log_type logType;
+  
+      struct timeval start;
+!     http_version_t http_ver;
+      AccessLogEntry al;
+  
+      struct
+--- 96,102 ----
+      log_type logType;
+  
+      struct timeval start;
+!     HttpVersion http_ver;
+      AccessLogEntry al;
+  
+      struct
+Index: squid3/src/errorpage.cc
+diff -c squid3/src/errorpage.cc:1.190 squid3/src/errorpage.cc:1.191
+*** squid3/src/errorpage.cc:1.190	Sun Aug 10 05:00:42 2003
+--- squid3/src/errorpage.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 825,833 ****
+  {
+      HttpReply *rep = httpReplyCreate();
+      const char *name = errorPageName(err->page_id);
+-     http_version_t version;
+      /* no LMT for error pages; error pages expire immediately */
+!     httpBuildVersion(&version, 1, 0);
+  
+      if (strchr(name, ':')) {
+          /* Redirection */
+--- 825,832 ----
+  {
+      HttpReply *rep = httpReplyCreate();
+      const char *name = errorPageName(err->page_id);
+      /* no LMT for error pages; error pages expire immediately */
+!     HttpVersion version(1, 0);
+  
+      if (strchr(name, ':')) {
+          /* Redirection */
+Index: squid3/src/ftp.cc
+diff -c squid3/src/ftp.cc:1.353 squid3/src/ftp.cc:1.354
+*** squid3/src/ftp.cc:1.353	Sun Aug 10 05:00:43 2003
+--- squid3/src/ftp.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 3048,3054 ****
+      const char *t = NULL;
+      StoreEntry *e = ftpState->entry;
+      HttpReply *reply = httpReplyCreate ();
+-     http_version_t version;
+  
+      if (ftpState->flags.http_header_sent)
+          return;
+--- 3048,3053 ----
+***************
+*** 3091,3103 ****
+          HttpHdrRangeSpec range_spec;
+          range_spec.offset = ftpState->restarted_offset;
+          range_spec.length = ftpState->size - ftpState->restarted_offset;
+!         httpBuildVersion(&version, 1, 0);
+          httpReplySetHeaders(reply, version, HTTP_PARTIAL_CONTENT, "Gatewaying",
+                              mime_type, ftpState->size - ftpState->restarted_offset, ftpState->mdtm, -2);
+          httpHeaderAddContRange(&reply->header, range_spec, ftpState->size);
+      } else {
+          /* Full reply */
+!         httpBuildVersion(&version, 1, 0);
+          httpReplySetHeaders(reply, version, HTTP_OK, "Gatewaying",
+                              mime_type, ftpState->size, ftpState->mdtm, -2);
+      }
+--- 3090,3102 ----
+          HttpHdrRangeSpec range_spec;
+          range_spec.offset = ftpState->restarted_offset;
+          range_spec.length = ftpState->size - ftpState->restarted_offset;
+!         HttpVersion version(1, 0);
+          httpReplySetHeaders(reply, version, HTTP_PARTIAL_CONTENT, "Gatewaying",
+                              mime_type, ftpState->size - ftpState->restarted_offset, ftpState->mdtm, -2);
+          httpHeaderAddContRange(&reply->header, range_spec, ftpState->size);
+      } else {
+          /* Full reply */
+!         HttpVersion version(1, 0);
+          httpReplySetHeaders(reply, version, HTTP_OK, "Gatewaying",
+                              mime_type, ftpState->size, ftpState->mdtm, -2);
+      }
+Index: squid3/src/http.cc
+diff -c squid3/src/http.cc:1.426 squid3/src/http.cc:1.427
+*** squid3/src/http.cc:1.426	Sun Aug 10 05:00:43 2003
+--- squid3/src/http.cc	Sun Aug 31 21:49:38 2003
+***************
+*** 1492,1499 ****
+                         http_state_flags flags)
+  {
+      const int offset = mb->size;
+!     http_version_t httpver;
+!     httpBuildVersion(&httpver, 1, 0);
+      memBufPrintf(mb, "%s %s HTTP/%d.%d\r\n",
+                   RequestMethodStr[request->method],
+                   request->urlpath.size() ? request->urlpath.buf() : "/",
+--- 1492,1498 ----
+                         http_state_flags flags)
+  {
+      const int offset = mb->size;
+!     HttpVersion httpver(1, 0);
+      memBufPrintf(mb, "%s %s HTTP/%d.%d\r\n",
+                   RequestMethodStr[request->method],
+                   request->urlpath.size() ? request->urlpath.buf() : "/",
+***************
+*** 1733,1739 ****
+  }
+  
+  void
+! httpBuildVersion(http_version_t * version, unsigned int major, unsigned int minor)
+  {
+      version->major = major;
+      version->minor = minor;
+--- 1732,1738 ----
+  }
+  
+  void
+! httpBuildVersion(HttpVersion * version, unsigned int major, unsigned int minor)
+  {
+      version->major = major;
+      version->minor = minor;
+Index: squid3/src/icp_v2.cc
+diff -c squid3/src/icp_v2.cc:1.82 squid3/src/icp_v2.cc:1.83
+*** squid3/src/icp_v2.cc:1.82	Sun Aug 10 05:00:43 2003
+--- squid3/src/icp_v2.cc	Sun Aug 31 21:49:39 2003
+***************
+*** 40,45 ****
+--- 40,46 ----
+  #include "HttpRequest.h"
+  #include "ACLChecklist.h"
+  #include "ACL.h"
++ #include "AccessLogEntry.h"
+  
+  static void icpLogIcp(struct in_addr, log_type, int, const char *, int);
+  
+***************
+*** 168,175 ****
+  
+      if (!Config.onoff.log_udp)
+          return;
+- 
+-     memset(&al, '\0', sizeof(al));
+  
+      al.icp.opcode = ICP_QUERY;
+  
+--- 169,174 ----
+Index: squid3/src/internal.cc
+diff -c squid3/src/internal.cc:1.29 squid3/src/internal.cc:1.30
+*** squid3/src/internal.cc:1.29	Sun Aug 10 05:00:43 2003
+--- squid3/src/internal.cc	Sun Aug 31 21:49:39 2003
+***************
+*** 47,53 ****
+  {
+      ErrorState *err;
+      const char *upath = request->urlpath.buf();
+-     http_version_t version;
+      debug(76, 3) ("internalStart: %s requesting '%s'\n",
+                    inet_ntoa(request->client_addr), upath);
+  
+--- 47,52 ----
+***************
+*** 61,67 ****
+          const char *msgbuf = "This cache does not suport Cache Digests.\n";
+  #endif
+  
+!         httpBuildVersion(&version, 1, 0);
+          HttpReply *reply = httpReplyCreate ();
+          httpReplySetHeaders(reply,
+                              version,
+--- 60,66 ----
+          const char *msgbuf = "This cache does not suport Cache Digests.\n";
+  #endif
+  
+!         HttpVersion version(1, 0);
+          HttpReply *reply = httpReplyCreate ();
+          httpReplySetHeaders(reply,
+                              version,
+Index: squid3/src/main.cc
+diff -c squid3/src/main.cc:1.387 squid3/src/main.cc:1.388
+*** squid3/src/main.cc:1.387	Sat Aug 30 19:22:05 2003
+--- squid3/src/main.cc	Sun Aug 31 21:49:39 2003
+***************
+*** 34,39 ****
+--- 34,40 ----
+   */
+  
+  #include "squid.h"
++ #include "AccessLogEntry.h"
+  #include "authenticate.h"
+  #include "Store.h"
+  #include "ICP.h"
+Index: squid3/src/mime.cc
+diff -c squid3/src/mime.cc:1.113 squid3/src/mime.cc:1.114
+*** squid3/src/mime.cc:1.113	Sun Aug 10 05:00:43 2003
+--- squid3/src/mime.cc	Sun Aug 31 21:49:39 2003
+***************
+*** 570,578 ****
+  
+      char *buf;
+  
+-     http_version_t version;
+- 
+- 
+      snprintf(path, MAXPATHLEN, "%s/%s", Config.icons.directory, icon);
+  
+      fd = file_open(path, O_RDONLY | O_BINARY);
+--- 570,575 ----
+***************
+*** 606,612 ****
+  
+      HttpReply *reply = httpReplyCreate();
+  
+!     httpBuildVersion(&version, 1, 0);
+  
+      httpReplySetHeaders(reply, version, HTTP_OK, NULL,
+                          mimeGetContentType(icon), (int) sb.st_size, sb.st_mtime, -1);
+--- 603,609 ----
+  
+      HttpReply *reply = httpReplyCreate();
+  
+!     HttpVersion version(1, 0);
+  
+      httpReplySetHeaders(reply, version, HTTP_OK, NULL,
+                          mimeGetContentType(icon), (int) sb.st_size, sb.st_mtime, -1);
+Index: squid3/src/net_db.cc
+diff -c squid3/src/net_db.cc:1.172 squid3/src/net_db.cc:1.173
+*** squid3/src/net_db.cc:1.172	Sun Aug 10 05:00:44 2003
+--- squid3/src/net_db.cc	Sun Aug 31 21:49:39 2003
+***************
+*** 1187,1193 ****
+  netdbBinaryExchange(StoreEntry * s)
+  {
+      HttpReply *reply = httpReplyCreate();
+-     http_version_t version;
+  #if USE_ICMP
+  
+      netdbEntry *n;
+--- 1187,1192 ----
+***************
+*** 1198,1204 ****
+  
+      struct in_addr addr;
+      storeBuffer(s);
+!     httpBuildVersion(&version, 1, 0);
+      httpReplySetHeaders(reply, version, HTTP_OK, "OK",
+                          NULL, -1, squid_curtime, -2);
+      httpReplySwapOut(reply, s);
+--- 1197,1203 ----
+  
+      struct in_addr addr;
+      storeBuffer(s);
+!     HttpVersion version(1, 0);
+      httpReplySetHeaders(reply, version, HTTP_OK, "OK",
+                          NULL, -1, squid_curtime, -2);
+      httpReplySwapOut(reply, s);
+***************
+*** 1258,1264 ****
+      memFree(buf, MEM_4K_BUF);
+  #else
+  
+!     httpBuildVersion(&version, 1, 0);
+      httpReplySetHeaders(reply, version, HTTP_BAD_REQUEST, "Bad Request",
+                          NULL, -1, squid_curtime, -2);
+      httpReplySwapOut(reply, s);
+--- 1257,1263 ----
+      memFree(buf, MEM_4K_BUF);
+  #else
+  
+!     HttpVersion version(1,0);
+      httpReplySetHeaders(reply, version, HTTP_BAD_REQUEST, "Bad Request",
+                          NULL, -1, squid_curtime, -2);
+      httpReplySwapOut(reply, s);
+***************
+*** 1295,1301 ****
+  
+      requestLink(ex->r);
+      assert(NULL != ex->r);
+!     httpBuildVersion(&ex->r->http_ver, 1, 0);
+      ex->connstate = STATE_HEADER;
+      ex->e = storeCreateEntry(uri, uri, request_flags(), METHOD_GET);
+      ex->buf_sz = NETDB_REQBUF_SZ;
+--- 1294,1300 ----
+  
+      requestLink(ex->r);
+      assert(NULL != ex->r);
+!     ex->r->http_ver = HttpVersion(1,0);
+      ex->connstate = STATE_HEADER;
+      ex->e = storeCreateEntry(uri, uri, request_flags(), METHOD_GET);
+      ex->buf_sz = NETDB_REQBUF_SZ;
+Index: squid3/src/protos.h
+diff -c squid3/src/protos.h:1.491 squid3/src/protos.h:1.492
+*** squid3/src/protos.h:1.491	Sun Aug 17 07:42:04 2003
+--- squid3/src/protos.h	Sun Aug 31 21:49:39 2003
+***************
+*** 34,48 ****
+  #ifndef SQUID_PROTOS_H
+  #define SQUID_PROTOS_H
+  
+- SQUIDCEXTERN void accessLogLog(AccessLogEntry *, ACLChecklist * checklist);
+- SQUIDCEXTERN void accessLogRotate(void);
+- SQUIDCEXTERN void accessLogClose(void);
+- SQUIDCEXTERN void accessLogInit(void);
+- SQUIDCEXTERN void accessLogFreeMemory(AccessLogEntry * aLogEntry);
+- SQUIDCEXTERN const char *accessLogTime(time_t);
+- SQUIDCEXTERN int accessLogParseLogFormat(logformat_token ** fmt, char *def);
+- SQUIDCEXTERN void accessLogDumpLogFormat(StoreEntry * entry, const char *name, logformat * definitions);
+- SQUIDCEXTERN void accessLogFreeLogFormat(logformat_token ** fmt);
+  SQUIDCEXTERN void hierarchyNote(HierarchyLogEntry *, hier_code, const char *);
+  #if FORW_VIA_DB
+  SQUIDCEXTERN void fvdbCountVia(const char *key);
+--- 34,39 ----
+***************
+*** 304,330 ****
+  SQUIDCEXTERN int httpAnonHdrAllowed(http_hdr_type hdr_id);
+  SQUIDCEXTERN int httpAnonHdrDenied(http_hdr_type hdr_id);
+  SQUIDCEXTERN void httpBuildRequestHeader(HttpRequest *, HttpRequest *, StoreEntry *, HttpHeader *, http_state_flags);
+- SQUIDCEXTERN void httpBuildVersion(http_version_t * version, unsigned int major, unsigned int minor);
+  SQUIDCEXTERN const char *httpMakeVaryMark(HttpRequest * request, HttpReply const * reply);
+  
+  /* ETag */
+  SQUIDCEXTERN int etagParseInit(ETag * etag, const char *str);
+  SQUIDCEXTERN int etagIsEqual(const ETag * tag1, const ETag * tag2);
+  
+- /* Http Status Line */
+- /* init/clean */
+- SQUIDCEXTERN void httpStatusLineInit(HttpStatusLine * sline);
+- SQUIDCEXTERN void httpStatusLineClean(HttpStatusLine * sline);
+- /* set/get values */
+- SQUIDCEXTERN void httpStatusLineSet(HttpStatusLine * sline, http_version_t version,
+-                                     http_status status, const char *reason);
+- SQUIDCEXTERN const char *httpStatusLineReason(const HttpStatusLine * sline);
+- /* parse/pack */
+- /* parse a 0-terminating buffer and fill internal structires; returns true on success */
+- SQUIDCEXTERN int httpStatusLineParse(HttpStatusLine * sline, const char *start,
+-                                      const char *end);
+- /* pack fields using Packer */
+- SQUIDCEXTERN void httpStatusLinePackInto(const HttpStatusLine * sline, Packer * p);
+  SQUIDCEXTERN const char *httpStatusString(http_status status);
+  
+  /* Http Body */
+--- 295,306 ----
+***************
+*** 459,465 ****
+  SQUIDCEXTERN void httpHdrMangleList(HttpHeader *, HttpRequest *);
+  
+  /* Http Msg (currently in HttpReply.c @?@ ) */
+- SQUIDCEXTERN int httpMsgIsPersistent(http_version_t http_ver, const HttpHeader * hdr);
+  SQUIDCEXTERN int httpMsgIsolateHeaders(const char **parse_start, const char **blk_start, const char **blk_end);
+  
+  SQUIDCEXTERN void icmpOpen(void);
+--- 435,440 ----
+Index: squid3/src/store.cc
+diff -c squid3/src/store.cc:1.573 squid3/src/store.cc:1.574
+*** squid3/src/store.cc:1.573	Sun Aug 10 05:00:44 2003
+--- squid3/src/store.cc	Sun Aug 31 21:49:39 2003
+***************
+*** 649,658 ****
+  
+          if (mem->vary_headers && !storeGetPublic(mem->url, mem->method)) {
+              /* Create "vary" base object */
+-             http_version_t version;
+              String vary;
+              pe = storeCreateEntry(mem->url, mem->log_url, request->flags, request->method);
+!             httpBuildVersion(&version, 1, 0);
+              /* We are allowed to do this typecast */
+              httpReplySetHeaders((HttpReply *)pe->getReply(), version, HTTP_OK, "Internal marker object", "x-squid-internal/vary", -1, -1, squid_curtime + 100000);
+              vary = httpHeaderGetList(&mem->getReply()->header, HDR_VARY);
+--- 649,657 ----
+  
+          if (mem->vary_headers && !storeGetPublic(mem->url, mem->method)) {
+              /* Create "vary" base object */
+              String vary;
+              pe = storeCreateEntry(mem->url, mem->log_url, request->flags, request->method);
+!             HttpVersion version(1, 0);
+              /* We are allowed to do this typecast */
+              httpReplySetHeaders((HttpReply *)pe->getReply(), version, HTTP_OK, "Internal marker object", "x-squid-internal/vary", -1, -1, squid_curtime + 100000);
+              vary = httpHeaderGetList(&mem->getReply()->header, HDR_VARY);
+Index: squid3/src/store_digest.cc
+diff -c squid3/src/store_digest.cc:1.56 squid3/src/store_digest.cc:1.57
+*** squid3/src/store_digest.cc:1.56	Fri Feb 21 15:50:12 2003
+--- squid3/src/store_digest.cc	Sun Aug 31 21:49:40 2003
+***************
+*** 420,426 ****
+  storeDigestRewriteResume(void)
+  {
+      StoreEntry *e;
+-     http_version_t version;
+  
+      assert(sd_state.rewrite_lock);
+      assert(!sd_state.rebuild_lock);
+--- 420,425 ----
+***************
+*** 431,437 ****
+      storeSetPublicKey(e);
+      /* fake reply */
+      HttpReply *rep = httpReplyCreate ();
+!     httpBuildVersion(&version, 1, 0);
+      httpReplySetHeaders(rep, version, HTTP_OK, "Cache Digest OK",
+                          "application/cache-digest", store_digest->mask_size + sizeof(sd_state.cblock),
+                          squid_curtime, squid_curtime + Config.digest.rewrite_period);
+--- 430,436 ----
+      storeSetPublicKey(e);
+      /* fake reply */
+      HttpReply *rep = httpReplyCreate ();
+!     HttpVersion version(1, 0);
+      httpReplySetHeaders(rep, version, HTTP_OK, "Cache Digest OK",
+                          "application/cache-digest", store_digest->mask_size + sizeof(sd_state.cblock),
+                          squid_curtime, squid_curtime + Config.digest.rewrite_period);
+Index: squid3/src/structs.h
+diff -c squid3/src/structs.h:1.480 squid3/src/structs.h:1.481
+*** squid3/src/structs.h:1.480	Mon Aug 18 06:24:45 2003
+--- squid3/src/structs.h	Sun Aug 31 21:49:40 2003
+***************
+*** 90,100 ****
+      size_t maxsize;
+  };
+  
+- struct _http_version_t
+- {
+-     unsigned int major;
+-     unsigned int minor;
+- };
+  
+  #if SQUID_SNMP
+  
+--- 90,95 ----
+***************
+*** 832,846 ****
+      void *real_handler;		/* first parameter to real append and vprintf */
+  };
+  
+- /* http status line */
+- 
+- struct _HttpStatusLine
+- {
+-     /* public, read only */
+-     http_version_t version;
+-     const char *reason;		/* points to a _constant_ string (default or supplied), never free()d */
+-     http_status status;
+- };
+  
+  /*
+   * Note: HttpBody is used only for messages with a small content that is
+--- 827,832 ----
+***************
+*** 994,1061 ****
+      struct timeval store_complete_stop;
+  };
+  
+- struct _AccessLogEntry
+- {
+-     /* NB: memset is used on AccessLogEntries as at 20030715 RBC */
+-     const char *url;
+- 
+-     struct
+-     {
+-         method_t method;
+-         int code;
+-         const char *content_type;
+-         http_version_t version;
+-     }
+- 
+-     http;
+- 
+-     struct
+-     {
+-         icp_opcode opcode;
+-     }
+- 
+-     icp;
+- 
+-     struct
+-     {
+- 
+-         struct in_addr caddr;
+-         size_t size;
+-         off_t highOffset;
+-         size_t objectSize;
+-         log_type code;
+-         int msec;
+-         const char *rfc931;
+-         const char *authuser;
+- #if USE_SSL
+- 
+-         const char *ssluser;
+- #endif
+- 
+-         const char *extuser;
+- 
+-     }
+- 
+-     cache;
+- 
+-     struct
+-     {
+-         char *request;
+-         char *reply;
+-     }
+- 
+-     headers;
+- 
+-     struct
+-     {
+-         const char *method_str;
+-     }
+- 
+-     _private;
+-     HierarchyLogEntry hier;
+-     HttpReply *reply;
+-     HttpRequest *request;
+- };
+  
+  struct _ipcache_addrs
+  {
+--- 980,985 ----
+Index: squid3/src/typedefs.h
+diff -c squid3/src/typedefs.h:1.169 squid3/src/typedefs.h:1.170
+*** squid3/src/typedefs.h:1.169	Sun Aug 10 03:53:49 2003
+--- squid3/src/typedefs.h	Sun Aug 31 21:49:40 2003
+***************
+*** 113,120 ****
+  
+  typedef struct _fileMap fileMap;
+  
+- typedef struct _HttpStatusLine HttpStatusLine;
+- 
+  typedef struct _HttpHeaderFieldAttrs HttpHeaderFieldAttrs;
+  
+  class HttpHeaderFieldInfo;
+--- 113,118 ----
+***************
+*** 201,208 ****
+  
+  class HttpRequest;
+  
+- typedef struct _AccessLogEntry AccessLogEntry;
+- 
+  typedef struct _cachemgr_passwd cachemgr_passwd;
+  
+  typedef struct _refresh_t refresh_t;
+--- 199,204 ----
+***************
+*** 272,279 ****
+  typedef struct _RemovalPolicyNode RemovalPolicyNode;
+  
+  typedef struct _RemovalPolicySettings RemovalPolicySettings;
+- 
+- typedef struct _http_version_t http_version_t;
+  
+  #if SQUID_SNMP
+  typedef variable_list *(oid_ParseFn) (variable_list *, snint *);
+--- 268,273 ----
+Index: squid3/src/urn.cc
+diff -c squid3/src/urn.cc:1.85 squid3/src/urn.cc:1.86
+*** squid3/src/urn.cc:1.85	Sun Aug 10 05:00:45 2003
+--- squid3/src/urn.cc	Sun Aug 31 21:49:40 2003
+***************
+*** 315,326 ****
+      ErrorState *err;
+      int i;
+      int urlcnt = 0;
+-     http_version_t version;
+      char *buf = urnState->reqbuf;
+      StoreIOBuffer tempBuffer;
+  
+      debug(52, 3) ("urnHandleReply: Called with size=%u.\n", (unsigned int)result.length);
+  
+      if (EBIT_TEST(urlres_e->flags, ENTRY_ABORTED)) {
+          goto error;
+      }
+--- 315,328 ----
+      ErrorState *err;
+      int i;
+      int urlcnt = 0;
+      char *buf = urnState->reqbuf;
+      StoreIOBuffer tempBuffer;
+  
+      debug(52, 3) ("urnHandleReply: Called with size=%u.\n", (unsigned int)result.length);
+  
++     /* Can't be lower because of the goto's */
++     HttpVersion version(1, 0);
++ 
+      if (EBIT_TEST(urlres_e->flags, ENTRY_ABORTED)) {
+          goto error;
+      }
+***************
+*** 433,439 ****
+                   "</ADDRESS>\n",
+                   full_appname_string, getMyHostname());
+      rep = httpReplyCreate();
+-     httpBuildVersion(&version, 1, 0);
+      httpReplySetHeaders(rep, version, HTTP_MOVED_TEMPORARILY, NULL,
+                          "text/html", mb.size, 0, squid_curtime);
+  
+--- 435,440 ----
+Index: squid3/src/whois.cc
+diff -c squid3/src/whois.cc:1.27 squid3/src/whois.cc:1.28
+*** squid3/src/whois.cc:1.27	Sun Aug 10 05:00:45 2003
+--- squid3/src/whois.cc	Sun Aug 31 21:49:40 2003
+***************
+*** 113,120 ****
+  WhoisState::setReplyToOK(StoreEntry *entry)
+  {
+      HttpReply *reply = httpReplyCreate();
+!     http_version_t version;
+!     httpBuildVersion(&version, 1, 0);
+      httpReplySetHeaders(reply, version, HTTP_OK, NULL, NULL, 0, 0, -1);
+      storeEntryReplaceObject (entry, reply);
+  }
+--- 113,119 ----
+  WhoisState::setReplyToOK(StoreEntry *entry)
+  {
+      HttpReply *reply = httpReplyCreate();
+!     HttpVersion version(1, 0);
+      httpReplySetHeaders(reply, version, HTTP_OK, NULL, NULL, 0, 0, -1);
+      storeEntryReplaceObject (entry, reply);
+  }

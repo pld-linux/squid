@@ -1,0 +1,16 @@
+Index: squid3/src/client_side.cc
+diff -c squid3/src/client_side.cc:1.666 squid3/src/client_side.cc:1.667
+*** squid3/src/client_side.cc:1.666	Tue Oct 21 06:23:53 2003
+--- squid3/src/client_side.cc	Wed Nov  5 14:32:12 2003
+***************
+*** 1696,1701 ****
+--- 1696,1704 ----
+  
+      /* BUG: Squid cannot deal with '*' URLs (RFC2616 5.1.2) */
+  
++     if (strncasecmp(url, "cache_object://", 15) == 0)
++         return; /* already in good shape */
++ 
+      if (*url != '/') {
+          if (conn->port->vhost)
+              return; /* already in good shape */

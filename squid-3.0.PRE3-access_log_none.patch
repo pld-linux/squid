@@ -1,0 +1,21 @@
+Index: squid3/src/access_log.cc
+diff -c squid3/src/access_log.cc:1.93 squid3/src/access_log.cc:1.94
+*** squid3/src/access_log.cc:1.93	Tue Aug 12 18:17:24 2003
+--- squid3/src/access_log.cc	Wed Aug 20 07:34:41 2003
+***************
+*** 1470,1476 ****
+      assert(sizeof(log_tags) == (LOG_TYPE_MAX + 1) * sizeof(char *));
+  
+      for (log = Config.Log.accesslogs; log; log = log->next) {
+!         if (strcasecmp(log->filename, "none") == 0)
+              continue;
+  
+          log->logfile = logfileOpen(log->filename, MAX_URL << 1, 1);
+--- 1470,1476 ----
+      assert(sizeof(log_tags) == (LOG_TYPE_MAX + 1) * sizeof(char *));
+  
+      for (log = Config.Log.accesslogs; log; log = log->next) {
+!         if (log->type == CLF_NONE)
+              continue;
+  
+          log->logfile = logfileOpen(log->filename, MAX_URL << 1, 1);
