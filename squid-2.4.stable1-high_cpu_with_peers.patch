@@ -1,0 +1,25 @@
+Index: src/neighbors.c
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/neighbors.c,v
+retrieving revision 1.288.2.2
+retrieving revision 1.288.2.3
+diff -c -r1.288.2.2 -r1.288.2.3
+*** src/neighbors.c	2001/01/12 00:51:50	1.288.2.2
+--- src/neighbors.c	2001/03/25 18:12:57	1.288.2.3
+***************
+*** 272,278 ****
+      if (p->rr_count < 0)
+  	p->rr_count = 0;
+      p->rr_lastcount = p->rr_count;
+!     eventAdd("peerClearRR", peerClearRR, p, 5 * 60, 0);
+  }
+  
+  peer *
+--- 272,278 ----
+      if (p->rr_count < 0)
+  	p->rr_count = 0;
+      p->rr_lastcount = p->rr_count;
+!     eventAdd("peerClearRR", peerClearRR, p, 5 * 60.0, 0);
+  }
+  
+  peer *
