@@ -1,0 +1,205 @@
+Index: squid3/src/ftp.cc
+diff -c squid3/src/ftp.cc:1.354 squid3/src/ftp.cc:1.355
+*** squid3/src/ftp.cc:1.354	Sun Aug 31 21:49:38 2003
+--- squid3/src/ftp.cc	Sun Sep  7 10:53:37 2003
+***************
+*** 1135,1178 ****
+  }
+  
+  static void
+! ftpDataRead(int fd, char *buf, size_t len, comm_err_t flag, int xerrno, void *data)
+  {
+      FtpStateData *ftpState = (FtpStateData *)data;
+      int j;
+      int bin;
+      StoreEntry *entry = ftpState->entry;
+      size_t read_sz;
+- #if DELAY_POOLS
+  
+!     DelayId delayId = entry->mem_obj->mostBytesAllowed();
+! #endif
+  
+!     assert(fd == ftpState->data.fd);
+!     /* Bail out early on COMM_ERR_CLOSING - close handlers will tidy up for us
+!      */
+  
+!     if (flag == COMM_ERR_CLOSING) {
+          return;
+!     }
+  
+      if (EBIT_TEST(entry->flags, ENTRY_ABORTED)) {
+          comm_close(ftpState->ctrl.fd);
+          return;
+      }
+  
+!     if (flag == COMM_OK && len > 0) {
+  #if DELAY_POOLS
+          delayId.bytesIn(len);
+  #endif
+  
+-         kb_incr(&statCounter.server.all.kbytes_in, len);
+-         kb_incr(&statCounter.server.ftp.kbytes_in, len);
+          ftpState->data.offset += len;
+      }
+  
+-     debug(9, 5) ("ftpDataRead: FD %d, Read %d bytes\n", fd, (unsigned int)len);
+  
+!     if (flag == COMM_OK && len > 0) {
+          IOStats.Ftp.reads++;
+  
+          for (j = len - 1, bin = 0; j; bin++)
+--- 1135,1181 ----
+  }
+  
+  static void
+! ftpDataRead(int fd, char *buf, size_t len, comm_err_t errflag, int xerrno, void *data)
+  {
+      FtpStateData *ftpState = (FtpStateData *)data;
+      int j;
+      int bin;
+      StoreEntry *entry = ftpState->entry;
+      size_t read_sz;
+  
+!     debug(9, 5) ("ftpDataRead: FD %d, Read %d bytes\n", fd, (unsigned int)len);
+  
+!     if (len > 0) {
+!         kb_incr(&statCounter.server.all.kbytes_in, len);
+!         kb_incr(&statCounter.server.ftp.kbytes_in, len);
+!     }
+  
+!     if (errflag == COMM_ERR_CLOSING)
+          return;
+! 
+!     assert(fd == ftpState->data.fd);
+! 
+! #if DELAY_POOLS
+! 
+!     DelayId delayId = entry->mem_obj->mostBytesAllowed();
+! 
+! #endif
+  
+      if (EBIT_TEST(entry->flags, ENTRY_ABORTED)) {
+          comm_close(ftpState->ctrl.fd);
+          return;
+      }
+  
+!     if (errflag == COMM_OK && len > 0) {
+  #if DELAY_POOLS
+          delayId.bytesIn(len);
+  #endif
+  
+          ftpState->data.offset += len;
+      }
+  
+  
+!     if (errflag == COMM_OK && len > 0) {
+          IOStats.Ftp.reads++;
+  
+          for (j = len - 1, bin = 0; j; bin++)
+***************
+*** 1185,1191 ****
+          ftpListingStart(ftpState);
+      }
+  
+!     if (flag != COMM_OK || len < 0) {
+          debug(50, ignoreErrno(xerrno) ? 3 : 1) ("ftpDataRead: read error: %s\n", xstrerr(xerrno));
+  
+          if (ignoreErrno(xerrno)) {
+--- 1188,1194 ----
+          ftpListingStart(ftpState);
+      }
+  
+!     if (errflag != COMM_OK || len < 0) {
+          debug(50, ignoreErrno(xerrno) ? 3 : 1) ("ftpDataRead: read error: %s\n", xstrerr(xerrno));
+  
+          if (ignoreErrno(xerrno)) {
+***************
+*** 1578,1595 ****
+  }
+  
+  static void
+! ftpReadControlReply(int fd, char *buf, size_t len, comm_err_t flag, int xerrno, void *data)
+  {
+      FtpStateData *ftpState = (FtpStateData *)data;
+      StoreEntry *entry = ftpState->entry;
+!     debug(9, 5) ("ftpReadControlReply\n");
+  
+!     /* Bail out early on COMM_ERR_CLOSING - close handlers will tidy up for us
+!     */
+  
+!     if (flag == COMM_ERR_CLOSING) {
+          return;
+-     }
+  
+      if (EBIT_TEST(entry->flags, ENTRY_ABORTED)) {
+          comm_close(ftpState->ctrl.fd);
+--- 1581,1599 ----
+  }
+  
+  static void
+! ftpReadControlReply(int fd, char *buf, size_t len, comm_err_t errflag, int xerrno, void *data)
+  {
+      FtpStateData *ftpState = (FtpStateData *)data;
+      StoreEntry *entry = ftpState->entry;
+!     debug(9, 5) ("ftpReadControlReply: FD %d, Read %d bytes\n", fd, (int)len);
+  
+!     if (len > 0) {
+!         kb_incr(&statCounter.server.all.kbytes_in, len);
+!         kb_incr(&statCounter.server.ftp.kbytes_in, len);
+!     }
+  
+!     if (errflag == COMM_ERR_CLOSING)
+          return;
+  
+      if (EBIT_TEST(entry->flags, ENTRY_ABORTED)) {
+          comm_close(ftpState->ctrl.fd);
+***************
+*** 1598,1612 ****
+  
+      assert(ftpState->ctrl.offset < (off_t)ftpState->ctrl.size);
+  
+!     if (flag == COMM_OK && len > 0) {
+          fd_bytes(fd, len, FD_READ);
+-         kb_incr(&statCounter.server.all.kbytes_in, len);
+-         kb_incr(&statCounter.server.ftp.kbytes_in, len);
+      }
+  
+-     debug(9, 5) ("ftpReadControlReply: FD %d, Read %d bytes\n", fd, (int)len);
+  
+!     if (flag != COMM_OK || len < 0) {
+          debug(50, ignoreErrno(xerrno) ? 3 : 1) ("ftpReadControlReply: read error: %s\n", xstrerr(xerrno));
+  
+          if (ignoreErrno(xerrno)) {
+--- 1602,1613 ----
+  
+      assert(ftpState->ctrl.offset < (off_t)ftpState->ctrl.size);
+  
+!     if (errflag == COMM_OK && len > 0) {
+          fd_bytes(fd, len, FD_READ);
+      }
+  
+  
+!     if (errflag != COMM_OK || len < 0) {
+          debug(50, ignoreErrno(xerrno) ? 3 : 1) ("ftpReadControlReply: read error: %s\n", xstrerr(xerrno));
+  
+          if (ignoreErrno(xerrno)) {
+***************
+*** 2364,2372 ****
+      FtpStateData *ftpState = (FtpStateData *)data;
+      debug(9, 3) ("ftpAcceptDataConnection\n");
+  
+!     if (flag == COMM_ERR_CLOSING) {
+          return;
+-     }
+  
+      if (EBIT_TEST(ftpState->entry->flags, ENTRY_ABORTED)) {
+          comm_close(ftpState->ctrl.fd);
+--- 2365,2372 ----
+      FtpStateData *ftpState = (FtpStateData *)data;
+      debug(9, 3) ("ftpAcceptDataConnection\n");
+  
+!     if (flag == COMM_ERR_CLOSING)
+          return;
+  
+      if (EBIT_TEST(ftpState->entry->flags, ENTRY_ABORTED)) {
+          comm_close(ftpState->ctrl.fd);

@@ -1,0 +1,21 @@
+Index: squid3/src/forward.cc
+diff -c squid3/src/forward.cc:1.110 squid3/src/forward.cc:1.111
+*** squid3/src/forward.cc:1.110	Wed Aug 13 15:49:45 2003
+--- squid3/src/forward.cc	Sat Aug 16 14:33:47 2003
+***************
+*** 560,566 ****
+      debug(17, 3) ("fwdConnectStart: %s\n", url);
+  
+      if (fs->_peer) {
+!         host = fs->_peer->name;
+          port = fs->_peer->http_port;
+          ctimeout = fs->_peer->connect_timeout > 0 ? fs->_peer->connect_timeout
+                     : Config.Timeout.peer_connect;
+--- 560,566 ----
+      debug(17, 3) ("fwdConnectStart: %s\n", url);
+  
+      if (fs->_peer) {
+!         host = fs->_peer->host;
+          port = fs->_peer->http_port;
+          ctimeout = fs->_peer->connect_timeout > 0 ? fs->_peer->connect_timeout
+                     : Config.Timeout.peer_connect;

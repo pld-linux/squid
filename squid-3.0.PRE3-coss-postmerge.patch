@@ -1,0 +1,76 @@
+Index: squid3/src/fs/coss/store_dir_coss.cc
+diff -c squid3/src/fs/coss/store_dir_coss.cc:1.48 squid3/src/fs/coss/store_dir_coss.cc:1.49
+*** squid3/src/fs/coss/store_dir_coss.cc:1.48	Wed Aug 27 15:19:38 2003
+--- squid3/src/fs/coss/store_dir_coss.cc	Sat Aug 30 00:39:24 2003
+***************
+*** 861,867 ****
+  
+      if (max_size > (max_offset>>10)) {
+          debug(47,0)("COSS block-size = %d bytes\n", 1<<blksz_bits);
+!         debug(47,0)("COSS largest file offset = %llu KB\n", max_offset >> 10);
+          debug(47,0)("COSS cache_dir size = %d KB\n", max_size);
+          fatal("COSS cache_dir size exceeds largest offset\n");
+      }
+--- 861,867 ----
+  
+      if (max_size > (max_offset>>10)) {
+          debug(47,0)("COSS block-size = %d bytes\n", 1<<blksz_bits);
+!         debugs(47,0, "COSS largest file offset = " << (max_offset >> 10) << " KB");
+          debug(47,0)("COSS cache_dir size = %d KB\n", max_size);
+          fatal("COSS cache_dir size exceeds largest offset\n");
+      }
+Index: squid3/src/fs/coss/store_io_coss.cc
+diff -c squid3/src/fs/coss/store_io_coss.cc:1.23 squid3/src/fs/coss/store_io_coss.cc:1.24
+*** squid3/src/fs/coss/store_io_coss.cc:1.23	Wed Aug 27 15:19:38 2003
+--- squid3/src/fs/coss/store_io_coss.cc	Sat Aug 30 00:39:24 2003
+***************
+*** 116,122 ****
+  
+      /* Check if we have overflowed the disk .. */
+      /* SD->max_size is int, so cast to (off_t) *before* bit-shifting */
+!     if ((SD->current_offset + allocsize) > ((off_t)SD->max_size << 10)) {
+          /*
+           * tried to allocate past the end of the disk, so wrap
+           * back to the beginning
+--- 116,122 ----
+  
+      /* Check if we have overflowed the disk .. */
+      /* SD->max_size is int, so cast to (off_t) *before* bit-shifting */
+!     if ((off_t)(SD->current_offset + allocsize) > ((off_t)SD->max_size << 10)) {
+          /*
+           * tried to allocate past the end of the disk, so wrap
+           * back to the beginning
+***************
+*** 414,420 ****
+      for (m = membufs.head; m; m = m->next) {
+          t = (CossMemBuf *)m->data;
+  
+!         if ((o >= t->diskstart) && (o < t->diskend))
+              break;
+      }
+  
+--- 414,420 ----
+      for (m = membufs.head; m; m = m->next) {
+          t = (CossMemBuf *)m->data;
+  
+!         if ((o >= (off_t)t->diskstart) && (o < (off_t)t->diskend))
+              break;
+      }
+  
+***************
+*** 665,671 ****
+          if (curfn == e->swap_filen)
+              *collision = 1;	/* Mark an object alloc collision */
+  
+!         if ((o >= newmb->diskstart) && (o < newmb->diskend)) {
+              storeRelease(e);
+              numreleased++;
+          } else
+--- 665,671 ----
+          if (curfn == e->swap_filen)
+              *collision = 1;	/* Mark an object alloc collision */
+  
+!         if ((o >= (off_t)newmb->diskstart) && (o < (off_t)newmb->diskend)) {
+              storeRelease(e);
+              numreleased++;
+          } else

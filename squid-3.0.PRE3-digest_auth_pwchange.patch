@@ -1,0 +1,88 @@
+Index: squid3/lib/rfc2617.c
+diff -c squid3/lib/rfc2617.c:1.8 squid3/lib/rfc2617.c:1.9
+*** squid3/lib/rfc2617.c:1.8	Fri Jul 11 18:34:01 2003
+--- squid3/lib/rfc2617.c	Fri Nov  7 10:23:03 2003
+***************
+*** 79,89 ****
+      unsigned char j;
+  
+      for (i = 0; i < HASHHEXLEN; i++) {
+  	j = Hex[i];
+  	if (('0' <= j) && (j <= '9'))
+! 	    Bin[i / 2] |= ((j - '0') << ((i % 2 == 0) ? 4 : 0));
+  	else
+! 	    Bin[i / 2] |= ((j - 'a' + 10) << ((i % 2 == 0) ? 4 : 0));
+      }
+      Bin[HASHLEN] = '\0';
+  }
+--- 79,94 ----
+      unsigned char j;
+  
+      for (i = 0; i < HASHHEXLEN; i++) {
++ 	unsigned char n;
+  	j = Hex[i];
+  	if (('0' <= j) && (j <= '9'))
+! 	    n = j - '0';
+  	else
+! 	    n = j - 'a' + 10;
+! 	if (i % 2 == 0)
+! 	    Bin[i / 2] = n << 4;
+! 	else
+! 	    Bin[i / 2] |= n;
+      }
+      Bin[HASHLEN] = '\0';
+  }
+Index: squid3/src/auth/digest/auth_digest.cc
+diff -c squid3/src/auth/digest/auth_digest.cc:1.31 squid3/src/auth/digest/auth_digest.cc:1.32
+*** squid3/src/auth/digest/auth_digest.cc:1.31	Sun Aug 10 05:00:48 2003
+--- squid3/src/auth/digest/auth_digest.cc	Fri Nov  7 10:23:04 2003
+***************
+*** 693,699 ****
+      debug(29, 9) ("\nResponse = '%s'\n"
+                    "squid is = '%s'\n", digest_request->response, Response);
+  
+!     if (strcasecmp(digest_request->response, Response)) {
+          if (digestConfig->PostWorkaround && request->method != METHOD_GET) {
+              /* Ugly workaround for certain very broken browsers using the
+               * wrong method to calculate the request-digest on POST request.
+--- 693,706 ----
+      debug(29, 9) ("\nResponse = '%s'\n"
+                    "squid is = '%s'\n", digest_request->response, Response);
+  
+!     if (strcasecmp(digest_request->response, Response) != 0) {
+!         if (!digest_request->flags.helper_queried) {
+!             /* Query the helper in case the password has changed */
+!             digest_request->flags.helper_queried = 1;
+!             digest_request->credentials_ok = Pending;
+!             return;
+!         }
+! 
+          if (digestConfig->PostWorkaround && request->method != METHOD_GET) {
+              /* Ugly workaround for certain very broken browsers using the
+               * wrong method to calculate the request-digest on POST request.
+***************
+*** 1449,1454 ****
+--- 1456,1462 ----
+           * username cache */
+          /* store user in hash's */
+          authenticateUserNameCacheAdd(auth_user);
++ 
+          /*
+           * Add the digest to the user so we can tell if a hacking
+           * or spoofing attack is taking place. We do this by assuming
+Index: squid3/src/auth/digest/auth_digest.h
+diff -c squid3/src/auth/digest/auth_digest.h:1.14 squid3/src/auth/digest/auth_digest.h:1.15
+*** squid3/src/auth/digest/auth_digest.h:1.14	Sun Aug 10 05:00:48 2003
+--- squid3/src/auth/digest/auth_digest.h	Fri Nov  7 10:23:04 2003
+***************
+*** 87,92 ****
+--- 87,95 ----
+  
+  unsigned int nonce_stale:
+          1;
++ 
++ unsigned int helper_queried:
++         1;
+      }
+  
+      flags;

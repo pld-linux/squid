@@ -1,0 +1,47 @@
+Index: squid3/src/forward.cc
+diff -c squid3/src/forward.cc:1.111 squid3/src/forward.cc:1.112
+*** squid3/src/forward.cc:1.111	Sat Aug 16 14:33:47 2003
+--- squid3/src/forward.cc	Mon Aug 18 06:24:45 2003
+***************
+*** 314,319 ****
+--- 314,326 ----
+          }
+      }
+  
++     if (fs->_peer && !SSL_session_reused(ssl)) {
++         if (fs->_peer->sslSession)
++             SSL_SESSION_free(fs->_peer->sslSession);
++ 
++         fs->_peer->sslSession = SSL_get1_session(ssl);
++     }
++ 
+      fwdDispatch(fwdState);
+  }
+  
+***************
+*** 362,367 ****
+--- 369,378 ----
+  
+          else
+              SSL_set_ex_data(ssl, ssl_ex_index_server, peer->host);
++ 
++         if (peer->sslSession)
++             SSL_set_session(ssl, peer->sslSession);
++ 
+      } else {
+          SSL_set_ex_data(ssl, ssl_ex_index_server, fwdState->request->host);
+      }
+Index: squid3/src/structs.h
+diff -c squid3/src/structs.h:1.479 squid3/src/structs.h:1.480
+*** squid3/src/structs.h:1.479	Tue Aug 12 18:17:26 2003
+--- squid3/src/structs.h	Mon Aug 18 06:24:45 2003
+***************
+*** 1383,1388 ****
+--- 1383,1389 ----
+      char *sslflags;
+      char *ssldomain;
+      SSL_CTX *sslContext;
++     SSL_SESSION *sslSession;
+  #endif
+  
+      int front_end_https;

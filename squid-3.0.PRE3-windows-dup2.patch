@@ -1,0 +1,41 @@
+Index: squid3/src/main.cc
+diff -c squid3/src/main.cc:1.386 squid3/src/main.cc:1.387
+*** squid3/src/main.cc:1.386	Sun Aug 17 07:22:30 2003
+--- squid3/src/main.cc	Sat Aug 30 19:22:05 2003
+***************
+*** 1093,1098 ****
+--- 1093,1105 ----
+          if (do_reconfigure) {
+              mainReconfigure();
+              do_reconfigure = 0;
++ #if defined(_SQUID_MSWIN_) && defined(_DEBUG)
++ 
++         } else if (do_debug) {
++             do_debug = 0;
++             __asm int 3;
++ #endif
++ 
+          } else if (do_rotate) {
+              mainRotate();
+              do_rotate = 0;
+Index: squid3/src/comm.cc
+diff -c squid3/src/comm.cc:1.387 squid3/src/comm.cc:1.388
+*** squid3/src/comm.cc:1.387	Fri Aug 15 07:06:34 2003
+--- squid3/src/comm.cc	Sat Aug 30 19:22:05 2003
+***************
+*** 1407,1412 ****
+--- 1407,1420 ----
+          return 0;
+      }
+  
++ #ifdef _SQUID_MSWIN_
++ 
++     /* On Windows dup2() can't work correctly on Sockets, the          */
++     /* workaround is to close the destination Socket before call them. */
++     close(cs->fd);
++ 
++ #endif
++ 
+      if (dup2(fd2, cs->fd) < 0) {
+          debug(5, 0) ("commResetFD: dup2: %s\n", xstrerror());
+  

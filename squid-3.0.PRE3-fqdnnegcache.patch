@@ -1,0 +1,21 @@
+Index: squid3/src/fqdncache.cc
+diff -c squid3/src/fqdncache.cc:1.155 squid3/src/fqdncache.cc:1.156
+*** squid3/src/fqdncache.cc:1.155	Fri Feb 21 15:50:08 2003
+--- squid3/src/fqdncache.cc	Sat Oct 11 16:33:51 2003
+***************
+*** 333,339 ****
+      int k;
+      int na = 0;
+      memset(&f, '\0', sizeof(f));
+!     f.expires = squid_curtime;
+      f.flags.negcached = 1;
+  
+      if (nr < 0) {
+--- 333,339 ----
+      int k;
+      int na = 0;
+      memset(&f, '\0', sizeof(f));
+!     f.expires = squid_curtime + Config.negativeDnsTtl;
+      f.flags.negcached = 1;
+  
+      if (nr < 0) {

@@ -1,0 +1,302 @@
+Index: squid3/src/comm_epoll.cc
+diff -c squid3/src/comm_epoll.cc:1.4 squid3/src/comm_epoll.cc:1.5
+*** squid3/src/comm_epoll.cc:1.4	Sun Aug  3 15:38:15 2003
+--- squid3/src/comm_epoll.cc	Sun Nov  9 10:11:10 2003
+***************
+*** 94,99 ****
+--- 94,117 ----
+      }
+  }
+  
++ static const char* epolltype_atoi(int x)
++ {
++     switch(x) {
++ 
++     case EPOLL_CTL_ADD:
++         return "EPOLL_CTL_ADD";
++ 
++     case EPOLL_CTL_DEL:
++         return "EPOLL_CTL_DEL";
++ 
++     case EPOLL_CTL_MOD:
++         return "EPOLL_CTL_MOD";
++ 
++     default:
++         return "UNKNOWN_EPOLLCTL_OP";
++     }
++ }
++ 
+  /*
+   * comm_setselect
+   *
+***************
+*** 106,115 ****
+                void *client_data, time_t timeout)
+  {
+      fde *F = &fd_table[fd];
+!     int change = 0;
+!     int events = 0;
+!     int pollin = 0;
+!     int pollout = 0;
+  
+      struct epoll_event ev;
+      assert(fd >= 0);
+--- 124,130 ----
+                void *client_data, time_t timeout)
+  {
+      fde *F = &fd_table[fd];
+!     int epoll_ctl_type = 0;
+  
+      struct epoll_event ev;
+      assert(fd >= 0);
+***************
+*** 117,186 ****
+      debug(5, DEBUG_EPOLL ? 0 : 8) ("commSetSelect(fd=%d,type=%u,handler=%p,client_data=%p,timeout=%ld)\n",
+                                     fd,type,handler,client_data,timeout);
+  
+!     if(F->read_handler != NULL)
+!         pollin = 1;
+  
+!     if(F->write_handler != NULL)
+!         pollout = 1;
+  
+      if (type & COMM_SELECT_READ) {
+!         if(F->read_handler != handler)
+!             change = 1;
+! 
+!         if(handler == NULL)
+!             pollin = 0;
+!         else
+!             pollin = 1;
+  
+          F->read_handler = handler;
+  
+          F->read_data = client_data;
+      }
+  
+      if (type & COMM_SELECT_WRITE) {
+!         if(F->write_handler != handler)
+!             change = 1;
+! 
+!         if(handler == NULL)
+!             pollout = 0;
+!         else
+!             pollout = 1;
+  
+          F->write_handler = handler;
+  
+          F->write_data = client_data;
+-     }
+  
+!     if(pollin)
+!         events |= EPOLLIN;
+! 
+!     if(pollout)
+!         events |= EPOLLOUT;
+! 
+!     if(events)
+!         events |= EPOLLHUP | EPOLLERR;
+  
+!     ev.data.fd = fd;
+  
+!     ev.events = events;
+  
+!     if(events) {
+!         if (epoll_ctl(kdpfd, EPOLL_CTL_MOD, fd, &ev) < 0) {
+!             if(errno == ENOENT) {
+!                 debug(5,4) ("commSetSelect: epoll_ctl(,EPOLL_CTL_MOD,,) failed on fd=%d: entry does not exist\n",fd);
+  
+!                 if (epoll_ctl(kdpfd, EPOLL_CTL_ADD, fd, &ev) < 0)
+!                     debug(5,1) ("commSetSelect: cpoll_ctl(,EPOLL_CTL_ADD,,) failed on fd=%d!: %s\n",fd,xstrerror());
+!             } else {
+!                 debug(5,1) ("commSetSelect: cpoll_ctl(,EPOLL_CTL_MOD,,) failed on fd=%d!: %s\n",fd,xstrerror());
+!             }
+!         }
+!     } else if(change) {
+!         if(epoll_ctl(kdpfd,EPOLL_CTL_DEL,fd,&ev) < 0) {
+!             if(errno != ENOENT)
+!                 debug(5,1) ("commSetSelect: cpoll_ctl(,EPOLL_CTL_DEL,,) failed on fd=%d!: %s\n",fd,xstrerror());
+!             else
+!                 debug(5,4) ("commSetSelect: epoll_ctl(,EPOLL_CTL_DEL,,) failed on fd=%d: entry does not exist\n",fd);
+          }
+      }
+  
+--- 132,183 ----
+      debug(5, DEBUG_EPOLL ? 0 : 8) ("commSetSelect(fd=%d,type=%u,handler=%p,client_data=%p,timeout=%ld)\n",
+                                     fd,type,handler,client_data,timeout);
+  
+!     ev.events = 0;
+!     ev.data.fd = fd;
+  
+!     // If read is an interest
+  
+      if (type & COMM_SELECT_READ) {
+!         if (handler)
+!             ev.events |= EPOLLIN;
+  
+          F->read_handler = handler;
+  
+          F->read_data = client_data;
++ 
++         // Otherwise, use previously stored value
++     } else if (F->epoll_state & EPOLLIN) {
++         ev.events |= EPOLLIN;
+      }
+  
++     // If write is an interest
+      if (type & COMM_SELECT_WRITE) {
+!         if (handler)
+!             ev.events |= EPOLLOUT;
+  
+          F->write_handler = handler;
+  
+          F->write_data = client_data;
+  
+!         // Otherwise, use previously stored value
+!     } else if (F->epoll_state & EPOLLOUT) {
+!         ev.events |= EPOLLOUT;
+!     }
+  
+!     if (ev.events)
+!         ev.events |= EPOLLHUP | EPOLLERR;
+  
+!     if (ev.events != F->epoll_state) {
+!         if (F->epoll_state) // already monitoring something.
+!             epoll_ctl_type = ev.events ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
+!         else
+!             epoll_ctl_type = EPOLL_CTL_ADD;
+  
+!         F->epoll_state = ev.events;
+  
+!         if (epoll_ctl(kdpfd, epoll_ctl_type, fd, &ev) < 0) {
+!             debug(5, DEBUG_EPOLL ? 0 : 8) ("commSetSelect: epoll_ctl(,%s,,): failed on fd=%d: %s\n",
+!                                            epolltype_atoi(epoll_ctl_type), fd, xstrerror());
+          }
+      }
+  
+***************
+*** 238,268 ****
+  
+      getCurrentTime();
+  
+      if (num == 0)
+!         return COMM_OK;		/* No error.. */
+  
+      for (i = 0, cevents = pevents; i < num; i++, cevents++) {
+          fd = cevents->data.fd;
+          F = &fd_table[fd];
+!         debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): got fd=%d events=%d F->read_handler=%p F->write_handler=%p\n",
+!                                        fd,cevents->events,F->read_handler,F->write_handler);
+  
+!         if(cevents->events & (EPOLLIN|EPOLLHUP|EPOLLERR)) {
+              if((hdl = F->read_handler) != NULL) {
+                  debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): Calling read handler on fd=%d\n",fd);
+                  F->read_handler = NULL;
+                  hdl(fd, F->read_data);
+              }
+          }
+  
+!         if(cevents->events & (EPOLLOUT|EPOLLHUP|EPOLLERR)) {
+              if((hdl = F->write_handler) != NULL) {
+                  debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): Calling write handler on fd=%d\n",fd);
+                  F->write_handler = NULL;
+                  hdl(fd, F->write_data);
+              }
+          }
+      }
+  
+      return COMM_OK;
+  }
+--- 235,289 ----
+  
+      getCurrentTime();
+  
++     statHistCount(&statCounter.select_fds_hist, num);
++ 
+      if (num == 0)
+!         return COMM_TIMEOUT;		/* No error.. */
+! 
+!     PROF_start(comm_handle_ready_fd);
+  
+      for (i = 0, cevents = pevents; i < num; i++, cevents++) {
+          fd = cevents->data.fd;
+          F = &fd_table[fd];
+!         debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): got fd=%d events=%x monitoring=%x F->read_handler=%p F->write_handler=%p\n",
+!                                        fd,cevents->events,F->epoll_state,F->read_handler,F->write_handler);
+! 
+!         // TODO: add EPOLLPRI??
+  
+!         if (cevents->events & (EPOLLIN|EPOLLHUP|EPOLLERR)) {
+              if((hdl = F->read_handler) != NULL) {
+                  debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): Calling read handler on fd=%d\n",fd);
++                 PROF_start(comm_write_handler);
+                  F->read_handler = NULL;
+                  hdl(fd, F->read_data);
++                 PROF_stop(comm_write_handler);
++                 statCounter.select_fds++;
++             } else {
++                 debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): no read handler for fd=%d\n",fd);
++                 fd_table[fd].flags.read_pending = 1;
++                 // remove interest since no handler exist for this event.
++                 commSetSelect(fd, COMM_SELECT_READ, NULL, NULL, 0);
+              }
+          }
+  
+!         if (cevents->events & (EPOLLOUT|EPOLLHUP|EPOLLERR)) {
+              if((hdl = F->write_handler) != NULL) {
+                  debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): Calling write handler on fd=%d\n",fd);
++                 PROF_start(comm_read_handler);
+                  F->write_handler = NULL;
+                  hdl(fd, F->write_data);
++                 PROF_stop(comm_read_handler);
++                 statCounter.select_fds++;
++             } else {
++                 fd_table[fd].flags.write_pending = 1;
++                 debug(5, DEBUG_EPOLL ? 0 : 8) ("comm_select(): no write handler for fd=%d\n",fd);
++                 // remove interest since no handler exist for this event.
++                 commSetSelect(fd, COMM_SELECT_WRITE, NULL, NULL, 0);
+              }
+          }
+      }
++ 
++     PROF_stop(comm_handle_ready_fd);
+  
+      return COMM_OK;
+  }
+Index: squid3/src/fd.cc
+diff -c squid3/src/fd.cc:1.48 squid3/src/fd.cc:1.49
+*** squid3/src/fd.cc:1.48	Fri Feb 21 15:50:08 2003
+--- squid3/src/fd.cc	Sun Nov  9 10:11:11 2003
+***************
+*** 163,168 ****
+--- 163,169 ----
+      debug(51, 3) ("fd_open FD %d %s\n", fd, desc);
+      F->type = type;
+      F->flags.open = 1;
++     F->epoll_state = 0;
+  #ifdef _SQUID_MSWIN_
+  
+      switch (type) {
+Index: squid3/src/fde.h
+diff -c squid3/src/fde.h:1.5 squid3/src/fde.h:1.6
+*** squid3/src/fde.h:1.5	Tue Jul 15 00:50:42 2003
+--- squid3/src/fde.h	Sun Nov  9 10:11:11 2003
+***************
+*** 93,104 ****
+--- 93,108 ----
+  
+  unsigned int read_pending:
+          1;
++ 
++ unsigned int write_pending:
++         1;
+      }
+  
+      flags;
+      int bytes_read;
+      int bytes_written;
+      int uses;                   /* ie # req's over persistent conn */
++     unsigned epoll_state;
+  
+      struct _fde_disk disk;
+      PF *read_handler;
