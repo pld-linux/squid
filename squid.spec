@@ -350,7 +350,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ip_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on IP address.
+access for users based on IP address.
 
 %description ip_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -364,7 +364,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ldap_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on LDAP group membership.
+access for users based on LDAP group membership.
 
 %description ldap_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -379,7 +379,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description unix_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on UNIX group membership.
+access for users based on UNIX group membership.
 
 %description unix_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -394,8 +394,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description wbinfo_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on NT domain group membership using wbinfo.
-
+access for users based on NT domain group membership using wbinfo.
 
 %description wbinfo_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -410,7 +409,7 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description winbind_acl
 This is an external ACL module for the Squid proxy server to limit
-acces for users based on NT domain group membership based on Samba
+access for users based on NT domain group membership based on Samba
 Winbindd from Samba 2.2.4 or greater.
 
 %description winbind_acl -l pl
@@ -522,8 +521,8 @@ mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
 rm -f doc/Makefile*
 
 # We don't like message: rpm found unpackaged files ...
-rm -f     $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
-    $RPM_BUILD_ROOT/etc/squid/squid.conf.orig
+rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
+	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
