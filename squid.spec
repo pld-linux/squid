@@ -156,7 +156,7 @@ grep -q squd /etc/group || (
 )
 grep -q squid /etc/passwd || (
     /usr/sbin/useradd -M -o -r -u 91 \
-        -g squid -c "SANE remote scanning daemon" squid 1>&2 || :
+        -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 )
 
 %post
