@@ -1,0 +1,21 @@
+Index: squid/src/comm_select.c
+diff -c squid/src/comm_select.c:1.53.2.5 squid/src/comm_select.c:1.53.2.6
+*** squid/src/comm_select.c:1.53.2.5	Fri Mar  7 15:50:08 2003
+--- squid/src/comm_select.c	Sun May 11 07:42:22 2003
+***************
+*** 388,394 ****
+  	    statCounter.syscalls.polls++;
+  	    num = poll(pfds, nfds, msec);
+  	    statCounter.select_loops++;
+! 	    if (num >= 0 || npending >= 0)
+  		break;
+  	    if (ignoreErrno(errno))
+  		continue;
+--- 388,394 ----
+  	    statCounter.syscalls.polls++;
+  	    num = poll(pfds, nfds, msec);
+  	    statCounter.select_loops++;
+! 	    if (num >= 0 || npending > 0)
+  		break;
+  	    if (ignoreErrno(errno))
+  		continue;
