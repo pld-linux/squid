@@ -156,7 +156,7 @@ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 %patch16 -p1
 
 %build
-autoconf
+%{__autoconf}
 %configure \
 	--localstatedir=/var \
 	--enable-icmp \
