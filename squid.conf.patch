@@ -8,11 +8,11 @@
 +#	      squid -z -F
 +#
  #Default:
- # cache_dir ufs /var/cache/squid 100 16 256
+ # cache_dir ufs /var/cache 100 16 256
 +cache_dir diskd /var/cache/squid 100 16 256
  
- #  TAG: cache_access_log
- #	Logs the client request activity.  Contains an entry for
+ #  TAG: logformat
+ #	Usage:
 @@ -1934,6 +1938,8 @@
  #
  #Default:
