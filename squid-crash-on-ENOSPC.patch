@@ -1,0 +1,11 @@
+--- squid-2.5.STABLE1/src/logfile.c~	Wed Jun 26 11:57:24 2002
++++ squid-2.5.STABLE1/src/logfile.c	Fri Feb 28 13:33:57 2003
+@@ -186,5 +186,7 @@
+ 	return;
+     if (!lf->flags.fatal)
+ 	return;
+-    fatalf("logfileWrite: %s: %s\n", lf->path, xstrerror());
++#if HAVE_SYSLOG
++    syslog(LOG_ALERT, "logfileWrite: %s: %s", lf->path, xstrerror());
++#endif
+ }
