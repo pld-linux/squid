@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE7
-Release:	4
+Release:	5
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -56,8 +56,9 @@ BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.166
 PreReq:		rc-scripts >= 0.2.0
+PreReq:		setup >= 2.4.6
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
@@ -527,6 +528,9 @@ rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%triggerpostun -- inn < 7:2.5.STABLE7-5
+%addusertogroup stats squid
+
 %pre
 if [ -n "`/usr/bin/getgid squid`" ]; then
 	if [ "`/usr/bin/getgid squid`" != "91" ]; then
@@ -544,6 +548,7 @@ if [ -n "`/bin/id -u squid 2>/dev/null`" ]; then
 else
 	/usr/sbin/useradd -o -u 91 -s /bin/false -g squid \
 		-c "SQU http caching daemon" -d /var/cache/squid squid 1>&2
+	%addusertogroup stats squid
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
