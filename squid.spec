@@ -60,6 +60,7 @@ BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pam-devel
+BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -312,6 +313,7 @@ u¿ytkowników proxy poprzez YP.
 %configure \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
+	--datadir=%{_datadir}/squid \
 	--enable-icmp \
 	--enable-useragent-log \
 	--enable-snmp \
@@ -319,15 +321,21 @@ u¿ytkowników proxy poprzez YP.
 	--enable-err-language=English \
 	--enable-htcp \
 	--enable-carp \
+	--enable-ssl \
+	--enable-forw-via-db \
+	--enable-cache-digests \
 	--enable-storeio="aufs,coss,diskd,null,ufs" \
 	--enable-removal-policies="lru heap" \
 	--disable-ipf-transparent \
 	--enable-delay-pools \
 	--with-pthreads \
-	--enable-cache-digests \
-	--with-auth-modules=yes
-# for 2.4 kernel:
-#	--enable-linux-netfilter\
+	--enable-auth=yes \
+	--enable-basic-auth-helpers=yes \
+	--enable-ntlm-auth-helpers=yes \
+	--enable-digest-auth-helpers=yes \
+	--enable-external-acl-helpers=yes \
+	--enable-x-accelerator-vary \
+	--enable-linux-netfilter
 
 mv -f squid/* doc
 %{__make}
@@ -347,17 +355,12 @@ install -d \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-# We don't use %{__make} install-pinger, because it tries to set it suid root.
-install src/pinger $RPM_BUILD_ROOT%{_bindir}
-
 mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
 install %{SOURCE7}				$RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
-mv -f $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
-mv -f $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
+mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
 
 cd errors
 for LNG in *; do
@@ -457,11 +460,11 @@ fi
 %defattr(644,root,root,755)
 %doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART TODO
 %doc doc/*
-%attr(755,root,root) %{_bindir}/client
-%attr(755,root,root) %{_bindir}/diskd
+%attr(755,root,root) %{_bindir}/squidclient
+%attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
-%attr(4754,root,squid) %{_bindir}/pinger
-%attr(755,root,root) %{_bindir}/unlinkd
+%attr(4754,root,squid) %{_libexecdir}/pinger
+%attr(755,root,root) %{_libexecdir}/unlinkd
 %attr(755,root,root) %{_sbindir}/*
 
 %attr(755,root,root) %dir %{_sysconfdir}
