@@ -3,7 +3,7 @@
 %bcond_with	combined_log	# enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
-Summary(es):	proxy/cache para www/ftp/gopher
+Summary(es):	proxy/cache para WWW/FTP/gopher
 Summary(pl):	Uniwersalny proxy-cache server
 Summary(pt_BR):	Cache Squid de objetos Internet
 Summary(ru):	Squid - кэш объектов Internet
