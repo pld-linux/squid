@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE2
-Release:	4
+Release:	5
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -77,6 +77,41 @@ various informations about Squid via WWW.
 Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi
 zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 
+%package ldap_auth
+Summary:	LDAP authentication helper for Squid.
+Group:		Networking/Admin
+Group(de):	Netzwerkwesen/Administration
+Group(pl):	Sieciowe/Administracyjne
+Requires:	%{name}
+
+%description ldap_auth
+This Squid helper allows authentication against LDAP directories using
+the "simple authentication" (plain-text).
+
+%package pam_auth
+Summary:	PAM authentication helper for Squid.
+Group:		Networking/Admin
+Group(de):	Netzwerkwesen/Administration
+Group(pl):	Sieciowe/Administracyjne
+Requires:	%{name}
+
+%description pam_auth
+This program authenticates users against a PAM configured
+authentication service "squid". This allows you to authenticate Squid
+users to any authentication source for which you have a PAM module.
+
+%package smb_auth
+Summary:	SMB authentication helper for Squid.
+Group:		Networking/Admin
+Group(de):	Netzwerkwesen/Administration
+Group(pl):	Sieciowe/Administracyjne
+Requires:	%{name}
+
+%description smb_auth
+This is a proxy authentication module. With smb_auth you can
+authenticate proxy users against an SMB server like Windows NT or
+Samba.
+
 %prep
 %setup -q -a 1 -a 4
 
@@ -106,7 +141,8 @@ autoconf
 	--disable-ipf-transparent \
 	--enable-delay-pools \
 	--with-pthreads \
-	--enable-cache-digests
+	--enable-cache-digests \
+	--with-auth-modules=yes
 # old dns-checker:
 #	--disable-internal-dns \
 # for 2.4 kernel:
@@ -115,13 +151,15 @@ autoconf
 mv -f squid/* doc
 %{__make} 
 
+%{__make} -C auth_modules SUBDIRS="LDAP MSNT NCSA PAM SMB YP getpwnam"
+
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig,logrotate.d} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
-	$RPM_BUILD_ROOT%{_mandir}/man1 \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/{contrib,auth_modules}} \
+	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
 
@@ -138,6 +176,19 @@ install -d \
 install src/pinger $RPM_BUILD_ROOT%{_bindir}
 
 mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
+
+# auth modules
+install auth_modules/LDAP/squid_ldap_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+install -d $RPM_BUILD_ROOT%{_mandir}/man8
+install auth_modules/LDAP/squid_ldap_auth.8 $RPM_BUILD_ROOT%{_mandir}/man8
+gzip -9nf auth_modules/LDAP/README
+
+install auth_modules/PAM/pam_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+gzip -9nf auth_modules/PAM/pam_auth.c # there is documentation 
+
+
+install auth_modules/SMB/smb_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+gzip -9nf auth_modules/SMB/README
 
 mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
 mv -f $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
@@ -171,7 +222,7 @@ gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 	TODO
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 %pre
 grep -q squid /etc/group || (
@@ -272,7 +323,10 @@ fi
 %lang(zh) %{_datadir}/squid/errors.Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors.Turkish
 
-%attr(750,root,root) %{_libexecdir}
+%attr(750,root,root) %dir %{_libexecdir}
+%attr(750,root,root) %{_libexecdir}/*.pl
+%attr(750,root,root) %{_libexecdir}/contrib
+%attr(750,root,root) %dir %{_libexecdir}/auth_modules
 
 %attr(770,root,squid) %dir /var/log/archiv/squid
 %attr(770,root,squid) %dir /var/log/squid
@@ -283,3 +337,19 @@ fi
 %files cachemgr
 %defattr(644,root,root,755)
 %attr(755,root,root) /home/httpd/cgi-bin/*
+
+%files ldap_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/auth_modules/%{name}_ldap_auth
+%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
+%doc auth_modules/LDAP/*.gz
+
+%files pam_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/auth_modules/pam_auth
+%doc auth_modules/PAM/*.gz
+
+%files smb_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth
+%doc auth_modules/SMB/*.gz
