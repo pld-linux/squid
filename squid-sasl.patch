@@ -1,0 +1,30 @@
+diff -urN squid-2.5.STABLE1.org/helpers/basic_auth/SASL/sasl_auth.c squid-2.5.STABLE1/helpers/basic_auth/SASL/sasl_auth.c
+--- squid-2.5.STABLE1.org/helpers/basic_auth/SASL/sasl_auth.c	Mon Aug 12 18:58:31 2002
++++ squid-2.5.STABLE1/helpers/basic_auth/SASL/sasl_auth.c	Sun Mar 16 21:45:24 2003
+@@ -25,7 +25,7 @@
+  * Compile this program with: gcc -Wall -o sasl_auth sasl_auth.c -lsasl
+  *
+  */
+-#include <sasl.h>
++#include <sasl/sasl.h>
+ #include <stdio.h>
+ #include <errno.h>
+ #include <stdlib.h>
+@@ -56,7 +56,7 @@
+ 		return 1;
+ 	}
+ 
+-	rc = sasl_server_new( APP_NAME_SASL, NULL, NULL, NULL, 0, &conn );
++	rc = sasl_server_new( APP_NAME_SASL, NULL, NULL, NULL, NULL, NULL, 0, &conn );
+ 
+ 	if ( rc != SASL_OK ) {
+ 		fprintf( stderr, "error %d %s\n", rc, sasl_errstring(rc, NULL, NULL ));
+@@ -84,7 +84,7 @@
+ 		rfc1738_unescape(username);
+ 		rfc1738_unescape(password);
+ 
+-		rc = sasl_checkpass(conn, username, strlen(username), password, strlen(password), &errstr);
++		rc = sasl_checkpass(conn, username, strlen(username), password, strlen(password));
+ 
+ 		if ( rc != SASL_OK ) {
+ 			if ( errstr ) {
