@@ -25,18 +25,7 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
 #Patch0:	
 # Other patches:
-Patch100:	%{name}-perl.patch
-Patch110:	%{name}-linux.patch
-Patch120:	%{name}-fhs.patch
-Patch130:	%{name}-location.patch
-Patch140:	%{name}-domainmatch.patch
-Patch150:	%{name}-libnsl_fixes.patch
-Patch160:	%{name}-more_FD.patch
-Patch170:	%{name}-ac_fix.patch
-Patch180:	%{name}-contrib.patch
-Patch190:	%{name}-crash-on-ENOSPC.patch
-Patch200:	%{name}-newssl.patch
-Patch210:	%{name}-sasl.patch
+#Patch100:	%{name}-perl.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7a
@@ -407,23 +396,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 #%patch0 -p1
 
 # Other patches:
-# fixme
 #%patch100 -p1
-# applied?
-#%patch110 -p1
-%patch120 -p1
-# fixme
-#%patch130 -p1
-%patch140 -p1
-# fixme?
-#%patch150 -p1
-#fixme
-#%patch160 -p1
-%patch170 -p1
-%patch180 -p1
-%patch190 -p1
-%patch200 -p1
-%patch210 -p1
 
 %build
 %{__aclocal}
