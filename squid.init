@@ -43,7 +43,7 @@
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
-	if [ ! -f /var/lock/subsys/network ]; then
+	if [ ! -f /var/lock/subsys/network -a != stop -a != status -a != init ]; then
 		msg_network_down Squid
 		exit 1
 	fi
