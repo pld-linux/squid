@@ -1,13 +1,11 @@
-%define	calamaris_ver	2.24
-
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.2.STABLE3
-Release:	1
+Release:	2
 Copyright:	GPL
-Group:		Networking/Daemons
-Group(pl):	Sieciowe/Serwery
+Group:		Daemons
+Group(pl):	Serwery
 Source0:	ftp://squid.nlanr.net/pub/Squid/squid-2/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
@@ -20,13 +18,14 @@ Source8:	calamaris.crontab
 Source9:	%{name}.sysconfig
 Patch0:		%{name}-2.0-make.patch
 Patch1:		%{name}-perl.patch
-PAtch2:		squid-linux.patch
-BuildPrereq:	autoconf
-BuildPrereq:	perl
+Patch2:		squid-linux.patch
+Patch3:		squid-fhs.patch
+Patch4:		squid-version.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
 Requires:	crontabs
 
+%define		calamaris_ver	2.24
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
 
@@ -72,6 +71,8 @@ Squid wywodzi siê ze sponsorowanego przez ARPA projektu Harvest.
 %patch0 -p1 
 %patch1 -p1 
 %patch2 -p1 
+%patch3 -p1
+%patch4 -p1
 
 %build
 install -d  $RPM_BUILD_DIR/%{name}-%{version}/errors/{English.Polish,tmp}
@@ -108,15 +109,22 @@ rm -rf $RPM_BUILD_ROOT
 install -d \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,crontab.d,sysconfig} \
-	$RPM_BUILD_ROOT/usr/{sbin,lib/squid,man/man1}
+	$RPM_BUILD_ROOT%{_prefix}/{sbin,bin,lib/squid,share/{man/man1,squid}} \
+	$RPM_BUILD_ROOT/var/cache/squid
 
 make install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	sysconfdir=$RPM_BUILD_ROOT/etc/squid \
-	localstatedir=$RPM_BUILD_ROOT/var
+	bindir=$RPM_BUILD_ROOT%{_bindir} \
+	libdir=$RPM_BUILD_ROOT%{_libdir} \
+	libexecdir=$RPM_BUILD_ROOT%{_bindir} \
+	localstatedir=$RPM_BUILD_ROOT/var \
+	datadir=$RPM_BUILD_ROOT%{_datadir}
 
 mv $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
-mv $RPM_BUILD_ROOT%{_bindir}/squid $RPM_BUILD_ROOT%{_sbindir}/
+mv $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
+mv $RPM_BUILD_ROOT/etc/squid/errors	$RPM_BUILD_ROOT%{_datadir}/squid
+mv $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/crontab.d/squid
@@ -129,7 +137,7 @@ install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 install scripts/*.pl $RPM_BUILD_ROOT%{_libdir}/squid
 
-touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
+touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}
 
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
@@ -140,12 +148,16 @@ gzip -9nf README ChangeLog QUICKSTART \
 %post
 /sbin/chkconfig --add squid
 
+if [ -f /var/lock/sybsys/squid ]; then
+    /etc/rc.d/init.d/squid restart >&2
+fi
+
 %preun
-if [ -e /var/lock/sybsys/squid ]; then
+if [ -f /var/lock/sybsys/squid ]; then
     /etc/rc.d/init.d/squid stop >&2
 fi
 
-if [ $1 = 0 ]; then
+if [ "$1" = 0 ]; then
     /sbin/chkconfig --del squid
 fi
 
@@ -161,20 +173,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 
-%dir /etc/squid
+%attr(750,root,root) %dir /etc/squid
 
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/squid/squid.conf
-%config %verify(not md5 mtime size) /etc/squid/mime.conf
-
-/etc/squid/mib.txt
+%attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/squid.conf
+%attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/mime.conf
 /etc/squid/mime.conf.default
 /etc/squid/squid.conf.default
 
-%dir /etc/squid/icons
-/etc/squid/icons/*
-
-%dir /etc/squid/errors
-/etc/squid/errors/*
+%{_datadir}/squid
 
 %attr(640,root,root) /etc/crontab.d/*
 
@@ -187,9 +193,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(750,root,root) %{_libdir}/squid/*
 
 %attr(750,nobody,root) %dir /var/log/squid
-%ghost %attr(644,nobody,nobody) /var/log/squid/*.log
+%ghost %attr(644,nobody,nobody) /var/log/squid/*
 
-%attr(700,nobody,nobody) %dir /var/spool/squid
+%attr(750,nobody,root) %dir /var/cache/squid
 
 %changelog
 * Tue Jan 26 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
@@ -221,29 +227,3 @@ rm -rf $RPM_BUILD_ROOT
 - changed files permission
 - added calamaris.pl for log processing
 - added squid.log for logrotate
-
-* Sun May 10 1998 Cristian Gafton <gafton@redhat.com>
-- don't make packages conflict with each other...
-
-* Sat May 02 1998 Cristian Gafton <gafton@redhat.com>
-- added a proxy auth patch from Alex deVries <adevries@engsoc.carleton.ca>
-- fixed initscripts
-
-* Thu Apr 09 1998 Cristian Gafton <gafton@redhat.com>
-- rebuilt for Manhattan
-
-* Fri Mar 20 1998 Cristian Gafton <gafton@redhat.com>
-- upgraded to 1.1.21/1.NOVM.21
-
-* Mon Mar 02 1998 Cristian Gafton <gafton@redhat.com>
-- updated the init script to use reconfigure option to restart squid instead
-  of shutdown/restart (both safer and quicker)
-
-* Sat Feb 07 1998 Cristian Gafton <gafton@redhat.com>
-- upgraded to 1.1.20
-- added the NOVM package and tryied to reduce the mess in the spec file
-
-* Wed Jan 7 1998 Cristian Gafton <gafton@redhat.com>
-- first build against glibc
-- patched out the use of setresuid(), which is available only on kernels
-  2.1.44 and later
