@@ -1,0 +1,15 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.43 squid/src/cf.data.pre:1.245.2.44
+*** squid/src/cf.data.pre:1.245.2.43	Wed May 21 08:34:38 2003
+--- squid/src/cf.data.pre	Wed May 28 20:59:46 2003
+***************
+*** 742,749 ****
+  	
+  	cache_dir Type Directory-Name Fs-specific-data [options]
+  
+- 	cache_dir diskd Maxobjsize Directory-Name MB L1 L2 Q1 Q2
+- 
+  	You can specify multiple cache_dir lines to spread the
+  	cache among different disk partitions.
+  
+--- 742,747 ----
