@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE2
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
@@ -515,7 +515,7 @@ else
 	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
 		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
-[ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors
+[ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
 %post
 if [ "$1" = "1" ]; then
