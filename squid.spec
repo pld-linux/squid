@@ -5,6 +5,7 @@ Version:	2.3.STABLE4
 Release:	5
 License:	GPL
 Group:		Networking/Daemons
+Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
 Source0:	http://www.squid-cache.org/Versions/v2/2.3/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
@@ -64,7 +65,8 @@ sponsorowanego przez ARPA projektu Harvest.
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
-Group(pl):	Sieciowe/Administracyjne
+Group(de):	Netzwerkwesen/Administration
+Group(pl):	Sieciowe/Administacyjne
 Requires:	%{name} = %{version}
 Requires:	httpd
 
@@ -90,7 +92,6 @@ zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
 
 %build
 autoconf
-LDFLAGS="-s" ; export LDFLAGS
 %configure \
 	--localstatedir=/var \
 	--enable-icmp \
@@ -128,16 +129,16 @@ install -d \
 	localstatedir=$RPM_BUILD_ROOT/var \
 	datadir=$RPM_BUILD_ROOT%{_datadir}
 
-mv contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
+mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
-mv $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
-mv $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
-mv $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
+mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
+mv -f $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
+mv -f $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
 
 cd errors
 for LNG in *; do
 	if [ -d $LNG ]; then
-		mv $LNG $RPM_BUILD_ROOT%{_datadir}/squid/errors.$LNG
+		mv -f $LNG $RPM_BUILD_ROOT%{_datadir}/squid/errors.$LNG
 	fi
 done
 cd ..
