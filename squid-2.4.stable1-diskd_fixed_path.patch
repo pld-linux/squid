@@ -1,0 +1,107 @@
+Index: src/fs/diskd/store_dir_diskd.c
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/fs/diskd/store_dir_diskd.c,v
+retrieving revision 1.24.2.16
+retrieving revision 1.24.2.17
+diff -c -r1.24.2.16 -r1.24.2.17
+*** src/fs/diskd/store_dir_diskd.c	2001/03/14 22:31:41	1.24.2.16
+--- src/fs/diskd/store_dir_diskd.c	2001/04/04 07:01:13	1.24.2.17
+***************
+*** 417,423 ****
+  #else
+      x = ipcCreate(IPC_FIFO,
+  #endif
+! 	SQUID_PREFIX "/libexec/squid/diskd",
+  	args,
+  	"diskd",
+  	&rfd,
+--- 417,423 ----
+  #else
+      x = ipcCreate(IPC_FIFO,
+  #endif
+! 	Config.Program.diskd,
+  	args,
+  	"diskd",
+  	&rfd,
+Index: src/Makefile.in
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/Makefile.in,v
+retrieving revision 1.195.2.3
+retrieving revision 1.195.2.4
+diff -c -r1.195.2.3 -r1.195.2.4
+*** src/Makefile.in	2001/02/10 14:41:26	1.195.2.3
+--- src/Makefile.in	2001/04/04 07:01:12	1.195.2.4
+***************
+*** 31,36 ****
+--- 31,37 ----
+  OPT_PINGER_EXE	= pinger$(exec_suffix)
+  PINGER_EXE	= @OPT_PINGER_EXE@
+  CACHEMGR_EXE	= cachemgr$(cgi_suffix)
++ DISKD_EXE	= diskd$(exec_suffix)
+  
+  DEFAULT_PREFIX		= $(prefix)
+  DEFAULT_CONFIG_FILE     = $(sysconfdir)/squid.conf
+***************
+*** 43,48 ****
+--- 44,50 ----
+  DEFAULT_SWAP_DIR        = $(localstatedir)/cache
+  DEFAULT_PINGER		= $(libexecdir)/$(PINGER_EXE)
+  DEFAULT_UNLINKD		= $(libexecdir)/$(UNLINKD_EXE)
++ DEFAULT_DISKD		= $(libexecdir)/$(DISKD_EXE)
+  DEFAULT_ICON_DIR	= $(sysconfdir)/icons
+  DEFAULT_ERROR_DIR	= $(sysconfdir)/errors
+  DEFAULT_MIB_PATH	= $(sysconfdir)/mib.txt
+***************
+*** 266,271 ****
+--- 268,274 ----
+  	s%@DEFAULT_DNSSERVER@%$(DEFAULT_DNSSERVER)%g;\
+  	s%@DEFAULT_UNLINKD@%$(DEFAULT_UNLINKD)%g;\
+  	s%@DEFAULT_PINGER@%$(DEFAULT_PINGER)%g;\
++ 	s%@DEFAULT_DISKD@%$(DEFAULT_DISKD)%g;\
+  	s%@DEFAULT_CACHE_LOG@%$(DEFAULT_CACHE_LOG)%g;\
+  	s%@DEFAULT_ACCESS_LOG@%$(DEFAULT_ACCESS_LOG)%g;\
+  	s%@DEFAULT_STORE_LOG@%$(DEFAULT_STORE_LOG)%g;\
+Index: src/cf.data.pre
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/cf.data.pre,v
+retrieving revision 1.199.2.6
+retrieving revision 1.199.2.7
+diff -c -r1.199.2.6 -r1.199.2.7
+*** src/cf.data.pre	2001/03/01 21:49:25	1.199.2.6
+--- src/cf.data.pre	2001/04/04 07:01:12	1.199.2.7
+***************
+*** 1042,1047 ****
+--- 1042,1056 ----
+  	Example: dns_nameservers 10.0.0.1 192.172.0.4
+  DOC_END
+  
++ NAME: diskd_program
++ TYPE: string
++ DEFAULT: @DEFAULT_DISKD@
++ LOC: Config.Program.diskd
++ DOC_START
++ 	Specify the location of the diskd executable.
++ 	Note that this is only useful if you have compiled in
++ 	diskd as one of the store io modules.
++ DOC_END
+  
+  NAME: unlinkd_program
+  IFDEF: USE_UNLINKD
+Index: src/structs.h
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/structs.h,v
+retrieving revision 1.361.2.13
+retrieving revision 1.361.2.14
+diff -c -r1.361.2.13 -r1.361.2.14
+*** src/structs.h	2001/03/01 21:49:26	1.361.2.13
+--- src/structs.h	2001/04/04 07:01:12	1.361.2.14
+***************
+*** 323,328 ****
+--- 323,329 ----
+  #if USE_UNLINKD
+  	char *unlinkd;
+  #endif
++ 	char *diskd;
+      } Program;
+  #if USE_DNSSERVERS
+      int dnsChildren;
