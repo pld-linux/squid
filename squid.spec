@@ -23,12 +23,35 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-gcc-3_3.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-aufs-openingfds.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-external_acl_ident.patch
-Patch3:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-HttpHeaderTools.patch
-Patch4:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-deny_info.patch
-Patch5:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-round_robin_max_size.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-peer_digest_not_found_assertion.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-SENT_PASV.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-ie_refresh.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-reply_body_max_size.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-hostheader.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-tcp_reset_leak.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-ERR_TOO_BIG_Spanish.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-minimum_retry_timeout.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-cachePeerPingsSentsnmp.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-store_check_cachable_stats.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-hostscomments.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-memwarnsbrk.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-header_access_peer.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-neighbor_type_domain.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-carpfactor.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-gcc-3_3.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-aufs-openingfds.patch
+Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-external_acl_ident.patch
+Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-icmpRecv.patch
+Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-rfc_reference.patch
+Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-log_quote.patch
+Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-devnull.patch
+Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-cache_dir_doc.patch
+Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-deny_info.patch
+Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-HttpHeaderTools.patch
+Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
+Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-http_reply_access-denied.patch
+
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/squid_hit_miss_mark.patch
 Patch120:	%{name}-fhs.patch
@@ -412,6 +435,29 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
+%patch20 -p1
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
+%patch27 -p1
+
 # Other patches:
 %patch110 -p1 
 %patch120 -p1
