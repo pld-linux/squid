@@ -70,7 +70,7 @@ Harvest.
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
-Group(pl):	Sieciowe/Administracja
+Group(pl):	Sieciowe/Administracyjne
 Requires:	%{name} = %{version}
 Requires:	httpd
 
