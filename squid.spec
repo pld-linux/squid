@@ -59,6 +59,7 @@ BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.166
+BuildRequires:	unzip
 PreReq:		rc-scripts >= 0.2.0
 PreReq:		setup >= 2.4.6
 Requires(pre):	/bin/id
