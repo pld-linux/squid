@@ -28,6 +28,7 @@ Patch1:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE
 Patch2:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
 
 # Other patches:
+Patch110:	http://www.sed.pl/~mrk/qos/squid_hit_miss_mark.patch
 Patch120:	%{name}-fhs.patch
 Patch130:	%{name}-location.patch
 Patch140:	%{name}-domainmatch.patch
@@ -407,6 +408,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch1 -p1
 %patch2 -p1
 # Other patches:
+%patch110 -p1 
 %patch120 -p1
 %patch130 -p1
 %patch140 -p1
