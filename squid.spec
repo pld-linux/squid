@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE2
-Release:	3
+Release:	4
 License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
@@ -27,6 +27,7 @@ Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-netdb
 Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-redirected_username_logging.patch
 Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-snmp-problems.patch
 Patch18:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getpwnam_return_value.patch
+Patch19:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-mimeGetIconURL_returns_NULL.patch
 Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -97,6 +98,7 @@ cd src
 %patch16 -p0
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
 cd ..
 
 %build
