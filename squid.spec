@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -60,12 +60,10 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
-Patch200:	%{name}-sasl.patch
 BuildRequires:	autoconf
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7a
+BuildRequires:	openssl-devel >= 0.9.6i
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
@@ -76,8 +74,6 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
 Requires(post):	fileutils
 Requires(post):	findutils
-Requires(post):	grep
-Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -247,7 +243,7 @@ Group:		Networking/Admin
 Requires:	%{name}
 
 %description msnt_auth
-This is an authentication module for the Squid proxy server to
+This is an authentication module for the Squid proxy server to 
 authenticate users on an NT domain.
 
 %description msnt_auth -l pl
@@ -461,14 +457,12 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch27 -p1
 
 # Other patches:
-%patch110 -p1
+%patch110 -p1 
 %patch120 -p1
 %patch130 -p1
 %patch140 -p1
 %patch170 -p1
 %patch180 -p1
-%patch190 -p1
-%patch200 -p1
 
 %build
 %{__aclocal}
@@ -498,8 +492,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-ntlm-auth-helpers=yes \
 	--enable-digest-auth-helpers=yes \
 	--enable-external-acl-helpers=yes \
-	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--enable-x-accelerator-vary
 
 mv -f squid/* doc
 %{__make}
@@ -594,11 +587,12 @@ if [ "$1" = "0" ]; then
 	/usr/sbin/userdel squid
 	/usr/sbin/groupdel squid
 fi
-
+				
 %files
 %defattr(644,root,root,755)
-%doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS doc/*
+%doc faq CONTRIBUTORS COPYRIGHT CREDITS README
+%doc ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
+%doc doc/*
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
