@@ -43,6 +43,10 @@ Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-ldap_
 Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-response_splitting.patch
 Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-wccp_buffer_overflow.patch
 Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-oversize_reply_headers.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-fakeauth_auth.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-post.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-ntlm_segfault.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-dns_memleak.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -448,6 +452,10 @@ Samba 2.2.4 lub wy¿szego.
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
