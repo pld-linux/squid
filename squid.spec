@@ -98,7 +98,7 @@ LDFLAGS="-s" ; export LDFLAGS
 	--enable-carp
 
 mv -f squid/* doc
-make 
+%{__make} 
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -111,7 +111,7 @@ install -d \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log/archiv}/squid
 
-make install \
+%{__make} install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	sysconfdir=$RPM_BUILD_ROOT/etc/squid \
 	bindir=$RPM_BUILD_ROOT%{_bindir} \
