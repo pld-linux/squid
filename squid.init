@@ -49,7 +49,14 @@ case "$1" in
 		deltext;ok
 
 		show Starting squid
-		daemon squid $SQUID_OPTS
+		
+		squid -N $SQUID_OPTS &
+		busy
+		if ps ax | grep -v grep | grep -q squid ; then
+		    deltext;ok
+		else
+		    deltext;fail
+		fi
 	else
 	    echo "squid already is running"
 	fi
