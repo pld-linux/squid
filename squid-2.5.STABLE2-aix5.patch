@@ -1,0 +1,81 @@
+Index: squid/configure.in
+diff -c squid/configure.in:1.251.2.45 squid/configure.in:1.251.2.46
+*** squid/configure.in:1.251.2.45	Mon Mar 17 11:46:45 2003
+--- squid/configure.in	Tue Apr 29 10:09:38 2003
+***************
+*** 1573,1585 ****
+  	*-ibm-aix*)
+  		echo "Removing -lbsd for AIX..."
+  		LIBS=`echo $LIBS | sed -e s/-lbsd//`
+  dnl From: mlaster@metavillage.com (Mike Laster)
+  dnl AIX 4.1.4.x does not have header files for snprintf/vsnprintf
+  dnl So using the internal versions generates a load of warnings
+  dnl during compile.
+! 		echo "disabling snprintf/vsnprintf for $host"
+! 		ac_cv_func_snprintf=no
+! 		ac_cv_func_vsnprintf=no
+  		;;
+  	*m88k*)
+  		CFLAGS="$CFLAGS -D_SQUID_MOTOROLA_"
+--- 1573,1589 ----
+  	*-ibm-aix*)
+  		echo "Removing -lbsd for AIX..."
+  		LIBS=`echo $LIBS | sed -e s/-lbsd//`
++ 		case "$host" in
+  dnl From: mlaster@metavillage.com (Mike Laster)
+  dnl AIX 4.1.4.x does not have header files for snprintf/vsnprintf
+  dnl So using the internal versions generates a load of warnings
+  dnl during compile.
+! 			*-ibm-aix4*)
+! 				echo "disabling snprintf/vsnprintf for $host"
+! 				ac_cv_func_snprintf=no
+! 				ac_cv_func_vsnprintf=no
+! 			;;
+! 		esac
+  		;;
+  	*m88k*)
+  		CFLAGS="$CFLAGS -D_SQUID_MOTOROLA_"
+Index: squid/src/tools.c
+diff -c squid/src/tools.c:1.213.2.5 squid/src/tools.c:1.213.2.6
+*** squid/src/tools.c:1.213.2.5	Fri Feb  7 19:31:10 2003
+--- squid/src/tools.c	Tue Apr 29 10:09:40 2003
+***************
+*** 206,211 ****
+--- 206,213 ----
+      return r->ru_maxrss;
+  #elif defined(_SQUID_OSF_)
+      return r->ru_maxrss;
++ #elif defined(_SQUID_AIX_)
++     return r->ru_maxrss;
+  #elif defined(BSD4_4)
+      return r->ru_maxrss;
+  #elif defined(HAVE_GETPAGESIZE) && HAVE_GETPAGESIZE != 0
+Index: squid/configure
+diff -c squid/configure:1.248.2.47 squid/configure:1.248.2.48
+*** squid/configure:1.248.2.47	Mon Mar 17 11:49:18 2003
+--- squid/configure	Tue Apr 29 10:16:11 2003
+***************
+*** 7293,7301 ****
+  	*-ibm-aix*)
+  		echo "Removing -lbsd for AIX..."
+  		LIBS=`echo $LIBS | sed -e s/-lbsd//`
+! 		echo "disabling snprintf/vsnprintf for $host"
+! 		ac_cv_func_snprintf=no
+! 		ac_cv_func_vsnprintf=no
+  		;;
+  	*m88k*)
+  		CFLAGS="$CFLAGS -D_SQUID_MOTOROLA_"
+--- 7293,7305 ----
+  	*-ibm-aix*)
+  		echo "Removing -lbsd for AIX..."
+  		LIBS=`echo $LIBS | sed -e s/-lbsd//`
+! 		case "$host" in
+! 			*-ibm-aix4*)
+! 				echo "disabling snprintf/vsnprintf for $host"
+! 				ac_cv_func_snprintf=no
+! 				ac_cv_func_vsnprintf=no
+! 			;;
+! 		esac
+  		;;
+  	*m88k*)
+  		CFLAGS="$CFLAGS -D_SQUID_MOTOROLA_"
