@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	8
+Release:	10
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -448,8 +448,6 @@ przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd
 z pakietu Samba 2.2.4 lub wy¿szego.
 
 %prep
-%{?_with_combined_log:echo aaaaaaaaaaaaaaaa}
-
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page:
@@ -505,7 +503,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch200 -p1
 %patch210 -p1
 %patch220 -p1
-%patch230 -p1
+%{?_with_combined_log:%patch230 -p1}
 
 %build
 %{__aclocal}
@@ -537,8 +535,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-digest-auth-helpers=yes \
 	--enable-external-acl-helpers=yes \
 	--enable-x-accelerator-vary \
-	--enable-linux-netfilter \
-	%{?_with_combined_log:--enable-apache-like-combined-log}
+	--enable-linux-netfilter
 
 mv -f squid/* doc
 %{__make}
