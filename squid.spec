@@ -10,13 +10,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE6
-Release:	8
+Version:	2.5.STABLE8
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	7fd964ac27b43b613d6b981cc702a29e
+# Source0-md5:	687db8c5f0fec3798dbc77f94340b185
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -28,16 +28,7 @@ Source4:	%{name}-book-full-html.zip
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
-# Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_challengereuse_leak.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_noreuse_leak.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-client_db_gc.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-heap_segfault.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_fetch_string.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-digest_crash.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ufs_no_valid_dir.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ufs_create_error.patch
-
+# Bug fixes from Squid home page, please include URL
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch120:	%{name}-fhs.patch
@@ -46,20 +37,17 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
 Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch220:	%{name}-empty-referer.patch
 Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
-BuildRequires:	findutils
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	pam-devel
-BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -72,13 +60,11 @@ Requires(post):	grep
 Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
-Provides:	group(squid)
-Provides:	user(squid)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		/home/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -425,17 +411,7 @@ Samba 2.2.4 lub wy¿szego.
 
 %prep
 %setup -q -a1 -a4
-
 # Bug fixes from Squid home page:
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-
 # Other patches:
 %patch110 -p1
 %patch120 -p1
@@ -443,7 +419,6 @@ Samba 2.2.4 lub wy¿szego.
 %patch140 -p1
 %patch170 -p1
 %patch180 -p1
-%patch190 -p1
 %patch210 -p1
 %patch220 -p1
 %{?with_combined_log:%patch230 -p1}
@@ -467,7 +442,6 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icmp \
-	--enable-linux-netfilter \
 	--enable-ntlm-auth-helpers=yes \
 	--enable-referer-log \
 	--enable-removal-policies="lru heap" \
@@ -535,22 +509,22 @@ rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`/usr/bin/getgid squid`" ]; then
-	if [ "`/usr/bin/getgid squid`" != "91" ]; then
+if [ -n "`getgid squid`" ]; then
+	if [ "`getgid squid`" != "91" ]; then
 		echo "Error: group squid doesn't have gid=91. Correct this before installing squid." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 91 squid 1>&2
+	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
 fi
-if [ -n "`/bin/id -u squid 2>/dev/null`" ]; then
-	if [ "`/bin/id -u squid`" != "91" ]; then
+if [ -n "`id -u squid 2>/dev/null`" ]; then
+	if [ "`id -u squid`" != "91" ]; then
 		echo "Error: user squid doesn't have uid=91. Correct this before installing squid." 1>&2
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -o -u 91 -s /bin/false -g squid \
-		-c "SQU http caching daemon" -d /var/cache/squid squid 1>&2
+	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
+		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
@@ -578,8 +552,8 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-	%userremove squid
-	%groupremove squid
+	/usr/sbin/userdel squid
+	/usr/sbin/groupdel squid
 fi
 
 %files
@@ -597,7 +571,7 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/squid
+%attr(640,root,root) %config(noreplace) /etc/logrotate.d/squid
 %attr(640,root,squid) %config(noreplace) /etc/sysconfig/squid
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
