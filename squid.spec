@@ -492,8 +492,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-ntlm-auth-helpers=yes \
 	--enable-digest-auth-helpers=yes \
 	--enable-external-acl-helpers=yes \
-	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--enable-x-accelerator-vary
 
 mv -f squid/* doc
 %{__make}
