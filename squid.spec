@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE3
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -23,10 +23,12 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-HttpHeaderTools.patch
-Patch1:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-deny_info.patch
-Patch2:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
-
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-gcc-3_3.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-aufs-openingfds.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-external_acl_ident.patch
+Patch3:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-HttpHeaderTools.patch
+Patch4:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-deny_info.patch
+Patch5:         http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/squid_hit_miss_mark.patch
 Patch120:	%{name}-fhs.patch
@@ -407,6 +409,9 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 # Other patches:
 %patch110 -p1 
 %patch120 -p1
