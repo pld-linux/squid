@@ -24,27 +24,17 @@
 # check if the squid conf file is present
 [ -f /etc/squid/squid.conf ] || exit 0
 
-# define the cache_swap location
-CACHE_SWAP=/var/spool/squid
-
-# Try to define nice-level for running squid
-NICE="nice -n 5"
-
-# default squid options
-# -D disables initial dns checks. If you most likely will not to have an
-#    internet connection when you start squid, uncomment this
-#SQUID_OPTS="-D"
+# Load startup variables
+. /etc/sysconfig/squid
 
 case "$1" in
 start)
     show Starting squid
-    busy
     if [ ! -d $CACHE_SWAP/00 ]; then
     squid -z -F &>/dev/null
     fi
-    $NICE squid $SQUID_OPTS &
+    daemon $NICELEVEL squid $SQUID_OPTS 
     touch /var/lock/subsys/squid
-    deltext;ok
     ;;
 stop)
     show Stopping squid
