@@ -11,15 +11,15 @@ Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
-Source5:	squid.conf
-Source6:	squid.logrotate
-Patch0:		squid-2.0-make.patch
-Patch1:		squid-perl.patch
-Patch2:		squid-linux.patch
-Patch3:		squid-fhs.patch
+Source5:	%{name}.conf
+Source6:	%{name}.logrotate
+Patch0:		%{name}-2.0-make.patch
+Patch1:		%{name}-perl.patch
+Patch2:		%{name}-linux.patch
+Patch3:		%{name}-fhs.patch
 # Bug fixes from Squid home page.
-Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable4-ftp_icon_not_found.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable4-internal_dns_rcode_table_formatting.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-ftp_icon_not_found.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-internal_dns_rcode_table_formatting.patch
 Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
