@@ -528,7 +528,7 @@ if [ -n "`getgid squid`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
+	/usr/sbin/groupadd -g 91 squid 1>&2 || :
 fi
 if [ -n "`id -u squid 2>/dev/null`" ]; then
 	if [ "`id -u squid`" != "91" ]; then
@@ -536,8 +536,8 @@ if [ -n "`id -u squid 2>/dev/null`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
-		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
+	/usr/sbin/useradd -M -o -u 91 -s /bin/false \
+		-g squid -c "SQU http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
