@@ -39,13 +39,13 @@ fi
 # Sanity check
 [ -f /etc/squid/squid.conf ] || exit 0
 
+
 # See how we were called.
 case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/squid ]; then
 		msg_starting Squid
-		busy		
 		daemon $SERVICE_RUN_NICE_LEVEL squid $SQUID_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
@@ -55,10 +55,11 @@ case "$1" in
 	fi
 	;;
   stop)
-	# Stop daemons.
 	if [ -f /var/lock/subsys/squid ]; then
+		# Stop daemons.
 		msg_stopping Squid
 		killproc squid
+		RETVAL=$?
 		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
 		msg_not_running Squid
@@ -66,15 +67,16 @@ case "$1" in
 	fi
 	;;
   restart)
-	$0 stop && echo -n "Waiting $DELAY_IN_RESTART seconds..." && sleep $DELAY_IN_RESTART && echo "done."
+	$0 stop && nls -n "Waiting %s seconds..." "$DELAY_IN_RESTART" && sleep $DELAY_IN_RESTART && echo "done."
 	$0 start
 	;;
-  reload)
+  reload|force-reload)
 	if [ -f /var/lock/subsys/squid ]; then
 		msg_reloading Squid
 		busy
 		squid -k reconfigure
-		ok
+		RETVAL=$?
+		[ $RETVAL -eq 0 ] ok || fail
 	else
 		msg_not_running Squid
 		exit 1
@@ -85,11 +87,11 @@ case "$1" in
 	exit $?
 	;;
   init)
-	nls "Initializing squid"
+	nls "Initializing %s" squid
 	squid -z
 	;;
   *)
-	msg_usage "$0 {start|stop|init|restart|reload|status}"
+	msg_usage "$0 {start|stop|init|restart|reload|force-reload|status}"
 	exit 1
 esac
 
