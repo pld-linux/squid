@@ -63,9 +63,9 @@ Patch180:	%{name}-crash-on-ENOSPC.patch
 Patch190:	%{name}-newssl.patch
 Patch200:	%{name}-sasl.patch
 BuildRequires:	autoconf
+BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7a
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
@@ -591,9 +591,8 @@ fi
 				
 %files
 %defattr(644,root,root,755)
-%doc faq CONTRIBUTORS COPYRIGHT CREDITS README
-%doc ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
-%doc doc/*
+%doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
+%doc RELEASENOTES.html SPONSORS doc/*
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
