@@ -67,7 +67,7 @@ case "$1" in
 	fi
 	;;
   restart)
-	$0 stop && nls -n "Waiting %s seconds..." "$DELAY_IN_RESTART" && sleep $DELAY_IN_RESTART && echo "done."
+	$0 stop && nls -n "Waiting %s seconds..." "$DELAY_IN_RESTART" && sleep $DELAY_IN_RESTART && nls "done."
 	$0 start
 	;;
   reload|force-reload)
