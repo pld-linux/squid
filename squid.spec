@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷.
 Name:		squid
 Version:	2.4.STABLE7
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -19,6 +19,9 @@ Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
+# Bug fixes from Squid home page:
+Patch0:		http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.STABLE7-msntauth.patch
+# Other patches:
 Patch10:	%{name}-perl.patch
 Patch11:	%{name}-linux.patch
 Patch12:	%{name}-fhs.patch
@@ -195,7 +198,8 @@ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 %prep
 %setup -q -a 1 -a 4
 
-# Bug fixes from Squid home page.
+# Bug fixes from Squid home page:
+%patch0 -p1
 
 # Other patches:
 %patch10 -p1
@@ -263,15 +267,12 @@ mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 install auth_modules/LDAP/squid_ldap_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
 install -d $RPM_BUILD_ROOT%{_mandir}/man8
 install auth_modules/LDAP/squid_ldap_auth.8 $RPM_BUILD_ROOT%{_mandir}/man8
-gzip -9nf auth_modules/LDAP/README
 
 install auth_modules/PAM/pam_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-gzip -9nf auth_modules/PAM/pam_auth.c # there is documentation
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 install auth_modules/SMB/smb_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-gzip -9nf auth_modules/SMB/README
 
 mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
 mv -f $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
@@ -420,18 +421,18 @@ fi
 
 %files ldap_auth
 %defattr(644,root,root,755)
-%doc auth_modules/LDAP/*.gz
+%doc auth_modules/LDAP/README
 %attr(755,root,root) %{_libexecdir}/auth_modules/%{name}_ldap_auth
 %attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
-%doc auth_modules/PAM/*.gz
+%doc auth_modules/PAM/pam_auth.c
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
 %attr(755,root,root) %{_libexecdir}/auth_modules/pam_auth
 
 %files smb_auth
 %defattr(644,root,root,755)
-%doc auth_modules/SMB/*.gz
+%doc auth_modules/SMB/{README,Changelog,smb_auth.sh}
 %attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth
