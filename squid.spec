@@ -35,6 +35,8 @@ Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
+BuildRequires:	openssl-devel >= 0.9.6i
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
