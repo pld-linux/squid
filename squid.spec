@@ -198,7 +198,7 @@ Squid - це кешуючий прокс╕-сервер для web-кл╕╓нт╕в, що п╕дтриму╓
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz╠dzania Squidem przez WWW
 Group:		Networking/Admin
-Requires:   %{name} = %{epoch}:%{version}-%{release} = %{epoch}:%{version}
+Requires:   %{name} = %{epoch}:%{version}-%{release}
 Requires:	httpd
 
 %description cachemgr
