@@ -198,34 +198,3 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %attr(644,nobody,nobody) /var/log/squid/*
 
 %attr(750,nobody,root) %dir /var/cache/squid
-
-%changelog
-* Tue Jan 26 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
-  [2.1-PATCH2-5d]
-- rebuild against new kernel-2.2.0. 
-
-* Thu Jan 21 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
-  [2.1-PATCH2-4d]
-- fixed files permissions,
-- fixed init-script,
-- another minor changes.
-
-* Sun Jan 10 1999 Ziemek Borowski <ziembor@faq-bot.ziembor.waw.pl>
-  [2.1-PATCH2-2d]
-- added manual 
-- created mixed Polish-English errors 
-- fixed directory permisions 
-
-* Tue Oct 06 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-  [2.0-1d]
-- spec modified for version 2.0 and PLD standards
-
-* Sat Sep 05 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-- do make packages conflict witch each other ;)
-- removed squid-novm section (squid-novm is now build from its own spec)
-- moved config dir to /etc/squid
-- translations modified for pl
-- built against glibc 2.1
-- changed files permission
-- added calamaris.pl for log processing
-- added squid.log for logrotate
