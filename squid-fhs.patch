@@ -9,7 +9,7 @@ diff -urN squid-2.4.STABLE1.orig/src/Makefile.in squid-2.4.STABLE1/src/Makefile.
  VPATH		= @srcdir@
  
  SUBDIRS		= fs repl
-@@ -35,17 +36,17 @@
+@@ -36,17 +37,17 @@
  DEFAULT_PREFIX		= $(prefix)
  DEFAULT_CONFIG_FILE     = $(sysconfdir)/squid.conf
  DEFAULT_MIME_TABLE	= $(sysconfdir)/mime.conf
@@ -21,6 +21,7 @@ diff -urN squid-2.4.STABLE1.orig/src/Makefile.in squid-2.4.STABLE1/src/Makefile.
 -DEFAULT_SWAP_DIR        = $(localstatedir)/cache
 -DEFAULT_PINGER		= $(libexecdir)/$(PINGER_EXE)
 -DEFAULT_UNLINKD		= $(libexecdir)/$(UNLINKD_EXE)
+-DEFAULT_DISKD		= $(libexecdir)/$(DISKD_EXE)
 -DEFAULT_ICON_DIR	= $(sysconfdir)/icons
 -DEFAULT_ERROR_DIR	= $(sysconfdir)/errors
 -DEFAULT_MIB_PATH	= $(sysconfdir)/mib.txt
@@ -32,21 +33,10 @@ diff -urN squid-2.4.STABLE1.orig/src/Makefile.in squid-2.4.STABLE1/src/Makefile.
 +DEFAULT_SWAP_DIR        = $(localstatedir)/cache/squid
 +DEFAULT_PINGER		= $(bindir)/$(PINGER_EXE)
 +DEFAULT_UNLINKD		= $(bindir)/$(UNLINKD_EXE)
++DEFAULT_DISKD           = $(bindir)/$(DISKD_EXE)
 +DEFAULT_ICON_DIR	= $(datadir)/squid/icons
 +DEFAULT_ERROR_DIR	= $(datadir)/squid/errors
 +DEFAULT_MIB_PATH	= $(datadir)/squid/mib.txt
  
  CC		= @CC@
  MAKEDEPEND	= @MAKEDEPEND@
-diff -urN squid-2.4.STABLE1.orig/src/fs/diskd/store_dir_diskd.c squid-2.4.STABLE1/src/fs/diskd/store_dir_diskd.c
---- squid-2.4.STABLE1.orig/src/fs/diskd/store_dir_diskd.c	Wed Mar 14 23:31:41 2001
-+++ squid-2.4.STABLE1/src/fs/diskd/store_dir_diskd.c	Thu Mar 22 16:08:54 2001
-@@ -417,7 +417,7 @@
- #else
-     x = ipcCreate(IPC_FIFO,
- #endif
--	SQUID_PREFIX "/libexec/squid/diskd",
-+	SQUID_PREFIX "/bin/diskd",
- 	args,
- 	"diskd",
- 	&rfd,
