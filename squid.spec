@@ -150,6 +150,15 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 	TODO
 
+%pre
+grep -q squd /etc/group || (
+    /usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
+)
+grep -q squid /etc/passwd || (
+    /usr/sbin/useradd -M -o -r -u 91 \
+        -g squid -c "SANE remote scanning daemon" squid 1>&2 || :
+)
+
 %post
 # If there is already link, don't do anything.
 if [ ! -e %{_datadir}/squid/errors ]; then 
@@ -206,7 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(640,root,root) /etc/logrotate.d/squid
 %attr(640,root,root) %config(noreplace) /etc/sysconfig/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
-%attr(640,root,nobody) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
+%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
 %attr(640,root,root) %{_sysconfdir}/mime.conf.default
 %attr(640,root,root) %{_sysconfdir}/squid.conf.default
 
@@ -239,12 +248,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(750,root,root) %{_libexecdir}
 
-%attr(750,nobody,root) %dir /var/log/archiv/squid
-%attr(750,nobody,root) %dir /var/log/squid
-%attr(640,nobody,root) %ghost /var/log/squid/*
+%attr(770,root,squid) %dir /var/log/archiv/squid
+%attr(770,root,squid) %dir /var/log/squid
+%attr(660,root,squid) %ghost /var/log/squid/*
 
-%attr(750,nobody,root) %dir /var/cache/squid
+%attr(770,root,squid) %dir /var/cache/squid
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(755,nobody,nobody) /home/httpd/cgi-bin/*
+%attr(755,root,root) /home/httpd/cgi-bin/*
