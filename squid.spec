@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE1
-Release:	3
+Release:	4
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -21,7 +21,12 @@ Patch2:		%{name}-fhs.patch
 Patch3:		%{name}-location.patch
 Patch4:		%{name}-domainmatch.patch
 # Bug fixes from Squid home page.
-# -- none at the moment ;)
+Patch10:	http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.stable1-diskd_fixed_path.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.stable1-htcp_assertion_fix.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.stable1-kill_parent_on_child_sigkill.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.stable1-force_valid_blksize.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.stable1-high_cpu_with_peers.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.4/bugs/squid-2.4.stable1-wrong_sign_on_timestamp_check.patch
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -79,14 +84,20 @@ zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
 
 %prep
 %setup -q -a 1 -a 4
+
+# Bug fixes from Squid home page.
+%patch10 -p0
+%patch11 -p0
+%patch12 -p0
+%patch13 -p0
+%patch14 -p0
+%patch15 -p0
+
 %patch0 -p1 
 %patch1 -p1 
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-
-# Bug fixes from Squid home page.
-# -- none at the moment ;)
 
 %build
 autoconf
