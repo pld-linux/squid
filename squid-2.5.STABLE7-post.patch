@@ -1,0 +1,92 @@
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.69 squid/src/client_side.c:1.561.2.70
+*** squid/src/client_side.c:1.561.2.69	Fri Jan 21 04:53:42 2005
+--- squid/src/client_side.c	Thu Feb  3 17:10:09 2005
+***************
+*** 933,941 ****
+  	authenticateAuthUserRequestUnlock(connState->auth_user_request);
+      connState->auth_user_request = NULL;
+      authenticateOnCloseConnection(connState);
+!     if (connState->in.size == CLIENT_REQ_BUF_SZ)
+  	memFree(connState->in.buf, MEM_CLIENT_REQ_BUF);
+!     else
+  	safe_free(connState->in.buf);
+      /* XXX account connState->in.buf */
+      pconnHistCount(0, connState->nrequests);
+--- 933,942 ----
+  	authenticateAuthUserRequestUnlock(connState->auth_user_request);
+      connState->auth_user_request = NULL;
+      authenticateOnCloseConnection(connState);
+!     if (connState->in.size == CLIENT_REQ_BUF_SZ) {
+  	memFree(connState->in.buf, MEM_CLIENT_REQ_BUF);
+! 	connState->in.buf = NULL;
+!     } else
+  	safe_free(connState->in.buf);
+      /* XXX account connState->in.buf */
+      pconnHistCount(0, connState->nrequests);
+***************
+*** 3003,3011 ****
+  	}
+  	/* Continue to process previously read data */
+      }
+      /* Process request body if any */
+!     if (conn->in.offset > 0 && conn->body.callback != NULL)
+  	clientProcessBody(conn);
+      /* Process next request */
+      while (conn->in.offset > 0 && conn->body.size_left == 0) {
+  	int nrequests;
+--- 3004,3018 ----
+  	}
+  	/* Continue to process previously read data */
+      }
++     cbdataLock(conn);		/* clientProcessBody might pull the connection under our feets */
+      /* Process request body if any */
+!     if (conn->in.offset > 0 && conn->body.callback != NULL) {
+  	clientProcessBody(conn);
++ 	if (!cbdataValid(conn)) {
++ 	    cbdataUnlock(conn);
++ 	    return;
++ 	}
++     }
+      /* Process next request */
+      while (conn->in.offset > 0 && conn->body.size_left == 0) {
+  	int nrequests;
+***************
+*** 3175,3181 ****
+  		break;
+  	    } else {
+  		clientAccessCheck(http);
+- 		continue;	/* while offset > 0 && body.size_left == 0 */
+  	    }
+  	} else if (parser_return_code == 0) {
+  	    /*
+--- 3182,3187 ----
+***************
+*** 3195,3205 ****
+  		*H = http;
+  		http->entry = clientCreateStoreEntry(http, METHOD_NONE, null_request_flags);
+  		errorAppendEntry(http->entry, err);
+- 		return;
+  	    }
+  	    break;
+  	}
+      }				/* while offset > 0 && conn->body.size_left == 0 */
+      /* Check if a half-closed connection was aborted in the middle */
+      if (F->flags.socket_eof) {
+  	if (conn->in.offset != conn->body.size_left) {	/* != 0 when no request body */
+--- 3201,3215 ----
+  		*H = http;
+  		http->entry = clientCreateStoreEntry(http, METHOD_NONE, null_request_flags);
+  		errorAppendEntry(http->entry, err);
+  	    }
+  	    break;
+  	}
++ 	if (!cbdataValid(conn)) {
++ 	    cbdataUnlock(conn);
++ 	    return;
++ 	}
+      }				/* while offset > 0 && conn->body.size_left == 0 */
++     cbdataUnlock(conn);
+      /* Check if a half-closed connection was aborted in the middle */
+      if (F->flags.socket_eof) {
+  	if (conn->in.offset != conn->body.size_left) {	/* != 0 when no request body */
