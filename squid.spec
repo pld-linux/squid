@@ -181,9 +181,13 @@ gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 	TODO
 
 %pre
-GID=91; %groupadd
-UID=91; HOMEDIR=/var/cache/squid; COMMENT="SQUID http caching daemon"
-%useradd
+grep -q squid /etc/group || (
+    /usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
+)
+grep -q squid /etc/passwd || (
+    /usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
+        -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
+)
 
 %post
 # If there is already link, don't do anything.
@@ -207,17 +211,23 @@ ln -sf %{_datadir}/squid/errors{.English,}
 
 fi
 
-%chkconfig_add
-
-%preun
-%chkconfig_del
-if [ "$1" = "0" ]; then
-	rm -f %{_datadir}/squid/errors
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add squid
+	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
+else
+	if [ -f /var/lock/subsys/squid ]; then
+		/etc/rc.d/init.d/squid restart >&2
+	fi
 fi
 
-%postun
-%groupdel
-%userdel
+%preun
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/sybsys/squid ]; then
+		/etc/rc.d/init.d/squid stop >&2
+	fi
+	/sbin/chkconfig --del squid
+	rm -f %{_datadir}/squid/errors
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
