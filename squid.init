@@ -72,8 +72,8 @@ case "$1" in
 	if [ -f /var/lock/subsys/squid ]; then
 		# Stop daemons.
 		msg_stopping Squid
-		if [ -f /var/run/httpd.pid ]; then
-			PID=$(filter_chroot `cat /var/log/squid/squid.pid`)
+		if [ -f /var/run/squid.pid ]; then
+			PID=$(filter_chroot `cat /var/run/squid.pid`)
 			if [ -z "$PID" ]; then
 				PID=0
 			fi
