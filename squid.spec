@@ -230,7 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 # It's absolete while internal-dns is enabled
 #%attr(755,root,root) %{_bindir}/dnsserver
 # YES, it has to be suid root, it sends ICMP packets.
-%attr(4755,root,root) %{_bindir}/pinger
+%attr(4755,root,squid) %{_bindir}/pinger
 %attr(755,root,root) %{_bindir}/unlinkd
 %attr(755,root,root) %{_sbindir}/*
 
