@@ -60,12 +60,10 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
-Patch200:	%{name}-sasl.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7a
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
+BuildRequires:	openssl-devel >= 0.9.6i
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
@@ -465,8 +463,6 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch140 -p1
 %patch170 -p1
 %patch180 -p1
-%patch190 -p1
-%patch200 -p1
 
 %build
 %{__aclocal}
@@ -496,8 +492,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-ntlm-auth-helpers=yes \
 	--enable-digest-auth-helpers=yes \
 	--enable-external-acl-helpers=yes \
-	--enable-x-accelerator-vary \
-	--enable-linux-netfilter
+	--enable-x-accelerator-vary
 
 mv -f squid/* doc
 %{__make}
@@ -566,6 +561,10 @@ fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
 %post
+if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
+	echo visible_hostname `/bin/hostname -f` >> /etc/squid/squid.conf
+fi
+
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
