@@ -1,9 +1,9 @@
-%define	calamaris_ver	2.23
+%define	calamaris_ver	2.24
 
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.2.STABLE2
+Version:	2.2.STABLE3
 Release:	1
 Copyright:	GPL
 Group:		Networking/Daemons
@@ -20,11 +20,15 @@ Source8:	calamaris.crontab
 Source9:	%{name}.sysconfig
 Patch0:		%{name}-2.0-make.patch
 Patch1:		%{name}-perl.patch
+PAtch2:		squid-linux.patch
 BuildPrereq:	autoconf
 BuildPrereq:	perl
 BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
 Requires:	crontabs
+
+%define		_libexecdir	%{_libdir}/%{name}
+%define		_sysconfdir	/etc/%{name}
 
 %description
 Squid is a high-performance proxy caching server for web clients, supporting
@@ -67,6 +71,7 @@ Squid wywodzi siê ze sponsorowanego przez ARPA projektu Harvest.
 %setup -q -a 1 -a 7 -a 3
 %patch0 -p1 
 %patch1 -p1 
+%patch2 -p1 
 
 %build
 install -d  $RPM_BUILD_DIR/%{name}-%{version}/errors/{English.Polish,tmp}
@@ -83,10 +88,8 @@ perl %{SOURCE5} +m ERR*
 cd ../..
 pwd
 autoconf
-CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
-    ./configure %{_target} \
-	--prefix=/usr \
-	--sysconfdir=/etc/squid \
+LDFLAGS="-s" ; export LDFLAGS
+%configure \
 	--localstatedir=/var \
 	--enable-icmp \
 	--enable-useragent-log \
@@ -94,8 +97,7 @@ CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 	--enable-arp-acl \
 	--enable-err-language=English.Polish \
 	--enable-htcp \
-	--enable-carp \
-	--sbindir=%{_sbindir}
+	--enable-carp 
 
 mv -f squid/* doc
 make 
@@ -109,7 +111,7 @@ install -d \
 	$RPM_BUILD_ROOT/usr/{sbin,lib/squid,man/man1}
 
 make install \
-	prefix=$RPM_BUILD_ROOT/usr \
+	prefix=$RPM_BUILD_ROOT%{_prefix} \
 	sysconfdir=$RPM_BUILD_ROOT/etc/squid \
 	localstatedir=$RPM_BUILD_ROOT/var
 
