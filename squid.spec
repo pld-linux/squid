@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
@@ -165,21 +165,13 @@ gzip -9nf CONTRIBUTORS COPYING COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 	TODO
 
 %post
-if [ "$1" = "1" ]; then
-	/sbin/chkconfig --add squid
-	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
-else
-	if [ -f /var/lock/subsys/squid ]; then
-		/etc/rc.d/init.d/squid restart >&2
-	fi
-fi
 
 # If there is already link, don't do anything.
-if [ -e %{_datadir}/squid/errors ]; then exit; fi
+if [ ! -e %{_datadir}/squid/errors ]; then 
 
 # Try to create link to Polish, and then any directory but English.
 if [ -d %{_datadir}/squid/errors.Polish ]; then
-	ln -sf {_datadir}/squid/errors{.Polish,}
+	ln -sf %{_datadir}/squid/errors{.Polish,}
 	exit
 else
 	find %{_datadir}/squid/errors/ -type d -name 'errors.*'| while read NAME; do
@@ -191,7 +183,18 @@ else
 fi
 
 # Create symlink to English if everything else fails.
-ln -sf {_datadir}/squid/errors{.English,}
+ln -sf %{_datadir}/squid/errors{.English,}
+
+fi
+
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add squid
+	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
+else
+	if [ -f /var/lock/subsys/squid ]; then
+		/etc/rc.d/init.d/squid restart >&2
+	fi
+fi
 
 %preun
 if [ "$1" = 0 ]; then
@@ -199,7 +202,7 @@ if [ "$1" = 0 ]; then
 		/etc/rc.d/init.d/squid stop >&2
 	fi
 	/sbin/chkconfig --del squid
-	rm -f {_datadir}/squid/errors
+	rm -f %{_datadir}/squid/errors
 fi
 
 %clean
