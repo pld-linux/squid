@@ -6,8 +6,6 @@ Release:	1
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
-Group(de):	Netzwerkwesen/Server
-Group(pl):	Sieciowe/Serwery
 Source0:	http://www.squid-cache.org/Versions/v2/2.4/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
@@ -66,8 +64,6 @@ sponsorowanego przez ARPA projektu Harvest.
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
-Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administracyjne
 Requires:	%{name} = %{version}
 Requires:	httpd
 
@@ -83,8 +79,6 @@ zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 Summary:	LDAP authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji LDAP dla squida
 Group:		Networking/Admin
-Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administracyjne
 Requires:	%{name}
 
 %description ldap_auth
@@ -99,8 +93,6 @@ Pakiet ten pozwala na autentykacjê LDAP za pomoc± prostej autentykacji
 Summary:	PAM authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji PAM dla squida
 Group:		Networking/Admin
-Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administracyjne
 Requires:	%{name}
 
 %description pam_auth
@@ -116,8 +108,6 @@ Program ten pozwala na autentykacjê u¿ytkowników squida w dowolnym
 Summary:	SMB authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji SMB dla squida
 Group:		Networking/Admin
-Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administracyjne
 Requires:	%{name}
 
 %description smb_auth
