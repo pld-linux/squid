@@ -17,6 +17,7 @@ Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
+Source7:	%{name}.pamd
 Patch10:	%{name}-perl.patch
 Patch11:	%{name}-linux.patch
 Patch12:	%{name}-fhs.patch
@@ -235,7 +236,7 @@ mv -f squid/* doc
 rm -rf $RPM_BUILD_ROOT
 install -d \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
-	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig,logrotate.d} \
+	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/{contrib,auth_modules}} \
 	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
@@ -263,7 +264,8 @@ gzip -9nf auth_modules/LDAP/README
 
 install auth_modules/PAM/pam_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
 gzip -9nf auth_modules/PAM/pam_auth.c # there is documentation
-
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
+touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 install auth_modules/SMB/smb_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
 gzip -9nf auth_modules/SMB/README
@@ -295,9 +297,6 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 # These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
-
-gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
-	TODO
 
 %clean
 #rm -rf $RPM_BUILD_ROOT
@@ -353,8 +352,8 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc faq *.gz doc/*
-
+%doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART TODO
+%doc doc/*
 %attr(755,root,root) %{_bindir}/client
 %attr(755,root,root) %{_bindir}/diskd
 # It's obsolete while internal-dns is enabled
@@ -418,16 +417,18 @@ fi
 
 %files ldap_auth
 %defattr(644,root,root,755)
+%doc auth_modules/LDAP/*.gz
 %attr(755,root,root) %{_libexecdir}/auth_modules/%{name}_ldap_auth
 %attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
-%doc auth_modules/LDAP/*.gz
 
 %files pam_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/auth_modules/pam_auth
 %doc auth_modules/PAM/*.gz
+%config(noreplace) /etc/pam.d/squid
+%config(noreplace) /etc/security/blacklist.squid
+%attr(755,root,root) %{_libexecdir}/auth_modules/pam_auth
 
 %files smb_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth
 %doc auth_modules/SMB/*.gz
+%attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth
