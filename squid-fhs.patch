@@ -1,0 +1,47 @@
+diff -Nur squid-2.2.STABLE3/src/Makefile.in squid-2.2.STABLE3.pld/src/Makefile.in
+--- squid-2.2.STABLE3/src/Makefile.in	Wed Jun  9 08:27:17 1999
++++ squid-2.2.STABLE3.pld/src/Makefile.in	Wed Jun  9 08:26:12 1999
+@@ -9,13 +9,14 @@
+ prefix		= @prefix@
+ exec_prefix	= @exec_prefix@
+ exec_suffix	= @exec_suffix@
+-cgi_suffix	= @cgi_suffix@
++cgi_suffix	= @cgi_suffix@
+ top_srcdir	= @top_srcdir@
+ bindir		= @bindir@
+ libexecdir      = @libexecdir@
+ sysconfdir	= @sysconfdir@
+ localstatedir   = @localstatedir@
+ srcdir		= @srcdir@
++datadir		= @prefix@/share
+ VPATH		= @srcdir@
+ 
+ # Gotta love the DOS legacy
+@@ -30,17 +31,17 @@
+ DEFAULT_PREFIX		= $(prefix)
+ DEFAULT_CONFIG_FILE     = $(sysconfdir)/squid.conf
+ DEFAULT_MIME_TABLE	= $(sysconfdir)/mime.conf
+-DEFAULT_DNSSERVER       = $(libexecdir)/$(DNSSERVER_EXE)
+-DEFAULT_CACHE_LOG       = $(localstatedir)/log/squid/cache.log
+-DEFAULT_ACCESS_LOG      = $(localstatedir)/log/squid/access.log
+-DEFAULT_STORE_LOG       = $(localstatedir)/log/squid/store.log
++DEFAULT_DNSSERVER       = $(bindir)/$(DNSSERVER_EXE)
++DEFAULT_CACHE_LOG       = $(localstatedir)/log/squid/cache
++DEFAULT_ACCESS_LOG      = $(localstatedir)/log/squid/access
++DEFAULT_STORE_LOG       = $(localstatedir)/log/squid/store
+ DEFAULT_PID_FILE        = $(localstatedir)/run/squid.pid
+-DEFAULT_SWAP_DIR        = $(localstatedir)/cache
+-DEFAULT_PINGER		= $(libexecdir)/$(PINGER_EXE)
+-DEFAULT_UNLINKD		= $(libexecdir)/$(UNLINKD_EXE)
+-DEFAULT_ICON_DIR	= $(sysconfdir)/icons
+-DEFAULT_ERROR_DIR	= $(sysconfdir)/errors
+-DEFAULT_MIB_PATH	= $(sysconfdir)/mib.txt
++DEFAULT_SWAP_DIR        = $(localstatedir)/cache/squid
++DEFAULT_PINGER		= $(bindir)/$(PINGER_EXE)
++DEFAULT_UNLINKD		= $(bindir)/$(UNLINKD_EXE)
++DEFAULT_ICON_DIR	= $(datadir)/squid/icons
++DEFAULT_ERROR_DIR	= $(datadir)/squid/errors
++DEFAULT_MIB_PATH	= $(datadir)/squid/mib.txt
+ 
+ CC		= @CC@
+ MAKEDEPEND	= @MAKEDEPEND@
