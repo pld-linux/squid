@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE4
-Release:	4
+Release:	5
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -57,6 +57,10 @@ Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-dns_n
 Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-urllogin_acl.patch
 Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-russian.patch
 Patch29:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirlog.patch
+Patch30:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-pinger.patch
+Patch31:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-partial_reload.patch
+Patch32:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-ldap_tls.patch
+Patch33:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-ldap_group_bufsize.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -474,6 +478,10 @@ Samba 2.2.4 lub wy¿szego.
 %patch27 -p1
 %patch28 -p1
 %patch29 -p1
+%patch30 -p1
+%patch31 -p1
+%patch32 -p1
+%patch33 -p1
 
 # Other patches:
 %patch110 -p1
