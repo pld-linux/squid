@@ -1,0 +1,124 @@
+Index: squid/src/gopher.c
+diff -c squid/src/gopher.c:1.162.2.6 squid/src/gopher.c:1.162.2.7
+*** squid/src/gopher.c:1.162.2.6	Sun Sep  1 06:38:04 2002
+--- squid/src/gopher.c	Sat Nov 29 01:38:36 2003
+***************
+*** 77,85 ****
+  	HTML_CSO_PAGE
+      } conversion;
+      int HTML_header_added;
+      char type_id;
+      char request[MAX_URL];
+-     int data_in;
+      int cso_recno;
+      int len;
+      char *buf;			/* pts to a 4k page */
+--- 77,85 ----
+  	HTML_CSO_PAGE
+      } conversion;
+      int HTML_header_added;
++     int HTML_pre;
+      char type_id;
+      char request[MAX_URL];
+      int cso_recno;
+      int len;
+      char *buf;			/* pts to a 4k page */
+***************
+*** 265,274 ****
+  gopherEndHTML(GopherStateData * gopherState)
+  {
+      StoreEntry *e = gopherState->entry;
+!     if (!gopherState->data_in) {
+  	gopherHTMLHeader(e, "Server Return Nothing", NULL);
+  	storeAppendPrintf(e, "<P>The Gopher query resulted in a blank response</P>");
+!     } else {
+  	storeAppendPrintf(e, "</PRE>\n");
+      }
+      gopherHTMLFooter(e);
+--- 265,274 ----
+  gopherEndHTML(GopherStateData * gopherState)
+  {
+      StoreEntry *e = gopherState->entry;
+!     if (!gopherState->HTML_header_added) {
+  	gopherHTMLHeader(e, "Server Return Nothing", NULL);
+  	storeAppendPrintf(e, "<P>The Gopher query resulted in a blank response</P>");
+!     } else if (gopherState->HTML_pre) {
+  	storeAppendPrintf(e, "</PRE>\n");
+      }
+      gopherHTMLFooter(e);
+***************
+*** 310,317 ****
+  	gopherHTMLFooter(entry);
+  	/* now let start sending stuff to client */
+  	storeBufferFlush(entry);
+! 	gopherState->data_in = 1;
+! 
+  	return;
+      }
+      if (gopherState->conversion == HTML_CSO_PAGE) {
+--- 310,316 ----
+  	gopherHTMLFooter(entry);
+  	/* now let start sending stuff to client */
+  	storeBufferFlush(entry);
+! 	gopherState->HTML_header_added = 1;
+  	return;
+      }
+      if (gopherState->conversion == HTML_CSO_PAGE) {
+***************
+*** 324,331 ****
+  	gopherHTMLFooter(entry);
+  	/* now let start sending stuff to client */
+  	storeBufferFlush(entry);
+! 	gopherState->data_in = 1;
+! 
+  	return;
+      }
+      inbuf[len] = '\0';
+--- 323,329 ----
+  	gopherHTMLFooter(entry);
+  	/* now let start sending stuff to client */
+  	storeBufferFlush(entry);
+! 	gopherState->HTML_header_added = 1;
+  	return;
+      }
+      inbuf[len] = '\0';
+***************
+*** 337,342 ****
+--- 335,341 ----
+  	    gopherHTMLHeader(entry, "Gopher Menu", NULL);
+  	strCat(outbuf, "<PRE>");
+  	gopherState->HTML_header_added = 1;
++ 	gopherState->HTML_pre = 1;
+      }
+      while ((pos != NULL) && (pos < inbuf + len)) {
+  
+***************
+*** 505,511 ****
+  			}
+  			safe_free(escaped_selector);
+  			strCat(outbuf, tmpbuf);
+- 			gopherState->data_in = 1;
+  		    } else {
+  			memset(line, '\0', TEMP_BUF_SIZE);
+  			continue;
+--- 504,509 ----
+***************
+*** 543,549 ****
+  			snprintf(tmpbuf, TEMP_BUF_SIZE, "%s\n", html_quote(result));
+  		    }
+  		    strCat(outbuf, tmpbuf);
+- 		    gopherState->data_in = 1;
+  		    break;
+  		} else {
+  		    int code;
+--- 541,546 ----
+***************
+*** 571,577 ****
+  			    /* Print the message the server returns */
+  			    snprintf(tmpbuf, TEMP_BUF_SIZE, "</PRE><HR noshade size=\"1px\"><H2>%s</H2>\n<PRE>", html_quote(result));
+  			    strCat(outbuf, tmpbuf);
+- 			    gopherState->data_in = 1;
+  			    break;
+  			}
+  
+--- 568,573 ----

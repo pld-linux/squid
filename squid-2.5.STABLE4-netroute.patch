@@ -1,0 +1,23 @@
+Index: squid/src/acl.c
+diff -c squid/src/acl.c:1.270.2.17 squid/src/acl.c:1.270.2.18
+*** squid/src/acl.c:1.270.2.17	Mon May 12 01:24:37 2003
+--- squid/src/acl.c	Sat Nov 29 01:59:23 2003
+***************
+*** 2623,2630 ****
+  #include <sys/ioctl.h>
+  #else
+  #include <net/if_dl.h>
+- #endif
+  #include <net/route.h>
+  #include <net/if.h>
+  #if HAVE_NETINET_IF_ETHER_H
+  #include <netinet/if_ether.h>
+--- 2623,2630 ----
+  #include <sys/ioctl.h>
+  #else
+  #include <net/if_dl.h>
+  #include <net/route.h>
++ #endif
+  #include <net/if.h>
+  #if HAVE_NETINET_IF_ETHER_H
+  #include <netinet/if_ether.h>

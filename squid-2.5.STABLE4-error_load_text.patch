@@ -1,0 +1,21 @@
+Index: squid/src/errorpage.c
+diff -c squid/src/errorpage.c:1.167.2.8 squid/src/errorpage.c:1.167.2.9
+*** squid/src/errorpage.c:1.167.2.8	Tue May 27 01:20:55 2003
+--- squid/src/errorpage.c	Thu Nov  6 09:13:03 2003
+***************
+*** 192,198 ****
+  	text = NULL;
+      }
+      file_close(fd);
+!     if (strstr(text, "%s") == NULL)
+  	strcat(text, "%S");	/* add signature */
+      return text;
+  }
+--- 192,198 ----
+  	text = NULL;
+      }
+      file_close(fd);
+!     if (text && strstr(text, "%s") == NULL)
+  	strcat(text, "%S");	/* add signature */
+      return text;
+  }

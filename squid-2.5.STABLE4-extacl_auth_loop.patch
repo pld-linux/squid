@@ -1,0 +1,22 @@
+Index: squid/src/external_acl.c
+diff -c squid/src/external_acl.c:1.1.2.28 squid/src/external_acl.c:1.1.2.29
+*** squid/src/external_acl.c:1.1.2.28	Tue Sep  2 01:51:59 2003
+--- squid/src/external_acl.c	Wed Nov 19 09:47:43 2003
+***************
+*** 423,429 ****
+  	/* Not sufficient data to process */
+  	return -1;
+      }
+!     ch->auth_user_request = NULL;
+      if (entry) {
+  	if (entry->def != acl->def || strcmp(entry->hash.key, key) != 0) {
+  	    /* Not ours.. get rid of it */
+--- 423,430 ----
+  	/* Not sufficient data to process */
+  	return -1;
+      }
+!     if (acl->def->require_auth)
+! 	ch->auth_user_request = NULL;
+      if (entry) {
+  	if (entry->def != acl->def || strcmp(entry->hash.key, key) != 0) {
+  	    /* Not ours.. get rid of it */
