@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE1
-Release:	2
+Release:	1
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
@@ -57,9 +57,12 @@ Patch160:	%{name}-more_FD.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-contrib.patch
 Patch190:	%{name}-crash-on-ENOSPC.patch
+Patch200:	%{name}-newssl.patch
+Patch210:	%{name}-sasl.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.7a
+BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
@@ -466,6 +469,8 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch170 -p1
 %patch180 -p1
 %patch190 -p1
+%patch200 -p1
+%patch210 -p1
 
 %build
 %{__aclocal}
@@ -611,7 +616,7 @@ fi
 %attr(640,root,root) %{_sysconfdir}/squid.conf.default
 
 %dir %{_datadir}/squid
-%dir %{_datadir}/errors
+%dir %{_datadir}/squid/errors
 %{_datadir}/squid/icons
 %{_datadir}/squid/mib.txt
 %lang(bg) %{_datadir}/squid/errors/Bulgarian
