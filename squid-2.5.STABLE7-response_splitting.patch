@@ -1,0 +1,284 @@
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.23 squid/src/http.c:1.384.2.25
+*** squid/src/http.c:1.384.2.23	Thu Jan 20 16:27:07 2005
+--- squid/src/http.c	Fri Jan 21 05:39:37 2005
+***************
+*** 529,568 ****
+      HttpReply *reply = mem->reply;
+      int clen;
+      debug(11, 3) ("httpPconnTransferDone: FD %d\n", httpState->fd);
+-     /*
+-      * If we didn't send a keep-alive request header, then this
+-      * can not be a persistent connection.
+-      */
+-     if (!httpState->flags.keepalive)
+- 	return 0;
+-     /*
+-      * What does the reply have to say about keep-alive?
+-      */
+-     /*
+-      * XXX BUG?
+-      * If the origin server (HTTP/1.0) does not send a keep-alive
+-      * header, but keeps the connection open anyway, what happens?
+-      * We'll return here and http.c waits for an EOF before changing
+-      * store_status to STORE_OK.   Combine this with ENTRY_FWD_HDR_WAIT
+-      * and an error status code, and we might have to wait until
+-      * the server times out the socket.
+-      */
+-     if (!reply->keep_alive)
+- 	return 0;
+      debug(11, 5) ("httpPconnTransferDone: content_length=%d\n",
+  	reply->content_length);
+      /* If we haven't seen the end of reply headers, we are not done */
+      if (httpState->reply_hdr_state < 2)
+  	return 0;
+      clen = httpReplyBodySize(httpState->request->method, reply);
+-     /* If there is no message body, we can be persistent */
+-     if (0 == clen)
+- 	return 1;
+      /* If the body size is unknown we must wait for EOF */
+      if (clen < 0)
+  	return 0;
+      /* If the body size is known, we must wait until we've gotten all of it.  */
+!     if (mem->inmem_hi < reply->content_length + reply->hdr_sz)
+  	return 0;
+      /* We got it all */
+      return 1;
+--- 529,551 ----
+      HttpReply *reply = mem->reply;
+      int clen;
+      debug(11, 3) ("httpPconnTransferDone: FD %d\n", httpState->fd);
+      debug(11, 5) ("httpPconnTransferDone: content_length=%d\n",
+  	reply->content_length);
+      /* If we haven't seen the end of reply headers, we are not done */
+      if (httpState->reply_hdr_state < 2)
+  	return 0;
+      clen = httpReplyBodySize(httpState->request->method, reply);
+      /* If the body size is unknown we must wait for EOF */
+      if (clen < 0)
+  	return 0;
++     /* Barf if we got more than we asked for */
++     if (mem->inmem_hi > clen + reply->hdr_sz)
++ 	return -1;
++     /* If there is no message body, we can be persistent */
++     if (0 == clen)
++ 	return 1;
+      /* If the body size is known, we must wait until we've gotten all of it.  */
+!     if (mem->inmem_hi < clen + reply->hdr_sz)
+  	return 0;
+      /* We got it all */
+      return 1;
+***************
+*** 724,745 ****
+  	     * in that case, the server FD should already be closed.
+  	     * there's nothing for us to do.
+  	     */
+! 	    (void) 0;
+! 	} else if (httpPconnTransferDone(httpState)) {
+! 	    /* yes we have to clear all these! */
+! 	    commSetDefer(fd, NULL, NULL);
+! 	    commSetTimeout(fd, -1, NULL, NULL);
+! 	    commSetSelect(fd, COMM_SELECT_READ, NULL, NULL, 0);
+  #if DELAY_POOLS
+! 	    delayClearNoDelay(fd);
+  #endif
+! 	    comm_remove_close_handler(fd, httpStateFree, httpState);
+! 	    fwdUnregister(fd, httpState->fwd);
+! 	    pconnPush(fd, request->host, request->port);
+! 	    fwdComplete(httpState->fwd);
+! 	    httpState->fd = -1;
+! 	    httpStateFree(fd, httpState);
+! 	} else {
+  	    /* Wait for more data or EOF condition */
+  	    if (httpState->flags.keepalive_broken) {
+  		commSetTimeout(fd, 10, NULL, NULL);
+--- 707,766 ----
+  	     * in that case, the server FD should already be closed.
+  	     * there's nothing for us to do.
+  	     */
+! 	    return;
+! 	}
+! 	switch (httpPconnTransferDone(httpState)) {
+! 	case 1:
+! 	    {
+! 		int keep_alive = 1;
+! 		/*
+! 		 * If we didn't send a keep-alive request header, then this
+! 		 * can not be a persistent connection.
+! 		 */
+! 		if (!httpState->flags.keepalive)
+! 		    keep_alive = 0;
+! 		/*
+! 		 * What does the reply have to say about keep-alive?
+! 		 */
+! 		if (!entry->mem_obj->reply->keep_alive)
+! 		    keep_alive = 0;
+! 		/*
+! 		 * Verify that the connection is clean
+! 		 */
+! 		if (len == read_sz) {
+! 		    statCounter.syscalls.sock.reads++;
+! 		    len = FD_READ_METHOD(fd, buf, SQUID_TCP_SO_RCVBUF);
+! 		    if ((len < 0 && !ignoreErrno(errno)) || len == 0) {
+! 			keep_alive = 0;
+! 		    } else if (len > 0) {
+! 			debug(11, 1) ("httpReadReply: Excess data from \"%s %s\"\n",
+! 			    RequestMethodStr[httpState->orig_request->method],
+! 			    storeUrl(entry));
+! 			storeAppend(entry, buf, len);
+! 			keep_alive = 0;
+! 		    }
+! 		}
+! 		if (keep_alive) {
+! 		    /* yes we have to clear all these! */
+! 		    commSetDefer(fd, NULL, NULL);
+! 		    commSetTimeout(fd, -1, NULL, NULL);
+! 		    commSetSelect(fd, COMM_SELECT_READ, NULL, NULL, 0);
+  #if DELAY_POOLS
+! 		    delayClearNoDelay(fd);
+  #endif
+! 		    comm_remove_close_handler(fd, httpStateFree, httpState);
+! 		    fwdUnregister(fd, httpState->fwd);
+! 		    pconnPush(fd, request->host, request->port);
+! 		    fwdComplete(httpState->fwd);
+! 		    httpState->fd = -1;
+! 		    httpStateFree(fd, httpState);
+! 		} else {
+! 		    fwdComplete(httpState->fwd);
+! 		    comm_close(fd);
+! 		}
+! 	    }
+! 	    return;
+! 	case 0:
+  	    /* Wait for more data or EOF condition */
+  	    if (httpState->flags.keepalive_broken) {
+  		commSetTimeout(fd, 10, NULL, NULL);
+***************
+*** 747,752 ****
+--- 768,785 ----
+  		commSetTimeout(fd, Config.Timeout.read, NULL, NULL);
+  	    }
+  	    commSetSelect(fd, COMM_SELECT_READ, httpReadReply, httpState, 0);
++ 	    return;
++ 	case -1:
++ 	    /* Server is nasty on us. Shut down */
++ 	    debug(11, 1) ("httpReadReply: Excess data from \"%s %s\"\n",
++ 		RequestMethodStr[httpState->orig_request->method],
++ 		storeUrl(entry));
++ 	    fwdComplete(httpState->fwd);
++ 	    comm_close(fd);
++ 	    return;
++ 	default:
++ 	    fatal("Unexpected httpPconnTransferDone() status\n");
++ 	    break;
+  	}
+      }
+  }
+Index: squid/src/store.c
+diff -c squid/src/store.c:1.544.2.6 squid/src/store.c:1.544.2.7
+*** squid/src/store.c:1.544.2.6	Mon May 31 15:28:30 2004
+--- squid/src/store.c	Fri Jan 21 04:57:38 2005
+***************
+*** 940,945 ****
+--- 940,946 ----
+  storeEntryValidLength(const StoreEntry * e)
+  {
+      int diff;
++     int clen;
+      const HttpReply *reply;
+      assert(e->mem_obj != NULL);
+      reply = e->mem_obj->reply;
+***************
+*** 948,978 ****
+  	objectLen(e));
+      debug(20, 5) ("storeEntryValidLength:         hdr_sz = %d\n",
+  	reply->hdr_sz);
+      debug(20, 5) ("storeEntryValidLength: content_length = %d\n",
+! 	reply->content_length);
+!     if (reply->content_length < 0) {
+  	debug(20, 5) ("storeEntryValidLength: Unspecified content length: %s\n",
+  	    storeKeyText(e->hash.key));
+  	return 1;
+      }
+!     if (reply->hdr_sz == 0) {
+! 	debug(20, 5) ("storeEntryValidLength: Zero header size: %s\n",
+! 	    storeKeyText(e->hash.key));
+! 	return 1;
+!     }
+!     if (e->mem_obj->method == METHOD_HEAD) {
+! 	debug(20, 5) ("storeEntryValidLength: HEAD request: %s\n",
+! 	    storeKeyText(e->hash.key));
+! 	return 1;
+!     }
+!     if (reply->sline.status == HTTP_NOT_MODIFIED)
+! 	return 1;
+!     if (reply->sline.status == HTTP_NO_CONTENT)
+! 	return 1;
+!     diff = reply->hdr_sz + reply->content_length - objectLen(e);
+      if (diff == 0)
+  	return 1;
+!     debug(20, 3) ("storeEntryValidLength: %d bytes too %s; '%s'\n",
+  	diff < 0 ? -diff : diff,
+  	diff < 0 ? "big" : "small",
+  	storeKeyText(e->hash.key));
+--- 949,966 ----
+  	objectLen(e));
+      debug(20, 5) ("storeEntryValidLength:         hdr_sz = %d\n",
+  	reply->hdr_sz);
++     clen = httpReplyBodySize(e->mem_obj->method, reply);
+      debug(20, 5) ("storeEntryValidLength: content_length = %d\n",
+! 	clen);
+!     if (clen < 0) {
+  	debug(20, 5) ("storeEntryValidLength: Unspecified content length: %s\n",
+  	    storeKeyText(e->hash.key));
+  	return 1;
+      }
+!     diff = reply->hdr_sz + clen - objectLen(e);
+      if (diff == 0)
+  	return 1;
+!     debug(20, 2) ("storeEntryValidLength: %d bytes too %s; '%s'\n",
+  	diff < 0 ? -diff : diff,
+  	diff < 0 ? "big" : "small",
+  	storeKeyText(e->hash.key));
+Index: squid/src/HttpReply.c
+diff -c squid/src/HttpReply.c:1.49.2.3 squid/src/HttpReply.c:1.49.2.4
+*** squid/src/HttpReply.c:1.49.2.3	Sun Nov  7 08:26:59 2004
+--- squid/src/HttpReply.c	Fri Jan 21 05:22:59 2005
+***************
+*** 450,456 ****
+   * Returns the body size of a HTTP response
+   */
+  int
+! httpReplyBodySize(method_t method, HttpReply * reply)
+  {
+      if (reply->sline.version.major < 1)
+  	return -1;
+--- 450,456 ----
+   * Returns the body size of a HTTP response
+   */
+  int
+! httpReplyBodySize(method_t method, const HttpReply * reply)
+  {
+      if (reply->sline.version.major < 1)
+  	return -1;
+Index: squid/src/protos.h
+diff -c squid/src/protos.h:1.420.2.25 squid/src/protos.h:1.420.2.26
+*** squid/src/protos.h:1.420.2.25	Tue Oct  5 16:34:42 2004
+--- squid/src/protos.h	Fri Jan 21 05:22:59 2005
+***************
+*** 504,510 ****
+  extern time_t httpReplyExpires(const HttpReply * rep);
+  extern int httpReplyHasCc(const HttpReply * rep, http_hdr_cc_type type);
+  extern void httpRedirectReply(HttpReply *, http_status, const char *);
+! extern int httpReplyBodySize(method_t, HttpReply *);
+  
+  /* Http Request */
+  extern request_t *requestCreate(method_t, protocol_t, const char *urlpath);
+--- 504,510 ----
+  extern time_t httpReplyExpires(const HttpReply * rep);
+  extern int httpReplyHasCc(const HttpReply * rep, http_hdr_cc_type type);
+  extern void httpRedirectReply(HttpReply *, http_status, const char *);
+! extern int httpReplyBodySize(method_t, const HttpReply *);
+  
+  /* Http Request */
+  extern request_t *requestCreate(method_t, protocol_t, const char *urlpath);
