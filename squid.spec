@@ -1,7 +1,9 @@
+%define		calamaris_ver	2.24
+
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.2.STABLE3
+Version:	2.2.STABLE4
 Release:	2
 Copyright:	GPL
 Group:		Daemons
@@ -23,9 +25,9 @@ Patch3:		squid-fhs.patch
 Patch4:		squid-version.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
+Requires:	/etc/crontab.d
 Requires:	crontabs
 
-%define		calamaris_ver	2.24
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
 
@@ -173,10 +175,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 
-%attr(750,root,root) %dir /etc/squid
+%attr(755,root,root) %dir /etc/squid
 
 %attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/squid.conf
-%attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/mime.conf
+%attr(644,root,root) %config %verify(not md5 mtime size) /etc/squid/mime.conf
 /etc/squid/mime.conf.default
 /etc/squid/squid.conf.default
 
