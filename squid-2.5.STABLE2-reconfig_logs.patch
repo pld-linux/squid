@@ -1,0 +1,30 @@
+Index: squid/src/main.c
+diff -c squid/src/main.c:1.345.2.9 squid/src/main.c:1.345.2.10
+*** squid/src/main.c:1.345.2.9	Wed Apr  9 06:07:49 2003
+--- squid/src/main.c	Mon May  5 18:24:14 2003
+***************
+*** 352,357 ****
+--- 352,361 ----
+      authenticateShutdown();
+      externalAclShutdown();
+      storeDirCloseSwapLogs();
++     storeLogClose();
++     accessLogClose();
++     useragentLogClose();
++     refererCloseLog();
+      errorClean();
+      enter_suid();		/* root to read config file */
+      parseConfigFile(ConfigFile);
+***************
+*** 362,367 ****
+--- 366,375 ----
+      fqdncache_restart();	/* sigh, fqdncache too */
+      parseEtcHosts();
+      errorInitialize();		/* reload error pages */
++     accessLogInit();
++     storeLogOpen();
++     useragentOpenLog();
++     refererOpenLog();
+  #if USE_DNSSERVERS
+      dnsInit();
+  #else
