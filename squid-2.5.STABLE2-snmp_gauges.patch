@@ -1,0 +1,137 @@
+Index: squid/src/mib.txt
+diff -c squid/src/mib.txt:1.25.4.1 squid/src/mib.txt:1.25.4.2
+*** squid/src/mib.txt:1.25.4.1	Wed Feb 12 11:52:44 2003
+--- squid/src/mib.txt	Fri May  2 03:48:42 2003
+***************
+*** 212,218 ****
+          ::= { cacheSysPerf 6 }
+  
+  	cacheNumObjCount OBJECT-TYPE
+!                 SYNTAX Counter32
+  		MAX-ACCESS read-only
+                  STATUS  current
+                  DESCRIPTION
+--- 212,218 ----
+          ::= { cacheSysPerf 6 }
+  
+  	cacheNumObjCount OBJECT-TYPE
+!                 SYNTAX Gauge32
+  		MAX-ACCESS read-only
+                  STATUS  current
+                  DESCRIPTION
+***************
+*** 228,234 ****
+          ::= { cacheSysPerf 8 }
+  
+          cacheCurrentUnlinkRequests OBJECT-TYPE
+!                 SYNTAX Counter32
+                  MAX-ACCESS read-only
+                  STATUS current
+  		DESCRIPTION
+--- 228,234 ----
+          ::= { cacheSysPerf 8 }
+  
+          cacheCurrentUnlinkRequests OBJECT-TYPE
+!                 SYNTAX Gauge32
+                  MAX-ACCESS read-only
+                  STATUS current
+  		DESCRIPTION
+***************
+*** 366,372 ****
+          ::= { cacheProtoAggregateStats 13 }
+  
+  	cacheCurrentSwapSize OBJECT-TYPE
+!                 SYNTAX Counter32
+                  MAX-ACCESS read-only
+                  STATUS current
+  		DESCRIPTION
+--- 366,372 ----
+          ::= { cacheProtoAggregateStats 13 }
+  
+  	cacheCurrentSwapSize OBJECT-TYPE
+!                 SYNTAX Gauge32
+                  MAX-ACCESS read-only
+                  STATUS current
+  		DESCRIPTION
+***************
+*** 374,380 ****
+          ::= { cacheProtoAggregateStats 14 }
+  
+         cacheClients OBJECT-TYPE
+!                 SYNTAX Counter32
+                  MAX-ACCESS read-only
+                  STATUS current
+  		DESCRIPTION
+--- 374,380 ----
+          ::= { cacheProtoAggregateStats 14 }
+  
+         cacheClients OBJECT-TYPE
+!                 SYNTAX Gauge32
+                  MAX-ACCESS read-only
+                  STATUS current
+  		DESCRIPTION
+Index: squid/src/snmp_agent.c
+diff -c squid/src/snmp_agent.c:1.83 squid/src/snmp_agent.c:1.83.2.1
+*** squid/src/snmp_agent.c:1.83	Wed Oct 24 00:16:17 2001
+--- squid/src/snmp_agent.c	Fri May  2 03:48:43 2003
+***************
+*** 285,291 ****
+      case PERF_SYS_CURUNLREQ:
+  	Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  	    (snint) statCounter.unlink.requests,
+! 	    SMI_COUNTER32);
+  	break;
+      case PERF_SYS_CURUNUSED_FD:
+  	Answer = snmp_var_new_integer(Var->name, Var->name_length,
+--- 285,291 ----
+      case PERF_SYS_CURUNLREQ:
+  	Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  	    (snint) statCounter.unlink.requests,
+! 	    SMI_GAUGE32);
+  	break;
+      case PERF_SYS_CURUNUSED_FD:
+  	Answer = snmp_var_new_integer(Var->name, Var->name_length,
+***************
+*** 300,306 ****
+      case PERF_SYS_NUMOBJCNT:
+  	Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  	    (snint) memInUse(MEM_STOREENTRY),
+! 	    SMI_COUNTER32);
+  	break;
+      default:
+  	*ErrP = SNMP_ERR_NOSUCHNAME;
+--- 300,306 ----
+      case PERF_SYS_NUMOBJCNT:
+  	Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  	    (snint) memInUse(MEM_STOREENTRY),
+! 	    SMI_GAUGE32);
+  	break;
+      default:
+  	*ErrP = SNMP_ERR_NOSUCHNAME;
+***************
+*** 390,401 ****
+  	case PERF_PROTOSTAT_AGGR_CURSWAP:
+  	    Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  		(snint) store_swap_size,
+! 		SMI_COUNTER32);
+  	    break;
+  	case PERF_PROTOSTAT_AGGR_CLIENTS:
+  	    Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  		(snint) statCounter.client_http.clients,
+! 		SMI_COUNTER32);
+  	    break;
+  	default:
+  	    *ErrP = SNMP_ERR_NOSUCHNAME;
+--- 390,401 ----
+  	case PERF_PROTOSTAT_AGGR_CURSWAP:
+  	    Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  		(snint) store_swap_size,
+! 		SMI_GAUGE32);
+  	    break;
+  	case PERF_PROTOSTAT_AGGR_CLIENTS:
+  	    Answer = snmp_var_new_integer(Var->name, Var->name_length,
+  		(snint) statCounter.client_http.clients,
+! 		SMI_GAUGE32);
+  	    break;
+  	default:
+  	    *ErrP = SNMP_ERR_NOSUCHNAME;
