@@ -1,24 +1,25 @@
-Summary:     SQUID Internet Object Cache
-Name:        squid
-Version:     2.1.PATCH2
-Release:     4d
-Copyright:   GPL
-Group:       Networking/Daemons
-Group(pl):   Sieci/Serwery
-Source0:     ftp://squid.nlanr.net/pub/squid-1.1/%{name}-%{version}-src.tar.gz
-Source1:     %{name}-1.1.19-faq.tar.gz
-Source2:     %{name}.init
-Source3:     http://home.pages.de/~cord/tools/calamaris.pl
-Source4:     %{name}.log
-Source5:     fix.pl
-Source6:     %{name}.conf
-Source7:     http://cache.is.co.za/squid-docs.tar.gz
-Patch0:      %{name}-2.0-make.patch
-Patch1:      %{name}-perl.patch
-BuildRoot:   /tmp/%{name}-%{version}-buildroot
-Prereq:      /sbin/chkconfig
-Requires:    logrotate >= 2.4
-Summary(pl): Uniwersalny proxy-cache
+Summary:	SQUID Internet Object Cache
+Summary(pl):	Uniwersalny proxy-cache
+Name:		squid
+Version:	2.1.PATCH2
+Release:	6d
+Copyright:	GPL
+Group:		Daemons
+Group(pl):	Sieci/Serwery
+########	ftp://squid.nlanr.net/pub/Squid/squid-2/
+Source0:	%{name}-%{version}-src.tar.gz
+Source1:	%{name}-1.1.19-faq.tar.gz
+Source2:	%{name}.init
+Source3:	http://home.pages.de/~cord/tools/calamaris.pl
+Source4:	%{name}.log
+Source5:	fix.pl
+Source6:	%{name}.conf
+Source7:	http://cache.is.co.za/squid-docs.tar.gz
+Patch0:		%{name}-2.0-make.patch
+Patch1:		%{name}-perl.patch
+Patch2:		%{name}-glibc.patch
+BuildRoot:	/tmp/%{name}-%{version}-buildroot
+Prereq:		/sbin/chkconfig
 
 %description
 Squid is a high-performance proxy caching server for web clients, supporting
@@ -61,6 +62,7 @@ Squid wywodzi siê ze sponsorowanego przez ARPA projektu Harvest.
 %setup -q -a 1 -a 7
 %patch0 -p1 
 %patch1 -p1 
+%patch2 -p1
 
 %build
 install -d  $RPM_BUILD_DIR/%{name}-%{version}/errors/{English.Polish,tmp}
@@ -110,11 +112,13 @@ mv $RPM_BUILD_ROOT/usr/bin/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
 mv $RPM_BUILD_ROOT/usr/bin/squid $RPM_BUILD_ROOT/usr/sbin/
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/squid
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/squid
 
 install scripts/*.pl $RPM_BUILD_ROOT/usr/lib/squid
+
+touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 rm -f $RPM_BUILD_ROOT/usr/bin/R*
 
@@ -126,9 +130,7 @@ bzip2 -9 contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl
 
 %preun
 if [ -e /var/lock/sybsys/squid ]; then
-    /etc/rc.d/init.d/squid stop || :
-    rm -f /var/log/squid/*
-    rm -rf /var/spool/squid/*
+    /etc/rc.d/init.d/squid stop >&2
 fi
 
 if [ $1 = 0 ]; then
@@ -144,50 +146,59 @@ rm -rf $RPM_BUILD_ROOT
 %doc contrib/url-normalizer.pl.bz2 contrib/rredir.pl.bz2 
 %doc contrib/user-agents.pl.bz2
 
-%attr(640,root,root) /etc/logrotate.d/squid.log
+%attr(640,root,root) /etc/logrotate.d/squid
 
-%dir %attr(750,root,root) /etc/squid
-%dir %attr(750,root,root) /etc/squid/icons
-%dir %attr(750,root,root) /etc/squid/errors
+%dir /etc/squid
 
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/squid/squid.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/squid/mime.conf
+%attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/squid.conf
+%config %verify(not md5 mtime size) /etc/squid/mime.conf
 
-%attr(640,root,root) /etc/squid/squid.conf.default
-%attr(740,root,root) /etc/squid/calamaris.pl
-%attr(640,root,root) /etc/squid/mib.txt
-%attr(640,root,root) /etc/squid/mime.conf.default
-%attr(644,root,root) /etc/squid/errors/*
-%attr(644,root,root) /etc/squid/icons/*
+%attr(750,root,root) /etc/squid/calamaris.pl
+
+/etc/squid/mib.txt
+/etc/squid/mime.conf.default
+/etc/squid/squid.conf.default
+
+%dir /etc/squid/icons
+/etc/squid/icons/*
+
+%dir /etc/squid/errors
+/etc/squid/errors/*
 
 %attr(755,root,root) /usr/bin/*
 %attr(755,root,root) /usr/sbin/*
 
 %attr(755,nobody,nobody) /home/httpd/cgi-bin/*
 
-%attr(700,root,root) %config %verify(not size mtime md5) /etc/rc.d/init.d/squid
+%attr(750,root,root) %config %verify(not size mtime md5) /etc/rc.d/init.d/squid
 
 %attr(750,root,root) %dir /usr/lib/squid
-%attr(740,root,root) /usr/lib/squid/*
+%attr(750,root,root) /usr/lib/squid/*
 
-%attr(600,nobody,nobody,700) %dir /var/log/squid
-%attr(600,nobody,nobody,700) %dir /var/spool/squid
+%attr(750,nobody,root) %dir /var/log/squid
+%attr(644,nobody,nobody) /var/log/squid/*.log
+
+%attr(700,nobody,nobody) %dir /var/spool/squid
 
 %changelog
+* Tue Jan 26 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
+  [2.1-PATCH2-5d]
+- rebuild against new kernel-2.2.0. 
+
 * Thu Jan 21 1999 Wojtek ¦lusarczyk <wojtek@shadow.eu.org>
-[2.1-PATCH2-4d]
+  [2.1-PATCH2-4d]
 - fixed files permissions,
 - fixed init-script,
 - another minor changes.
 
 * Sun Jan 10 1999 Ziemek Borowski <ziembor@faq-bot.ziembor.waw.pl>
-[2.1-PATCH2-2d]
+  [2.1-PATCH2-2d]
 - added manual 
 - created mixed Polish-English errors 
 - fixed directory permisions 
 
 * Tue Oct 06 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-[2.0-1d]
+  [2.0-1d]
 - spec modified for version 2.0 and PLD standards
 
 * Sat Sep 05 1998 Marcin Korzonek <mkorz@shadow.eu.org>
