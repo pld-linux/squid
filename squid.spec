@@ -620,6 +620,7 @@ fi
 %{_datadir}/squid/icons
 %{_datadir}/squid/mib.txt
 %lang(bg) %{_datadir}/squid/errors/Bulgarian
+%lang(ct) %{_datadir}/squid/errors/Catalan
 %lang(cs) %{_datadir}/squid/errors/Czech
 %lang(da) %{_datadir}/squid/errors/Danish
 %lang(nl) %{_datadir}/squid/errors/Dutch
@@ -628,6 +629,7 @@ fi
 %lang(fi) %{_datadir}/squid/errors/Finnish
 %lang(fr) %{_datadir}/squid/errors/French
 %lang(de) %{_datadir}/squid/errors/German
+%lang(he) %{_datadir}/squid/errors/Hebrew
 %lang(hu) %{_datadir}/squid/errors/Hungarian
 %lang(it) %{_datadir}/squid/errors/Italian
 %lang(ja) %{_datadir}/squid/errors/Japanese
@@ -640,6 +642,7 @@ fi
 %lang(zh) %{_datadir}/squid/errors/Simplify_Chinese
 %lang(sk) %{_datadir}/squid/errors/Slovak
 %lang(es) %{_datadir}/squid/errors/Spanish
+%lang(sr) %{_datadir}/squid/errors/Serbian
 %lang(sv) %{_datadir}/squid/errors/Swedish
 %lang(zh) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
