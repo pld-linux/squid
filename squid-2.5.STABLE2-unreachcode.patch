@@ -1,0 +1,342 @@
+Index: squid/src/HttpHeader.c
+diff -c squid/src/HttpHeader.c:1.74.2.4 squid/src/HttpHeader.c:1.74.2.5
+*** squid/src/HttpHeader.c:1.74.2.4	Mon Jun 24 00:09:59 2002
+--- squid/src/HttpHeader.c	Sun May 11 11:30:12 2003
+***************
+*** 229,235 ****
+   * local routines
+   */
+  
+! #define assert_eid(id) assert((id) >= 0 && (id) < HDR_ENUM_END)
+  
+  static HttpHeaderEntry *httpHeaderEntryCreate(http_hdr_type id, const char *name, const char *value);
+  static void httpHeaderEntryDestroy(HttpHeaderEntry * e);
+--- 229,235 ----
+   * local routines
+   */
+  
+! #define assert_eid(id) assert((id) < HDR_ENUM_END)
+  
+  static HttpHeaderEntry *httpHeaderEntryCreate(http_hdr_type id, const char *name, const char *value);
+  static void httpHeaderEntryDestroy(HttpHeaderEntry * e);
+***************
+*** 330,336 ****
+      HttpHeaderStats[hdr->owner].busyDestroyedCount += hdr->entries.count > 0;
+      while ((e = httpHeaderGetEntry(hdr, &pos))) {
+  	/* tmp hack to try to avoid coredumps */
+! 	if (e->id < 0 || e->id >= HDR_ENUM_END) {
+  	    debug(55, 0) ("httpHeaderClean BUG: entry[%d] is invalid (%d). Ignored.\n",
+  		(int) pos, e->id);
+  	} else {
+--- 330,336 ----
+      HttpHeaderStats[hdr->owner].busyDestroyedCount += hdr->entries.count > 0;
+      while ((e = httpHeaderGetEntry(hdr, &pos))) {
+  	/* tmp hack to try to avoid coredumps */
+! 	if (e->id >= HDR_ENUM_END) {
+  	    debug(55, 0) ("httpHeaderClean BUG: entry[%d] is invalid (%d). Ignored.\n",
+  		(int) pos, e->id);
+  	} else {
+***************
+*** 705,711 ****
+      int mlen = strlen(member);
+  
+      assert(hdr);
+!     assert(id >= 0);
+  
+      header = httpHeaderGetStrOrList(hdr, id);
+  
+--- 705,711 ----
+      int mlen = strlen(member);
+  
+      assert(hdr);
+!     assert_eid(id);
+  
+      header = httpHeaderGetStrOrList(hdr, id);
+  
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.34 squid/src/client_side.c:1.561.2.35
+*** squid/src/client_side.c:1.561.2.34	Tue May  6 14:13:02 2003
+--- squid/src/client_side.c	Sun May 11 11:30:12 2003
+***************
+*** 3126,3131 ****
+--- 3126,3132 ----
+      debug(33, 2) ("clientReadBody: start fd=%d body_size=%lu in.offset=%ld cb=%p req=%p\n", conn->fd, (unsigned long int) conn->body.size_left, (long int) conn->in.offset, callback, request);
+      conn->body.callback = callback;
+      conn->body.cbdata = cbdata;
++     cbdataLock(conn->body.cbdata);
+      conn->body.buf = buf;
+      conn->body.bufsize = size;
+      conn->body.request = requestLink(request);
+***************
+*** 3141,3146 ****
+--- 3142,3148 ----
+      void *cbdata = conn->body.cbdata;
+      CBCB *callback = conn->body.callback;
+      request_t *request = conn->body.request;
++     int valid;
+      /* Note: request is null while eating "aborted" transfers */
+      debug(33, 2) ("clientProcessBody: start fd=%d body_size=%lu in.offset=%ld cb=%p req=%p\n", conn->fd, (unsigned long int) conn->body.size_left, (long int) conn->in.offset, callback, request);
+      if (conn->in.offset) {
+***************
+*** 3166,3180 ****
+  	if (conn->body.size_left <= 0 && request != NULL)
+  	    request->body_connection = NULL;
+  	/* Remove clientReadBody arguments (the call is completed) */
+  	conn->body.request = NULL;
+  	conn->body.callback = NULL;
+  	conn->body.buf = NULL;
+  	conn->body.bufsize = 0;
+  	/* Remember that we have touched the body, not restartable */
+  	if (request != NULL)
+  	    request->flags.body_sent = 1;
+  	/* Invoke callback function */
+! 	callback(buf, size, cbdata);
+  	if (request != NULL)
+  	    requestUnlink(request);	/* Linked in clientReadBody */
+  	debug(33, 2) ("clientProcessBody: end fd=%d size=%d body_size=%lu in.offset=%ld cb=%p req=%p\n", conn->fd, size, (unsigned long int) conn->body.size_left, (long int) conn->in.offset, callback, request);
+--- 3168,3186 ----
+  	if (conn->body.size_left <= 0 && request != NULL)
+  	    request->body_connection = NULL;
+  	/* Remove clientReadBody arguments (the call is completed) */
++ 	valid = cbdataValid(conn->body.cbdata);
+  	conn->body.request = NULL;
+  	conn->body.callback = NULL;
++ 	cbdataUnlock(conn->body.cbdata);
++ 	conn->body.cbdata = NULL;
+  	conn->body.buf = NULL;
+  	conn->body.bufsize = 0;
+  	/* Remember that we have touched the body, not restartable */
+  	if (request != NULL)
+  	    request->flags.body_sent = 1;
+  	/* Invoke callback function */
+! 	if (valid)
+! 	    callback(buf, size, cbdata);
+  	if (request != NULL)
+  	    requestUnlink(request);	/* Linked in clientReadBody */
+  	debug(33, 2) ("clientProcessBody: end fd=%d size=%d body_size=%lu in.offset=%ld cb=%p req=%p\n", conn->fd, size, (unsigned long int) conn->body.size_left, (long int) conn->in.offset, callback, request);
+***************
+*** 3184,3190 ****
+  /* A dummy handler that throws away a request-body */
+  static char bodyAbortBuf[SQUID_TCP_SO_RCVBUF];
+  static void
+! clientReadBodyAbortHandler(char *buf, size_t size, void *data)
+  {
+      ConnStateData *conn = (ConnStateData *) data;
+      debug(33, 2) ("clientReadBodyAbortHandler: fd=%d body_size=%lu in.offset=%ld\n", conn->fd, (unsigned long int) conn->body.size_left, (long int) conn->in.offset);
+--- 3190,3196 ----
+  /* A dummy handler that throws away a request-body */
+  static char bodyAbortBuf[SQUID_TCP_SO_RCVBUF];
+  static void
+! clientReadBodyAbortHandler(char *buf, ssize_t size, void *data)
+  {
+      ConnStateData *conn = (ConnStateData *) data;
+      debug(33, 2) ("clientReadBodyAbortHandler: fd=%d body_size=%lu in.offset=%ld\n", conn->fd, (unsigned long int) conn->body.size_left, (long int) conn->in.offset);
+***************
+*** 3194,3199 ****
+--- 3200,3206 ----
+  	conn->body.buf = bodyAbortBuf;
+  	conn->body.bufsize = sizeof(bodyAbortBuf);
+  	conn->body.cbdata = data;
++ 	cbdataLock(conn->body.cbdata);
+      }
+  }
+  
+***************
+*** 3205,3210 ****
+--- 3212,3218 ----
+      char *buf;
+      CBCB *callback;
+      void *cbdata;
++     int valid;
+      request->body_connection = NULL;
+      if (!conn || conn->body.size_left <= 0)
+  	return 0;		/* No body to abort */
+***************
+*** 3212,3223 ****
+  	buf = conn->body.buf;
+  	callback = conn->body.callback;
+  	cbdata = conn->body.cbdata;
+  	assert(request == conn->body.request);
+  	conn->body.buf = NULL;
+  	conn->body.callback = NULL;
+  	conn->body.cbdata = NULL;
+  	conn->body.request = NULL;
+! 	callback(buf, -1, cbdata);	/* Signal abort to clientReadBody caller */
+  	requestUnlink(request);
+      }
+      clientReadBodyAbortHandler(NULL, -1, conn);		/* Install abort handler */
+--- 3220,3234 ----
+  	buf = conn->body.buf;
+  	callback = conn->body.callback;
+  	cbdata = conn->body.cbdata;
++ 	valid = cbdataValid(cbdata);
+  	assert(request == conn->body.request);
+  	conn->body.buf = NULL;
+  	conn->body.callback = NULL;
++ 	cbdataUnlock(conn->body.cbdata);
+  	conn->body.cbdata = NULL;
+  	conn->body.request = NULL;
+! 	if (valid)
+! 	    callback(buf, -1, cbdata);	/* Signal abort to clientReadBody caller */
+  	requestUnlink(request);
+      }
+      clientReadBodyAbortHandler(NULL, -1, conn);		/* Install abort handler */
+Index: squid/src/comm_select.c
+diff -c squid/src/comm_select.c:1.53.2.6 squid/src/comm_select.c:1.53.2.7
+*** squid/src/comm_select.c:1.53.2.6	Sun May 11 07:42:22 2003
+--- squid/src/comm_select.c	Sun May 11 11:30:13 2003
+***************
+*** 314,323 ****
+  #endif
+      PF *hdl = NULL;
+      int fd;
+!     int i;
+!     int maxfd;
+!     unsigned long nfds;
+!     unsigned long npending;
+      int num;
+      int callicp = 0, callhttp = 0;
+      int calldns = 0;
+--- 314,323 ----
+  #endif
+      PF *hdl = NULL;
+      int fd;
+!     unsigned int i;
+!     unsigned int maxfd;
+!     unsigned int nfds;
+!     unsigned int npending;
+      int num;
+      int callicp = 0, callhttp = 0;
+      int calldns = 0;
+***************
+*** 397,410 ****
+  	    return COMM_ERROR;
+  	    /* NOTREACHED */
+  	}
+! 	debug(5, num ? 5 : 8) ("comm_poll: %d+%ld FDs ready\n", num, npending);
+  	statHistCount(&statCounter.select_fds_hist, num);
+  	/* Check timeout handlers ONCE each second. */
+  	if (squid_curtime > last_timeout) {
+  	    last_timeout = squid_curtime;
+  	    checkTimeouts();
+  	}
+! 	if (num == 0 && npending == 0)
+  	    continue;
+  	/* scan each socket but the accept socket. Poll this 
+  	 * more frequently to minimize losses due to the 5 connect 
+--- 397,410 ----
+  	    return COMM_ERROR;
+  	    /* NOTREACHED */
+  	}
+! 	debug(5, num ? 5 : 8) ("comm_poll: %d+%u FDs ready\n", num, npending);
+  	statHistCount(&statCounter.select_fds_hist, num);
+  	/* Check timeout handlers ONCE each second. */
+  	if (squid_curtime > last_timeout) {
+  	    last_timeout = squid_curtime;
+  	    checkTimeouts();
+  	}
+! 	if (num <= 0 && npending == 0)
+  	    continue;
+  	/* scan each socket but the accept socket. Poll this 
+  	 * more frequently to minimize losses due to the 5 connect 
+Index: squid/src/ftp.c
+diff -c squid/src/ftp.c:1.316.2.8 squid/src/ftp.c:1.316.2.9
+*** squid/src/ftp.c:1.316.2.8	Sat Feb  1 06:30:04 2003
+--- squid/src/ftp.c	Sun May 11 11:30:13 2003
+***************
+*** 2239,2245 ****
+  
+  /* This will be called when there is data available to put */
+  static void
+! ftpRequestBody(char *buf, size_t size, void *data)
+  {
+      FtpStateData *ftpState = (FtpStateData *) data;
+      debug(9, 3) ("ftpRequestBody: buf=%p size=%d ftpState=%p\n", buf, (int) size, data);
+--- 2239,2245 ----
+  
+  /* This will be called when there is data available to put */
+  static void
+! ftpRequestBody(char *buf, ssize_t size, void *data)
+  {
+      FtpStateData *ftpState = (FtpStateData *) data;
+      debug(9, 3) ("ftpRequestBody: buf=%p size=%d ftpState=%p\n", buf, (int) size, data);
+***************
+*** 2249,2255 ****
+  	comm_write(ftpState->data.fd, buf, size, ftpDataWriteCallback, data, NULL);
+      } else if (size < 0) {
+  	/* Error */
+! 	debug(9, 1) ("ftpRequestBody: request aborted");
+  	ftpFailed(ftpState, ERR_READ_ERROR);
+      } else if (size == 0) {
+  	/* End of transfer */
+--- 2249,2255 ----
+  	comm_write(ftpState->data.fd, buf, size, ftpDataWriteCallback, data, NULL);
+      } else if (size < 0) {
+  	/* Error */
+! 	debug(9, 1) ("ftpRequestBody: request aborted\n");
+  	ftpFailed(ftpState, ERR_READ_ERROR);
+      } else if (size == 0) {
+  	/* End of transfer */
+Index: squid/src/htcp.c
+diff -c squid/src/htcp.c:1.38.2.2 squid/src/htcp.c:1.38.2.3
+*** squid/src/htcp.c:1.38.2.2	Thu Jan  2 16:24:58 2003
+--- squid/src/htcp.c	Sun May 11 11:30:13 2003
+***************
+*** 362,368 ****
+  htcpBuildPacket(htcpStuff * stuff, ssize_t * len)
+  {
+      size_t buflen = 8192;
+!     size_t s;
+      ssize_t off = 0;
+      size_t hdr_sz = sizeof(htcpHeader);
+      htcpHeader hdr;
+--- 362,368 ----
+  htcpBuildPacket(htcpStuff * stuff, ssize_t * len)
+  {
+      size_t buflen = 8192;
+!     ssize_t s;
+      ssize_t off = 0;
+      size_t hdr_sz = sizeof(htcpHeader);
+      htcpHeader hdr;
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.3 squid/src/http.c:1.384.2.4
+*** squid/src/http.c:1.384.2.3	Sat Sep  7 16:52:10 2002
+--- squid/src/http.c	Sun May 11 11:30:13 2003
+***************
+*** 1079,1085 ****
+  }
+  
+  static void
+! httpRequestBodyHandler(char *buf, size_t size, void *data)
+  {
+      HttpStateData *httpState = (HttpStateData *) data;
+      if (size > 0) {
+--- 1079,1085 ----
+  }
+  
+  static void
+! httpRequestBodyHandler(char *buf, ssize_t size, void *data)
+  {
+      HttpStateData *httpState = (HttpStateData *) data;
+      if (size > 0) {
+Index: squid/src/typedefs.h
+diff -c squid/src/typedefs.h:1.132.2.1 squid/src/typedefs.h:1.132.2.2
+*** squid/src/typedefs.h:1.132.2.1	Sun Jun 23 07:53:46 2002
+--- squid/src/typedefs.h	Sun May 11 11:30:13 2003
+***************
+*** 234,240 ****
+  typedef int DEFER(int fd, void *data);
+  typedef int READ_HANDLER(int, char *, int);
+  typedef int WRITE_HANDLER(int, const char *, int);
+! typedef void CBCB(char *buf, size_t size, void *data);
+  
+  typedef void STIOCB(void *their_data, int errflag, storeIOState *);
+  typedef void STFNCB(void *their_data, int errflag, storeIOState *);
+--- 234,240 ----
+  typedef int DEFER(int fd, void *data);
+  typedef int READ_HANDLER(int, char *, int);
+  typedef int WRITE_HANDLER(int, const char *, int);
+! typedef void CBCB(char *buf, ssize_t size, void *data);
+  
+  typedef void STIOCB(void *their_data, int errflag, storeIOState *);
+  typedef void STFNCB(void *their_data, int errflag, storeIOState *);
