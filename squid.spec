@@ -65,7 +65,7 @@ Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
-Group(pl):	Sieciowe/Administacyjne
+Group(pl):	Sieciowe/Administracyjne
 Requires:	%{name} = %{version}
 Requires:	httpd
 
