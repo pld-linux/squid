@@ -77,7 +77,7 @@ URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.6k
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
