@@ -27,9 +27,13 @@
 [ -f /etc/sysconfig/squid ] && . /etc/sysconfig/squid
 
 # Check that networking is up.
-if is_no "${NETWORKING}"; then
-	msg_network_down Squid
-	exit 1
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down Squid
+		exit 1
+	fi
+else
+	exit 0
 fi
 
 # Sanity check
@@ -47,16 +51,17 @@ case "$1" in
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
 		msg_already_running Squid
+		exit 1
 	fi
 	;;
   stop)
 	# Stop daemons.
 	if [ -f /var/lock/subsys/squid ]; then
-		msg_stopping squid
+		msg_stopping Squid
 		killproc squid
 		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
-		msg_not_running squid
+		msg_not_running Squid
 		exit 1
 	fi
 	;;
@@ -66,12 +71,12 @@ case "$1" in
 	;;
   reload)
 	if [ -f /var/lock/subsys/squid ]; then
-		msg_reloading squid
+		msg_reloading Squid
 		busy
 		squid -k reconfigure
 		ok
 	else
-		msg_not_running squid
+		msg_not_running Squid
 		exit 1
 	fi
   	;;
@@ -80,11 +85,11 @@ case "$1" in
 	exit $?
 	;;
   init)
-	echo "Initializing squid"
+	nls "Initializing squid"
 	squid -z
 	;;
   *)
-	msg_usage "$0 {start|stop|status|restart|reload|init}"
+	msg_usage "$0 {start|stop|init|restart|reload|status}"
 	exit 1
 esac
 
