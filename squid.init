@@ -38,6 +38,9 @@
 # Get network config
 . /etc/sysconfig/network
 
+# initial value:
+DELAY_IN_RESTART=30
+
 # Get service config
 [ -f /etc/sysconfig/squid ] && . /etc/sysconfig/squid
 
