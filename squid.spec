@@ -660,7 +660,7 @@ fi
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/LDAP/README
 %attr(755,root,root) %{_libexecdir}/%{name}_ldap_auth
-%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
+%{_mandir}/man8/%{name}_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
@@ -721,13 +721,13 @@ fi
 %files ldap_acl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/squid_ldap_group
-%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_group.*
+%{_mandir}/man8/%{name}_ldap_group.*
 
 %files unix_acl
 %defattr(644,root,root,755)
 %doc helpers/external_acl/unix_group/README
 %attr(755,root,root) %{_libexecdir}/squid_unix_group
-%attr(644,root,root) %{_mandir}/man8/%{name}_unix_group.*
+%{_mandir}/man8/%{name}_unix_group.*
 
 %files wbinfo_acl
 %defattr(644,root,root,755)
