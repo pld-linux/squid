@@ -1,0 +1,64 @@
+Index: squid/src/cache_cf.c
+diff -c squid/src/cache_cf.c:1.396.2.13 squid/src/cache_cf.c:1.396.2.14
+*** squid/src/cache_cf.c:1.396.2.13	Wed Feb  5 22:01:07 2003
+--- squid/src/cache_cf.c	Tue Jul  1 14:42:41 2003
+***************
+*** 350,357 ****
+  	Config.appendDomainLen = 0;
+      safe_free(debug_options)
+  	debug_options = xstrdup(Config.debugOptions);
+-     if (Config.retry.timeout < 5)
+- 	fatal("minimum_retry_timeout must be at least 5 seconds");
+      if (Config.retry.maxtries > 10)
+  	fatal("maximum_single_addr_tries cannot be larger than 10");
+      if (Config.retry.maxtries < 1) {
+--- 350,355 ----
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.46 squid/src/cf.data.pre:1.245.2.47
+*** squid/src/cf.data.pre:1.245.2.46	Thu Jun 19 15:29:48 2003
+--- squid/src/cf.data.pre	Tue Jul  1 14:42:41 2003
+***************
+*** 3086,3113 ****
+  	directory and point this tag at them.
+  DOC_END
+  
+- NAME: minimum_retry_timeout
+- COMMENT: (seconds)
+- TYPE: time_t
+- LOC: Config.retry.timeout
+- DEFAULT: 5 seconds
+- DOC_START
+- 	This specifies the minimum connect timeout, for when the
+- 	connect timeout is reduced to compensate for the availability
+- 	of multiple IP addresses.
+- 
+- 	When a connection to a host is initiated, and that host has
+- 	several IP addresses, the default connection timeout is reduced
+- 	by dividing it by the number of addresses.  So, a site with 15
+- 	addresses would then have a timeout of 8 seconds for each
+- 	address attempted.  To avoid having the timeout reduced to the
+- 	point where even a working host would not have a chance to
+- 	respond, this setting is provided.  The default, and the
+- 	minimum value, is five seconds, and the maximum value is sixty
+- 	seconds, or half of connect_timeout, whichever is greater and
+- 	less than connect_timeout.
+- DOC_END
+- 
+  NAME: maximum_single_addr_tries
+  TYPE: int
+  LOC: Config.retry.maxtries
+--- 3086,3091 ----
+Index: squid/src/structs.h
+diff -c squid/src/structs.h:1.408.2.11 squid/src/structs.h:1.408.2.12
+*** squid/src/structs.h:1.408.2.11	Sat May 10 16:17:44 2003
+--- squid/src/structs.h	Tue Jul  1 14:42:42 2003
+***************
+*** 638,644 ****
+      } icons;
+      char *errorDirectory;
+      struct {
+- 	time_t timeout;
+  	int maxtries;
+      } retry;
+      struct {
+--- 638,643 ----
