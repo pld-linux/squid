@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # squid		This shell script takes care of starting and stopping
 #		Squid Internet Object Cache
 #
@@ -29,11 +29,14 @@
 
 case "$1" in
 start)
-    show Starting squid
+    show Prepare squid cache
+    busy
     if [ ! -d $CACHE_SWAP/00 ]; then
     squid -z -F &>/dev/null
     fi
-    daemon $NICELEVEL squid $SQUID_OPTS 
+    deltext;ok
+    show Starting squid
+    daemon squid $SQUID_OPTS 
     touch /var/lock/subsys/squid
     ;;
 stop)
