@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE9
-Release:	2
+Release:	2.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -44,7 +44,8 @@ Patch107:	%{name}-newssl.patch
 Patch108:	%{name}-nolibs.patch
 Patch109:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch110:	%{name}-empty-referer.patch
-Patch111:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch111:	%{name}-align.patch
+Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -438,7 +439,8 @@ Samba 2.2.4 lub wy¿szego.
 %patch108 -p1
 %patch109 -p1
 %patch110 -p1
-%{?with_combined_log:%patch111 -p1}
+%patch111 -p1
+%{?with_combined_log:%patch112 -p1}
 
 %build
 %{__aclocal}
