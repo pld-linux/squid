@@ -189,7 +189,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,nobody,nobody) /home/httpd/cgi-bin/*
 
-%attr(750,root,root) /etc/rc.d/init.d/squid
+%attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) /etc/sysconfig/squid
 
 %attr(750,root,root) %dir %{_libdir}/squid
