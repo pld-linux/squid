@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷.
 Name:		squid
 Version:	2.4.STABLE7
-Release:	5
+Release:	6
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
@@ -34,7 +34,15 @@ BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	pam-devel
 PreReq:		rc-scripts >= 0.2.0
-PreReq:		/sbin/chkconfig
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(post,preun):	/sbin/chkconfig
+Requires(post):	fileutils
+Requires(post):	findutils
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
@@ -331,13 +339,23 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-grep -q squid /etc/group || (
+if [ -n "`getgid squid`" ]; then
+	if [ "`getgid squid`" != "91" ]; then
+		echo "Error: group squid doesn't have gid=91. Correct this before installing squid." 1>&2
+		exit 1
+	fi
+else
 	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
-)
-grep -q squid /etc/passwd || (
+fi
+if [ -n "`id -u squid 2>/dev/null`" ]; then
+	if [ "`id -u squid`" != "91" ]; then
+		echo "Error: user squid doesn't have uid=91. Correct this before installing squid." 1>&2
+		exit 1
+	fi
+else
 	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
 		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
-)
+fi
 
 %post
 try_link() {
@@ -351,7 +369,7 @@ if [ ! -e %{_datadir}/squid/errors ]; then
     else
 	find %{_datadir}/squid/errors/ -type d -name 'errors.*'| while read NAME; do
 	    if [ $NAME != "English" ]; then
-		ln -fs $NAME %{_datadir}/squid/errors
+		ln -sf $NAME %{_datadir}/squid/errors
 		return
 	    fi
 	done
@@ -381,6 +399,12 @@ if [ "$1" = "0" ]; then
 	rm -f %{_datadir}/squid/errors
 fi
 
+%postun
+if [ "$1" = "0" ]; then
+	/usr/sbin/userdel squid
+	/usr/sbin/groupdel squid
+fi
+				
 %files
 %defattr(644,root,root,755)
 %doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART TODO
