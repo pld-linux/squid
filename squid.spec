@@ -1,8 +1,8 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.3.STABLE2
-Release:	6
+Version:	2.3.STABLE3
+Release:	1
 License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
@@ -18,18 +18,8 @@ Patch1:		squid-perl.patch
 Patch2:		squid-linux.patch
 Patch3:		squid-fhs.patch
 # Bug fixes from Squid home page.
-Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-EOF_in_cf.data.pre.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-USE_DNSSERVER.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-USE_DNSSERVER_part2.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getMyHostname.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-hostname_whitespace.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-netdb_exchange_loop.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-redirected_username_logging.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-snmp-problems.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getpwnam_return_value.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-mimeGetIconURL_returns_NULL.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-Solaris_malloc_link.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-ims_hit_age.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable3-storeExpiredReferenceAge.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable3-carp_compile.patch
 Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -90,20 +80,8 @@ z informacjami o pracy Squid'a poprzez WWW.
 %patch2 -p1 
 %patch3 -p1
 
-cd src
 %patch10 -p0
 %patch11 -p0
-%patch12 -p0
-%patch13 -p0
-%patch14 -p0
-%patch15 -p0
-%patch16 -p0
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-cd ..
-%patch20 -p0
-%patch21 -p0
 
 %build
 autoconf
@@ -158,6 +136,7 @@ cd ..
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/squid
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/squid
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/squid/squid.conf.default
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
 install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
@@ -251,6 +230,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(ro) %{_datadir}/squid/errors.Romanian
 %lang(ru) %{_datadir}/squid/errors.Russian-1251
 %lang(ru) %{_datadir}/squid/errors.Russian-koi8-r
+%lang(zh) %{_datadir}/squid/errors.Simplify_Chinese
 %lang(sk) %{_datadir}/squid/errors.Slovak
 %lang(es) %{_datadir}/squid/errors.Spanish
 %lang(sv) %{_datadir}/squid/errors.Swedish
