@@ -1,0 +1,97 @@
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.48 squid/src/client_side.c:1.561.2.49
+*** squid/src/client_side.c:1.561.2.48	Sun Dec 14 06:33:46 2003
+--- squid/src/client_side.c	Sun Dec 14 06:40:46 2003
+***************
+*** 100,105 ****
+--- 100,106 ----
+  static void clientBuildReplyHeader(clientHttpRequest * http, HttpReply * rep);
+  static clientHttpRequest *parseHttpRequestAbort(ConnStateData * conn, const char *uri);
+  static clientHttpRequest *parseHttpRequest(ConnStateData *, method_t *, int *, char **, size_t *);
++ static void clientRedirectStart(clientHttpRequest * http);
+  static RH clientRedirectDone;
+  static void clientCheckNoCache(clientHttpRequest *);
+  static void clientCheckNoCacheDone(int answer, void *data);
+***************
+*** 244,250 ****
+  	http->uri = xstrdup(urlCanonical(http->request));
+  	assert(http->redirect_state == REDIRECT_NONE);
+  	http->redirect_state = REDIRECT_PENDING;
+! 	redirectStart(http, clientRedirectDone, http);
+      } else {
+  	int require_auth = (answer == ACCESS_REQ_PROXY_AUTH || aclIsProxyAuth(AclMatchedName));
+  	debug(33, 5) ("Access Denied: %s\n", http->uri);
+--- 245,251 ----
+  	http->uri = xstrdup(urlCanonical(http->request));
+  	assert(http->redirect_state == REDIRECT_NONE);
+  	http->redirect_state = REDIRECT_PENDING;
+! 	clientRedirectStart(http);
+      } else {
+  	int require_auth = (answer == ACCESS_REQ_PROXY_AUTH || aclIsProxyAuth(AclMatchedName));
+  	debug(33, 5) ("Access Denied: %s\n", http->uri);
+***************
+*** 289,294 ****
+--- 290,322 ----
+  	    authenticateAuthUserRequestLock(err->auth_user_request);
+  	err->callback_data = NULL;
+  	errorAppendEntry(http->entry, err);
++     }
++ }
++ 
++ static void
++ clientRedirectAccessCheckDone(int answer, void *data)
++ {
++     clientHttpRequest *http = data;
++     http->acl_checklist = NULL;
++     if (answer == ACCESS_ALLOWED)
++ 	redirectStart(http, clientRedirectDone, http);
++     else
++ 	clientRedirectDone(http, NULL);
++ }
++ 
++ static void
++ clientRedirectStart(clientHttpRequest * http)
++ {
++     debug(33, 5) ("clientRedirectStart: '%s'\n", http->uri);
++     if (Config.Program.redirect == NULL) {
++ 	clientRedirectDone(http, NULL);
++ 	return;
++     }
++     if (Config.accessList.redirector) {
++ 	http->acl_checklist = clientAclChecklistCreate(Config.accessList.redirector, http);
++ 	aclNBCheck(http->acl_checklist, clientRedirectAccessCheckDone, http);
++     } else {
++ 	redirectStart(http, clientRedirectDone, http);
+      }
+  }
+  
+Index: squid/src/redirect.c
+diff -c squid/src/redirect.c:1.88.2.2 squid/src/redirect.c:1.88.2.3
+*** squid/src/redirect.c:1.88.2.2	Tue Sep 23 19:03:36 2003
+--- squid/src/redirect.c	Sun Dec 14 06:40:47 2003
+***************
+*** 100,122 ****
+      assert(http);
+      assert(handler);
+      debug(61, 5) ("redirectStart: '%s'\n", http->uri);
+-     if (Config.Program.redirect == NULL) {
+- 	handler(data, NULL);
+- 	return;
+-     }
+-     if (Config.accessList.redirector) {
+- 	aclCheck_t ch;
+- 	memset(&ch, '\0', sizeof(ch));
+- 	ch.src_addr = http->conn->peer.sin_addr;
+- 	ch.my_addr = http->conn->me.sin_addr;
+- 	ch.my_port = ntohs(http->conn->me.sin_port);
+- 	ch.request = http->request;
+- 	if (!aclCheckFast(Config.accessList.redirector, &ch)) {
+- 	    /* denied -- bypass redirector */
+- 	    handler(data, NULL);
+- 	    return;
+- 	}
+-     }
+      if (Config.onoff.redirector_bypass && redirectors->stats.queue_size) {
+  	/* Skip redirector if there is one request queued */
+  	n_bypassed++;
+--- 100,105 ----

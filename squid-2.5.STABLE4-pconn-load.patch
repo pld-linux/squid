@@ -1,0 +1,76 @@
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.46 squid/src/client_side.c:1.561.2.47
+*** squid/src/client_side.c:1.561.2.46	Mon Sep  1 14:39:33 2003
+--- squid/src/client_side.c	Sun Dec 14 05:30:35 2003
+***************
+*** 1401,1406 ****
+--- 1401,1410 ----
+  	debug(33, 3) ("clientBuildReplyHeader: can't keep-alive, unknown body size\n");
+  	request->flags.proxy_keepalive = 0;
+      }
++     if (fdUsageHigh()) {
++ 	debug(33, 3) ("clientBuildReplyHeader: Not many unused FDs, can't keep-alive\n");
++ 	request->flags.proxy_keepalive = 0;
++     }
+      /* Signal keep-alive if needed */
+      httpHeaderPutStr(hdr,
+  	http->flags.accel ? HDR_CONNECTION : HDR_PROXY_CONNECTION,
+Index: squid/src/fd.c
+diff -c squid/src/fd.c:1.43 squid/src/fd.c:1.43.2.1
+*** squid/src/fd.c:1.43	Sun Aug 26 16:24:56 2001
+--- squid/src/fd.c	Sun Dec 14 05:30:36 2003
+***************
+*** 178,183 ****
+--- 178,194 ----
+      return Squid_MaxFD - Number_FD - Opening_FD;
+  }
+  
++ int
++ fdUsageHigh(void)
++ {
++     int nrfree = fdNFree();
++     if (nrfree < (RESERVED_FD << 1))
++ 	return 1;
++     if (nrfree < (Number_FD >> 2))
++ 	return 1;
++     return 0;
++ }
++ 
+  /* Called when we runs out of file descriptors */
+  void
+  fdAdjustReserved(void)
+Index: squid/src/pconn.c
+diff -c squid/src/pconn.c:1.31 squid/src/pconn.c:1.31.2.1
+*** squid/src/pconn.c:1.31	Fri Apr 13 18:03:23 2001
+--- squid/src/pconn.c	Sun Dec 14 05:30:36 2003
+***************
+*** 190,196 ****
+      int *old;
+      LOCAL_ARRAY(char, key, SQUIDHOSTNAMELEN + 10);
+      LOCAL_ARRAY(char, desc, FD_DESC_SZ);
+!     if (fdNFree() < (RESERVED_FD << 1)) {
+  	debug(48, 3) ("pconnPush: Not many unused FDs\n");
+  	comm_close(fd);
+  	return;
+--- 190,196 ----
+      int *old;
+      LOCAL_ARRAY(char, key, SQUIDHOSTNAMELEN + 10);
+      LOCAL_ARRAY(char, desc, FD_DESC_SZ);
+!     if (fdUsageHigh()) {
+  	debug(48, 3) ("pconnPush: Not many unused FDs\n");
+  	comm_close(fd);
+  	return;
+Index: squid/src/protos.h
+diff -c squid/src/protos.h:1.420.2.20 squid/src/protos.h:1.420.2.21
+*** squid/src/protos.h:1.420.2.20	Sun Aug 10 15:04:47 2003
+--- squid/src/protos.h	Sun Dec 14 05:30:37 2003
+***************
+*** 269,274 ****
+--- 269,275 ----
+  extern void fdFreeMemory(void);
+  extern void fdDumpOpen(void);
+  extern int fdNFree(void);
++ extern int fdUsageHigh(void);
+  extern void fdAdjustReserved(void);
+  
+  extern fileMap *file_map_create(void);
