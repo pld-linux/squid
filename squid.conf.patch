@@ -13,6 +13,14 @@
  
  #  TAG: cache_access_log
  #	Logs the client request activity.  Contains an entry for
+@@ -804,6 +808,7 @@
+ #
+ #Default:
+ # pid_filename /var/log/squid/squid.pid
++pid_filename /var/run/squid.pid
+ 
+ #  TAG: debug_options
+ #	Logging options are set as section,level where each source file
 @@ -2025,6 +2030,8 @@
  #
  #Default:

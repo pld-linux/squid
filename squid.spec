@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE6
-Release:	6
+Release:	1.6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -35,6 +35,8 @@ Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-clien
 Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-heap_segfault.patch
 Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_fetch_string.patch
 Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-digest_crash.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ufs_no_valid_dir.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ufs_create_error.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -44,19 +46,17 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
 Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch220:	%{name}-empty-referer.patch
 Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
-BuildRequires:	findutils
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	pam-devel
-BuildRequires:	perl-base
+BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -73,7 +73,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		/home/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -428,6 +428,8 @@ Samba 2.2.4 lub wy¿szego.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 # Other patches:
 %patch110 -p1
@@ -436,7 +438,6 @@ Samba 2.2.4 lub wy¿szego.
 %patch140 -p1
 %patch170 -p1
 %patch180 -p1
-%patch190 -p1
 %patch210 -p1
 %patch220 -p1
 %{?with_combined_log:%patch230 -p1}
@@ -460,7 +461,6 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icmp \
-	--enable-linux-netfilter \
 	--enable-ntlm-auth-helpers=yes \
 	--enable-referer-log \
 	--enable-removal-policies="lru heap" \
@@ -534,7 +534,7 @@ if [ -n "`getgid squid`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/groupadd -g 91 squid 1>&2 || :
+	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
 fi
 if [ -n "`id -u squid 2>/dev/null`" ]; then
 	if [ "`id -u squid`" != "91" ]; then
@@ -542,8 +542,8 @@ if [ -n "`id -u squid 2>/dev/null`" ]; then
 		exit 1
 	fi
 else
-	/usr/sbin/useradd -M -o -u 91 -s /bin/false \
-		-g squid -c "SQU http caching daemon" -d /var/cache/squid squid 1>&2 || :
+	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
+		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
