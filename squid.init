@@ -92,7 +92,7 @@ case "$1" in
 		[ $RETVAL -ne 0 ] && RETVAL=7
 		[ $RETVAL -eq 0 ] && ok || fail
 	else
-		msg_not_running Squid
+		msg_not_running Squid >&2
 		exit 7
 	fi
   	;;
