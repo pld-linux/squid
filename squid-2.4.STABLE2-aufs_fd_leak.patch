@@ -1,0 +1,18 @@
+2001-09-07 02:51  Duane Wessels <wessels@squid-cache.org>
+
+        Bugzilla #229:
+        storeAufsOpenDone filedescriptor leak
+
+Index: squid/src/fs/aufs/store_io_aufs.c
+diff -u squid/src/fs/aufs/store_io_aufs.c:1.5.2.1 squid/src/fs/aufs/store_io_aufs.c:1.5.2.2
+--- squid/src/fs/aufs/store_io_aufs.c:1.5.2.1	Thu Jan  4 17:30:39 2001
++++ squid/src/fs/aufs/store_io_aufs.c	Thu Sep  6 18:51:49 2001
+@@ -296,6 +296,8 @@
+ 	storeAufsKickWriteQueue(sio);
+     else if (sio->mode == O_RDONLY)
+ 	storeAufsKickReadQueue(sio);
++    if (aiostate->flags.close_request)
++	storeAufsIOCallback(sio, errflag);
+     debug(78, 3) ("storeAufsOpenDone: exiting\n");
+ }
+ 

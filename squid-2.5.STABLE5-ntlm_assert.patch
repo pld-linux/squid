@@ -1,0 +1,14 @@
+Index: squid/src/auth/ntlm/auth_ntlm.c
+diff -c squid/src/auth/ntlm/auth_ntlm.c:1.17.2.9 squid/src/auth/ntlm/auth_ntlm.c:1.17.2.10
+*** squid/src/auth/ntlm/auth_ntlm.c:1.17.2.9	Tue Feb 24 10:11:52 2004
+--- squid/src/auth/ntlm/auth_ntlm.c	Mon Mar  1 16:50:54 2004
+***************
+*** 481,487 ****
+  	debug(29, 2) ("AuthenticateNTLMHandleReply: invalid callback data. Releasing helper '%p'.\n", srv);
+  	cbdataUnlock(r->data);
+  	authenticateStateFree(r);
+- 	helperStatefulReleaseServer(srv);
+  	return;
+      }
+      if (!reply) {
+--- 481,486 ----

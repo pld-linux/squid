@@ -1,0 +1,26 @@
+Index: src/snmp_core.c
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/snmp_core.c,v
+retrieving revision 1.39.2.3
+retrieving revision 1.39.2.4
+diff -c -r1.39.2.3 -r1.39.2.4
+*** src/snmp_core.c	2000/03/16 06:23:02	1.39.2.3
+--- src/snmp_core.c	2001/03/01 23:46:14	1.39.2.4
+***************
+*** 503,509 ****
+      checklist.src_addr = rq->from.sin_addr;
+      checklist.snmp_community = (char *) Community;
+  
+!     allow = aclCheckFast(Config.accessList.snmp, &checklist);
+      if ((snmp_coexist_V2toV1(PDU)) && (Community) && (allow)) {
+  	rq->community = Community;
+  	rq->PDU = PDU;
+--- 503,510 ----
+      checklist.src_addr = rq->from.sin_addr;
+      checklist.snmp_community = (char *) Community;
+  
+!     if (Community)
+! 	allow = aclCheckFast(Config.accessList.snmp, &checklist);
+      if ((snmp_coexist_V2toV1(PDU)) && (Community) && (allow)) {
+  	rq->community = Community;
+  	rq->PDU = PDU;

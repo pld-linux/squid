@@ -38,9 +38,6 @@
 # Get network config
 . /etc/sysconfig/network
 
-# initial value:
-DELAY_IN_RESTART=30
-
 # Get service config
 [ -f /etc/sysconfig/squid ] && . /etc/sysconfig/squid
 
@@ -75,15 +72,32 @@ case "$1" in
 	if [ -f /var/lock/subsys/squid ]; then
 		# Stop daemons.
 		msg_stopping Squid
+		if [ -f /var/run/squid.pid ]; then
+			PID="`cat /var/run/squid.pid`"
+			if [ -z "$PID" ]; then
+				PID=0
+			fi
+		else
+			PID=0
+		fi
 		killproc squid
 		RETVAL=$?
+		if [ ! $PID -eq 0 ]; then
+			show "Waiting for Squid to stop"
+			busy
+			while ps -U squid -o user | grep -q ^squid
+			do
+				sleep 1
+			done
+			ok
+		fi
 		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
 		msg_not_running Squid
 	fi
 	;;
   restart)
-	$0 stop && nls -n "Waiting %s seconds..." "$DELAY_IN_RESTART" && sleep $DELAY_IN_RESTART && nls "done."
+	$0 stop
 	$0 start
 	exit $?
 	;;

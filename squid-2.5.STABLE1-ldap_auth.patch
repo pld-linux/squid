@@ -1,0 +1,51 @@
+Index: squid/helpers/basic_auth/LDAP/squid_ldap_auth.c
+diff -c squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.1 squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.2
+*** squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.1	Sun Aug 11 19:13:37 2002
+--- squid/helpers/basic_auth/LDAP/squid_ldap_auth.c	Fri Oct 18 03:45:43 2002
+***************
+*** 131,143 ****
+  	case 'R':
+  	    break;
+  	default:
+! 	    if (strlen(argv[1]) > 2 || argc <= 2) {
+  		value = argv[1] + 2;
+! 	    } else {
+  		value = argv[2];
+  		argv++;
+  		argc--;
+! 	    }
+  	    break;
+  	}
+  	argv++;
+--- 131,144 ----
+  	case 'R':
+  	    break;
+  	default:
+! 	    if (strlen(argv[1]) > 2) {
+  		value = argv[1] + 2;
+! 	    } else if (argc > 2) {
+  		value = argv[2];
+  		argv++;
+  		argc--;
+! 	    } else
+! 		value = "";
+  	    break;
+  	}
+  	argv++;
+***************
+*** 210,216 ****
+  	}
+      }
+  
+!     while (argc > 1 && argv[1][0] == '-') {
+  	char *value = argv[1];
+  	if (ldapServer) {
+  	    int len = strlen(ldapServer) + 1 + strlen(value) + 1;
+--- 211,217 ----
+  	}
+      }
+  
+!     while (argc > 1) {
+  	char *value = argv[1];
+  	if (ldapServer) {
+  	    int len = strlen(ldapServer) + 1 + strlen(value) + 1;

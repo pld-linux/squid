@@ -1,0 +1,27 @@
+Index: squid/src/errorpage.c
+diff -c squid/src/errorpage.c:1.167.2.9 squid/src/errorpage.c:1.167.2.10
+*** squid/src/errorpage.c:1.167.2.9	Thu Nov  6 09:13:03 2003
+--- squid/src/errorpage.c	Mon Mar 29 02:41:36 2004
+***************
+*** 606,614 ****
+      httpBuildVersion(&version, 1, 0);
+      if (strchr(name, ':')) {
+  	/* Redirection */
+- 	char *quoted_url = rfc1738_escape_part(errorConvert('u', err));
+  	httpReplySetHeaders(rep, version, HTTP_MOVED_TEMPORARILY, NULL, "text/html", 0, 0, squid_curtime);
+! 	httpHeaderPutStrf(&rep->header, HDR_LOCATION, name, quoted_url);
+  	httpHeaderPutStrf(&rep->header, HDR_X_SQUID_ERROR, "%d %s\n", err->http_status, "Access Denied");
+      } else {
+  	MemBuf content = errorBuildContent(err);
+--- 606,616 ----
+      httpBuildVersion(&version, 1, 0);
+      if (strchr(name, ':')) {
+  	/* Redirection */
+  	httpReplySetHeaders(rep, version, HTTP_MOVED_TEMPORARILY, NULL, "text/html", 0, 0, squid_curtime);
+! 	if (err->request) {
+! 	    char *quoted_url = rfc1738_escape_part(urlCanonical(err->request));
+! 	    httpHeaderPutStrf(&rep->header, HDR_LOCATION, name, quoted_url);
+! 	}
+  	httpHeaderPutStrf(&rep->header, HDR_X_SQUID_ERROR, "%d %s\n", err->http_status, "Access Denied");
+      } else {
+  	MemBuf content = errorBuildContent(err);

@@ -1,0 +1,14 @@
+--- squid-2.4.STABLE2/src/ftp.c	2001/01/12 00:51:24
++++ squid-2.4.STABLE2.pld/src/ftp.c	2001/09/18 13:51:25
+@@ -2450,8 +2450,10 @@
+ 	err->ftp.request = xstrdup(ftpState->ctrl.last_command);
+     if (ftpState->old_reply)
+ 	err->ftp.reply = xstrdup(ftpState->old_reply);
+-    else
++    else if (ftpState->ctrl.last_reply)
+ 	err->ftp.reply = xstrdup(ftpState->ctrl.last_reply);
++    else
++	err->ftp.reply = xstrdup("");
+     errorAppendEntry(ftpState->entry, err);
+     storeBufferFlush(ftpState->entry);
+     ftpSendQuit(ftpState);

@@ -1,0 +1,25 @@
+Index: src/store.c
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/store.c,v
+retrieving revision 1.505.2.22
+retrieving revision 1.505.2.23
+diff -c -r1.505.2.22 -r1.505.2.23
+*** src/store.c	2000/07/18 02:19:40	1.505.2.22
+--- src/store.c	2000/07/20 15:54:29	1.505.2.23
+***************
+*** 527,533 ****
+  {
+      MemObject *mem = e->mem_obj;
+      if (EBIT_TEST(e->flags, ENTRY_SPECIAL))
+! 	return 1;
+      if (STORE_OK == e->store_status)
+  	if (mem->object_sz < Config.Store.minObjectSize)
+  	    return 1;
+--- 527,533 ----
+  {
+      MemObject *mem = e->mem_obj;
+      if (EBIT_TEST(e->flags, ENTRY_SPECIAL))
+! 	return 0;
+      if (STORE_OK == e->store_status)
+  	if (mem->object_sz < Config.Store.minObjectSize)
+  	    return 1;

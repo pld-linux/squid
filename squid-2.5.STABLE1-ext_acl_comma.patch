@@ -1,0 +1,21 @@
+Index: squid/src/external_acl.c
+diff -c squid/src/external_acl.c:1.1.2.12 squid/src/external_acl.c:1.1.2.13
+*** squid/src/external_acl.c:1.1.2.12	Sun Sep 29 13:02:40 2002
+--- squid/src/external_acl.c	Sat Nov  9 21:41:37 2002
+***************
+*** 105,111 ****
+  	EXT_ACL_HEADER,
+  	EXT_ACL_HEADER_MEMBER,
+  	EXT_ACL_HEADER_ID,
+! 	EXT_ACL_HEADER_ID_MEMBER,
+      } type;
+      external_acl_format *next;
+      char *header;
+--- 105,111 ----
+  	EXT_ACL_HEADER,
+  	EXT_ACL_HEADER_MEMBER,
+  	EXT_ACL_HEADER_ID,
+! 	EXT_ACL_HEADER_ID_MEMBER
+      } type;
+      external_acl_format *next;
+      char *header;

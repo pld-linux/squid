@@ -1,0 +1,71 @@
+Index: configure
+===================================================================
+RCS file: /server/cvs-server/squid/squid/configure,v
+retrieving revision 1.181.2.22
+retrieving revision 1.181.2.23
+diff -c -r1.181.2.22 -r1.181.2.23
+*** configure	2000/07/18 03:45:24	1.181.2.22
+--- configure	2000/08/10 06:15:18	1.181.2.23
+***************
+*** 623,629 ****
+  
+  
+  
+! # From configure.in Revision: 1.176.2.21 
+  ac_aux_dir=
+  for ac_dir in cfgaux $srcdir/cfgaux; do
+    if test -f $ac_dir/install-sh; then
+--- 623,629 ----
+  
+  
+  
+! # From configure.in Revision: 1.176.2.22 
+  ac_aux_dir=
+  for ac_dir in cfgaux $srcdir/cfgaux; do
+    if test -f $ac_dir/install-sh; then
+***************
+*** 4460,4467 ****
+      # hold on to your hats...
+      if test "$ac_cv_header_ip_compat_h" = "yes" ||
+          test "$ac_cv_header_ip_fil_compat_h" = "yes" ||
+!         test "$ac_cv_header_netinet_ip_compat_h" == "yes" ||
+!         test "$ac_cv_header_netinet_ip_fil_compat_h" == "yes" ; then
+          have_ipfilter_compat_header="yes"
+       fi
+       if test "x$have_ipfilter_compat_header" = "xyes" &&
+--- 4460,4467 ----
+      # hold on to your hats...
+      if test "$ac_cv_header_ip_compat_h" = "yes" ||
+          test "$ac_cv_header_ip_fil_compat_h" = "yes" ||
+!         test "$ac_cv_header_netinet_ip_compat_h" = "yes" ||
+!         test "$ac_cv_header_netinet_ip_fil_compat_h" = "yes" ; then
+          have_ipfilter_compat_header="yes"
+       fi
+       if test "x$have_ipfilter_compat_header" = "xyes" &&
+Index: configure.in
+===================================================================
+RCS file: /server/cvs-server/squid/squid/configure.in,v
+retrieving revision 1.176.2.22
+retrieving revision 1.176.2.23
+diff -c -r1.176.2.22 -r1.176.2.23
+*** configure.in	2000/07/18 03:45:29	1.176.2.22
+--- configure.in	2000/08/10 06:15:20	1.176.2.23
+***************
+*** 1053,1060 ****
+      # hold on to your hats...
+      if test "$ac_cv_header_ip_compat_h" = "yes" ||
+          test "$ac_cv_header_ip_fil_compat_h" = "yes" ||
+!         test "$ac_cv_header_netinet_ip_compat_h" == "yes" ||
+!         test "$ac_cv_header_netinet_ip_fil_compat_h" == "yes" ; then
+          have_ipfilter_compat_header="yes"
+       fi
+       if test "x$have_ipfilter_compat_header" = "xyes" &&
+--- 1053,1060 ----
+      # hold on to your hats...
+      if test "$ac_cv_header_ip_compat_h" = "yes" ||
+          test "$ac_cv_header_ip_fil_compat_h" = "yes" ||
+!         test "$ac_cv_header_netinet_ip_compat_h" = "yes" ||
+!         test "$ac_cv_header_netinet_ip_fil_compat_h" = "yes" ; then
+          have_ipfilter_compat_header="yes"
+       fi
+       if test "x$have_ipfilter_compat_header" = "xyes" &&

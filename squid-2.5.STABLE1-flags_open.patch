@@ -1,0 +1,20 @@
+Index: squid/src/ssl.c
+diff -c squid/src/ssl.c:1.118.2.1 squid/src/ssl.c:1.118.2.2
+*** squid/src/ssl.c:1.118.2.1	Sat Jul 20 06:30:56 2002
+--- squid/src/ssl.c	Wed Dec  4 03:25:43 2002
+***************
+*** 351,360 ****
+--- 351,363 ----
+  {
+      SslStateData *sslState = data;
+      debug(26, 3) ("sslTimeout: FD %d\n", fd);
++     /* temporary lock to save our own feets (comm_close -> sslClientClosed -> Free) */
++     cbdataLock(sslState);
+      if (sslState->client.fd > -1)
+  	comm_close(sslState->client.fd);
+      if (sslState->server.fd > -1)
+  	comm_close(sslState->server.fd);
++     cbdataUnlock(sslState);
+  }
+  
+  static void

@@ -1,0 +1,42 @@
+Index: squid/errors/Makefile.am
+diff -c squid/errors/Makefile.am:1.5.2.3 squid/errors/Makefile.am:1.5.2.4
+*** squid/errors/Makefile.am:1.5.2.3	Mon Apr  1 18:35:51 2002
+--- squid/errors/Makefile.am	Fri Oct 18 15:22:11 2002
+***************
+*** 65,71 ****
+  #
+  addlang: all
+  	-@if test -d $(srcdir)/$(ADDLANG); then \
+! 	if test -d $(DEFAULT_ERROR_DIR)/$(DESTLANG); then
+  	cd $(srcdir)/$(ADDLANG)/ ; \
+  	for f in ERR_*; do \
+  		if test -f $(DEFAULT_ERROR_DIR)/$(DESTLANG)/$$f ; then \
+--- 65,71 ----
+  #
+  addlang: all
+  	-@if test -d $(srcdir)/$(ADDLANG); then \
+! 	if test -d $(DEFAULT_ERROR_DIR)/$(DESTLANG); then \
+  	cd $(srcdir)/$(ADDLANG)/ ; \
+  	for f in ERR_*; do \
+  		if test -f $(DEFAULT_ERROR_DIR)/$(DESTLANG)/$$f ; then \
+Index: squid/errors/Makefile.in
+diff -c squid/errors/Makefile.in:1.15.2.6 squid/errors/Makefile.in:1.15.2.7
+*** squid/errors/Makefile.in:1.15.2.6	Mon Sep 30 00:14:54 2002
+--- squid/errors/Makefile.in	Fri Oct 18 18:14:42 2002
+***************
+*** 294,300 ****
+  #
+  addlang: all
+  	-@if test -d $(srcdir)/$(ADDLANG); then \
+! 	if test -d $(DEFAULT_ERROR_DIR)/$(DESTLANG); then
+  	cd $(srcdir)/$(ADDLANG)/ ; \
+  	for f in ERR_*; do \
+  		if test -f $(DEFAULT_ERROR_DIR)/$(DESTLANG)/$$f ; then \
+--- 294,300 ----
+  #
+  addlang: all
+  	-@if test -d $(srcdir)/$(ADDLANG); then \
+! 	if test -d $(DEFAULT_ERROR_DIR)/$(DESTLANG); then \
+  	cd $(srcdir)/$(ADDLANG)/ ; \
+  	for f in ERR_*; do \
+  		if test -f $(DEFAULT_ERROR_DIR)/$(DESTLANG)/$$f ; then \

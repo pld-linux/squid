@@ -1,0 +1,61 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.30 squid/src/cf.data.pre:1.245.2.31
+*** squid/src/cf.data.pre:1.245.2.30	Mon Oct  7 22:29:40 2002
+--- squid/src/cf.data.pre	Sun Nov 10 07:33:06 2002
+***************
+*** 3724,3729 ****
+--- 3724,3742 ----
+  	You can add up to 20 additional "extension" methods here.
+  DOC_END
+  
++ NAME: request_entities
++ TYPE: onoff
++ LOC: Config.onoff.request_entities
++ DEFAULT: off
++ DOC_START
++ 	Squid defaults to deny GET and HEAD requests with request entities,
++ 	as the meaning of such requests are undefined in the HTTP standard
++ 	even if not explicitly forbidden.
++ 
++ 	Set this directive to on if you have clients which insists
++ 	on sending request entities in GET or HEAD requests.
++ DOC_END
++ 
+  NAME: high_response_time_warning
+  TYPE: int
+  COMMENT: (msec)
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.22 squid/src/client_side.c:1.561.2.23
+*** squid/src/client_side.c:1.561.2.22	Thu Oct  3 00:44:06 2002
+--- squid/src/client_side.c	Sun Nov 10 07:33:06 2002
+***************
+*** 1045,1051 ****
+      case METHOD_GET:
+      case METHOD_HEAD:
+  	/* We do not want to see a request entity on GET/HEAD requests */
+! 	return (r->content_length <= 0);
+      default:
+  	/* For other types of requests we don't care */
+  	return 1;
+--- 1045,1051 ----
+      case METHOD_GET:
+      case METHOD_HEAD:
+  	/* We do not want to see a request entity on GET/HEAD requests */
+! 	return (r->content_length <= 0 || Config.onoff.request_entities);
+      default:
+  	/* For other types of requests we don't care */
+  	return 1;
+Index: squid/src/structs.h
+diff -c squid/src/structs.h:1.408.2.7 squid/src/structs.h:1.408.2.8
+*** squid/src/structs.h:1.408.2.7	Wed Oct  2 03:02:30 2002
+--- squid/src/structs.h	Sun Nov 10 07:33:07 2002
+***************
+*** 590,595 ****
+--- 590,596 ----
+  	int ie_refresh;
+  	int vary_ignore_expire;
+  	int pipeline_prefetch;
++ 	int request_entities;
+      } onoff;
+      acl *aclList;
+      struct {

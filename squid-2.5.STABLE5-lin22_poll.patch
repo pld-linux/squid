@@ -1,0 +1,52 @@
+Index: squid/configure.in
+diff -c squid/configure.in:1.251.2.51 squid/configure.in:1.251.2.52
+*** squid/configure.in:1.251.2.51	Sun Feb 29 15:28:17 2004
+--- squid/configure.in	Tue Mar  2 11:58:27 2004
+***************
+*** 1644,1652 ****
+  			# Henrik Nordstrom (hno@squid-cache.org) 19980817
+  			# poll is problematic on Linux.  We disable it
+  			# by default until Linux gets it right.
+  			rev=`uname -r | awk -F. '{printf "%03d%03d",$1,$2}'`
+! 			if test $rev -lt 002002; then
+! 			    echo "disabling poll for $host < 2.2..."
+  			    ac_cv_func_poll='no'
+  			fi
+  			;;
+--- 1644,1653 ----
+  			# Henrik Nordstrom (hno@squid-cache.org) 19980817
+  			# poll is problematic on Linux.  We disable it
+  			# by default until Linux gets it right.
++ 			# See also bug #932
+  			rev=`uname -r | awk -F. '{printf "%03d%03d",$1,$2}'`
+! 			if test $rev -lt 002004; then
+! 			    echo "disabling poll for $host < 2.4..."
+  			    ac_cv_func_poll='no'
+  			fi
+  			;;
+Index: squid/configure
+diff -c squid/configure:1.248.2.53 squid/configure:1.248.2.54
+*** squid/configure:1.248.2.53	Sun Feb 29 15:28:40 2004
+--- squid/configure	Tue Mar  2 18:11:26 2004
+***************
+*** 7367,7375 ****
+  			# Henrik Nordstrom (hno@squid-cache.org) 19980817
+  			# poll is problematic on Linux.  We disable it
+  			# by default until Linux gets it right.
+  			rev=`uname -r | awk -F. '{printf "%03d%03d",$1,$2}'`
+! 			if test $rev -lt 002002; then
+! 			    echo "disabling poll for $host < 2.2..."
+  			    ac_cv_func_poll='no'
+  			fi
+  			;;
+--- 7367,7376 ----
+  			# Henrik Nordstrom (hno@squid-cache.org) 19980817
+  			# poll is problematic on Linux.  We disable it
+  			# by default until Linux gets it right.
++ 			# See also bug #932
+  			rev=`uname -r | awk -F. '{printf "%03d%03d",$1,$2}'`
+! 			if test $rev -lt 002004; then
+! 			    echo "disabling poll for $host < 2.4..."
+  			    ac_cv_func_poll='no'
+  			fi
+  			;;

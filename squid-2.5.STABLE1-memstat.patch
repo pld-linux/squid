@@ -1,0 +1,27 @@
+Index: squid/src/stat.c
+diff -c squid/src/stat.c:1.351.2.1 squid/src/stat.c:1.351.2.3
+*** squid/src/stat.c:1.351.2.1	Sun Jul 21 17:54:29 2002
+--- squid/src/stat.c	Sun Nov 10 09:59:44 2002
+***************
+*** 1524,1533 ****
+      GENGRAPH(cputime, "cputime", "CPU utilisation");
+  }
+  
+  int
+  statMemoryAccounted(void)
+  {
+!     memTotalAllocated();
+  }
+- 
+- #endif /* STAT_GRAPHS */
+--- 1524,1533 ----
+      GENGRAPH(cputime, "cputime", "CPU utilisation");
+  }
+  
++ #endif /* STAT_GRAPHS */
++ 
+  int
+  statMemoryAccounted(void)
+  {
+!     return memTotalAllocated();
+  }

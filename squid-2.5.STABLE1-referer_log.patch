@@ -1,0 +1,49 @@
+Index: squid/src/main.c
+diff -c squid/src/main.c:1.345.2.4 squid/src/main.c:1.345.2.5
+*** squid/src/main.c:1.345.2.4	Sun Jul 14 11:20:49 2002
+--- squid/src/main.c	Sun Oct 13 10:57:13 2002
+***************
+*** 975,980 ****
+--- 975,981 ----
+      storeLogClose();
+      accessLogClose();
+      useragentLogClose();
++     refererCloseLog();
+  #if WIP_FWD_LOG
+      fwdUninit();
+  #endif
+Index: squid/src/protos.h
+diff -c squid/src/protos.h:1.420.2.14 squid/src/protos.h:1.420.2.15
+*** squid/src/protos.h:1.420.2.14	Tue Oct  8 10:08:30 2002
+--- squid/src/protos.h	Sun Oct 13 10:57:13 2002
+***************
+*** 1130,1135 ****
+--- 1130,1136 ----
+  extern void refererOpenLog(void);
+  extern void refererRotateLog(void);
+  extern void logReferer(const char *, const char *, const char *);
++ extern void refererCloseLog(void);
+  extern peer_t parseNeighborType(const char *s);
+  
+  extern void errorInitialize(void);
+Index: squid/src/referer.c
+diff -c squid/src/referer.c:1.4 squid/src/referer.c:1.4.2.1
+*** squid/src/referer.c:1.4	Tue May 22 14:31:34 2001
+--- squid/src/referer.c	Sun Oct 13 10:57:13 2002
+***************
+*** 77,79 ****
+--- 77,90 ----
+  	uri ? uri : "-");
+  #endif
+  }
++ 
++ void
++ refererCloseLog(void)
++ {
++ #if USE_REFERER_LOG
++     if (NULL == refererlog)
++ 	return;
++     logfileClose(refererlog);
++     refererlog = NULL;
++ #endif
++ }

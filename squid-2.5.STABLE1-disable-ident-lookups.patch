@@ -1,0 +1,32 @@
+Index: squid/src/external_acl.c
+diff -c squid/src/external_acl.c:1.1.2.11 squid/src/external_acl.c:1.1.2.12
+*** squid/src/external_acl.c:1.1.2.11	Sat Sep  7 08:58:41 2002
+--- squid/src/external_acl.c	Sun Sep 29 13:02:40 2002
+***************
+*** 500,506 ****
+  	    str = ch->rfc931;
+  	    if (!str) {
+  		ch->state[ACL_IDENT] = ACL_LOOKUP_NEEDED;
+! 		goto error;
+  	    }
+  	    break;
+  #endif
+--- 500,506 ----
+  	    str = ch->rfc931;
+  	    if (!str) {
+  		ch->state[ACL_IDENT] = ACL_LOOKUP_NEEDED;
+! 		return NULL;
+  	    }
+  	    break;
+  #endif
+***************
+*** 555,562 ****
+  	first = 0;
+      }
+      return mb.buf;
+-   error:
+-     return NULL;
+  }
+  
+  static int
+--- 555,560 ----

@@ -1,0 +1,41 @@
+Index: src/htcp.c
+===================================================================
+RCS file: /server/cvs-server/squid/squid/src/htcp.c,v
+retrieving revision 1.32.2.2
+retrieving revision 1.32.2.4
+diff -c -r1.32.2.2 -r1.32.2.4
+*** src/htcp.c	2001/01/12 00:51:48	1.32.2.2
+--- src/htcp.c	2001/04/01 16:52:45	1.32.2.4
+***************
+*** 747,754 ****
+      hdr.msg_id = ntohl(hdr.msg_id);
+      debug(31, 3) ("htcpHandleData: sz = %d\n", sz);
+      debug(31, 3) ("htcpHandleData: length = %d\n", (int) hdr.length);
+!     if (hdr.opcode > HTCP_END) {
+! 	debug(31, 0) ("htcpHandleData: opcode %d out of range\n",
+  	    (int) hdr.opcode);
+  	return;
+      }
+--- 747,755 ----
+      hdr.msg_id = ntohl(hdr.msg_id);
+      debug(31, 3) ("htcpHandleData: sz = %d\n", sz);
+      debug(31, 3) ("htcpHandleData: length = %d\n", (int) hdr.length);
+!     if (hdr.opcode >= HTCP_END) {
+! 	debug(31, 0) ("htcpHandleData: client %s, opcode %d out of range\n",
+! 	    inet_ntoa(from->sin_addr),
+  	    (int) hdr.opcode);
+  	return;
+      }
+***************
+*** 783,788 ****
+--- 784,793 ----
+  	break;
+      case HTCP_SET:
+  	htcpHandleSet(&hdr, buf, sz, from);
++ 	break;
++     case HTCP_CLR:
++ 	debug(31, 1) ("htcpHandleData: client %s, CLR not supported\n",
++ 	    inet_ntoa(from->sin_addr));
+  	break;
+      default:
+  	assert(0);

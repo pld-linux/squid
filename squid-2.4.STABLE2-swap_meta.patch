@@ -1,0 +1,24 @@
+2001-10-08 17:22  Henrik Nordstrom <hno@squid-cache.org>
+
+        BUGZILLA #246
+	The rearrangement of store directory/filenumbers in the StoreEntry
+	structure may cause directory rebuilds without swap.state to fail
+	or end up in an inconsistent state.
+
+Index: squid/src/structs.h
+diff -u squid/src/structs.h:1.361.2.14 squid/src/structs.h:1.361.2.15
+--- squid/src/structs.h:1.361.2.14	Wed Apr  4 01:01:12 2001
++++ squid/src/structs.h	Mon Oct  8 09:22:03 2001
+@@ -1322,10 +1322,10 @@
+     time_t expires;
+     time_t lastmod;
+     size_t swap_file_sz;
+-    sfileno swap_filen:25;
+-    sdirno swap_dirn:7;
+     u_short refcount;
+     u_short flags;
++    sfileno swap_filen:25;
++    sdirno swap_dirn:7;
+     u_short lock_count;		/* Assume < 65536! */
+     mem_status_t mem_status:3;
+     ping_status_t ping_status:3;

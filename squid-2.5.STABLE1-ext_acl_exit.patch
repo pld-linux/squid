@@ -1,0 +1,64 @@
+Index: squid/src/external_acl.c
+diff -c squid/src/external_acl.c:1.1.2.13 squid/src/external_acl.c:1.1.2.15
+*** squid/src/external_acl.c:1.1.2.13	Sat Nov  9 21:41:37 2002
+--- squid/src/external_acl.c	Sun Nov 10 08:25:46 2002
+***************
+*** 685,709 ****
+  
+      debug(82, 2) ("externalAclHandleReply: reply=\"%s\"\n", reply);
+  
+!     status = strwordtok(reply, &t);
+!     if (status && strcmp(status, "OK") == 0)
+! 	result = 1;
+  
+!     while ((token = strwordtok(NULL, &t))) {
+! 	value = strchr(token, '=');
+! 	if (value) {
+! 	    *value++ = '\0';	/* terminate the token, and move up to the value */
+! 	    if (strcmp(token, "user") == 0)
+! 		user = value;
+! 	    else if (strcmp(token, "error") == 0)
+! 		error = value;
+  	}
+      }
+- 
+      dlinkDelete(&state->list, &state->def->queue);
+!     if (cbdataValid(state->def))
+! 	entry = external_acl_cache_add(state->def, state->key, result, user, error);
+!     else
+  	entry = NULL;
+  
+      do {
+--- 685,716 ----
+  
+      debug(82, 2) ("externalAclHandleReply: reply=\"%s\"\n", reply);
+  
+!     if (reply) {
+! 	status = strwordtok(reply, &t);
+! 	if (status && strcmp(status, "OK") == 0)
+! 	    result = 1;
+  
+! 	while ((token = strwordtok(NULL, &t))) {
+! 	    value = strchr(token, '=');
+! 	    if (value) {
+! 		*value++ = '\0';	/* terminate the token, and move up to the value */
+! 		if (strcmp(token, "user") == 0)
+! 		    user = value;
+! 		else if (strcmp(token, "error") == 0)
+! 		    error = value;
+! 	    }
+  	}
+      }
+      dlinkDelete(&state->list, &state->def->queue);
+!     if (cbdataValid(state->def)) {
+! 	if (reply)
+! 	    entry = external_acl_cache_add(state->def, state->key, result, user, error);
+! 	else {
+! 	    entry = hash_lookup(state->def->cache, state->key);
+! 	    if (entry)
+! 		external_acl_cache_delete(state->def, entry);
+! 	}
+!     } else
+  	entry = NULL;
+  
+      do {
