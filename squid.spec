@@ -515,7 +515,7 @@ else
 	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
 		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
-[ -L %{_datadir}/squid/errors ] && rm -f %{_datadir}/squid/errors
+[ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors
 
 %post
 if [ "$1" = "1" ]; then
