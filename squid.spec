@@ -4,7 +4,7 @@ Summary(ru):	Squid - кэш объектов Internet
 Summary(uk):	Squid - кеш об'╓кт╕в Internet
 Name:		squid
 Version:	2.4.STABLE6
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
