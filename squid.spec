@@ -24,8 +24,8 @@ Patch15:	%{name}-libnsl_fixes.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
 BuildRequires:	pam-devel
-Prereq:		rc-scripts >= 0.2.0
-Prereq:		/sbin/chkconfig
+PreReq:		rc-scripts >= 0.2.0
+PreReq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
@@ -75,12 +75,13 @@ Requires:	httpd
 Cachemgr.cgi is a CGI script that allows administrator to chceck
 various informations about Squid via WWW.
 
-%description -l pl cachemgr
+%description cachemgr -l pl
 Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi
 zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 
 %package ldap_auth
-Summary:	LDAP authentication helper for Squid.
+Summary:	LDAP authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji LDAP dla squida
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
 Group(pl):	Sieciowe/Administracyjne
@@ -90,8 +91,13 @@ Requires:	%{name}
 This Squid helper allows authentication against LDAP directories using
 the "simple authentication" (plain-text).
 
+%description ldap_auth -l pl
+Pakiet ten pozwala na autentykacjê LDAP za pomoc± prostej autentykacji
+(otwartym tekstem).
+
 %package pam_auth
-Summary:	PAM authentication helper for Squid.
+Summary:	PAM authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji PAM dla squida
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
 Group(pl):	Sieciowe/Administracyjne
@@ -102,8 +108,13 @@ This program authenticates users against a PAM configured
 authentication service "squid". This allows you to authenticate Squid
 users to any authentication source for which you have a PAM module.
 
+%description pam_auth -l pl
+Program ten pozwala na autentykacjê u¿ytkowników squida w dowolnym
+¼ródle posiadaj±cym modu³ PAM.
+
 %package smb_auth
-Summary:	SMB authentication helper for Squid.
+Summary:	SMB authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji SMB dla squida
 Group:		Networking/Admin
 Group(de):	Netzwerkwesen/Administration
 Group(pl):	Sieciowe/Administracyjne
@@ -114,18 +125,22 @@ This is a proxy authentication module. With smb_auth you can
 authenticate proxy users against an SMB server like Windows NT or
 Samba.
 
+%description smb_auth -l pl
+To jest modu³ autentykacji proxy. Z smb_auth mo¿esz autentyfikowaæ
+u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
+
 %prep
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page.
 
 # Other patches:
-%patch10 -p1 
-%patch11 -p1 
-%patch12 -p1 
-%patch13 -p1 
-%patch14 -p1 
-%patch15 -p1 
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
 
 %build
 autoconf
@@ -151,7 +166,7 @@ autoconf
 #	--enable-linux-netfilter\
 
 mv -f squid/* doc
-%{__make} 
+%{__make}
 
 %{__make} -C auth_modules SUBDIRS="LDAP MSNT NCSA PAM SMB YP getpwnam"
 
@@ -186,7 +201,7 @@ install auth_modules/LDAP/squid_ldap_auth.8 $RPM_BUILD_ROOT%{_mandir}/man8
 gzip -9nf auth_modules/LDAP/README
 
 install auth_modules/PAM/pam_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-gzip -9nf auth_modules/PAM/pam_auth.c # there is documentation 
+gzip -9nf auth_modules/PAM/pam_auth.c # there is documentation
 
 
 install auth_modules/SMB/smb_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
@@ -228,16 +243,16 @@ gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 
 %pre
 grep -q squid /etc/group || (
-    /usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
+	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
 )
 grep -q squid /etc/passwd || (
-    /usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
-        -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
+	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
+		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 )
 
 %post
 # If there is already link, don't do anything.
-if [ ! -e %{_datadir}/squid/errors ]; then 
+if [ ! -e %{_datadir}/squid/errors ]; then
 
 # Try to create link to Polish, and then any directory but English.
 if [ -d %{_datadir}/squid/errors.Polish ]; then
