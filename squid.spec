@@ -518,20 +518,12 @@ install -d \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
+cp -a contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT/home/services/httpd/cgi-bin
-
-cd errors
-for LNG in *; do
-	if [ -d $LNG ]; then
-		mv -f $LNG $RPM_BUILD_ROOT%{_datadir}/squid/errors.$LNG
-	fi
-done
-cd ..
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
@@ -570,31 +562,9 @@ else
 	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
 		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
 fi
+[ -L %{_datadir}/squid/errors ] && rm -f %{_datadir}/squid/errors
 
 %post
-try_link() {
-# If there is already link, don't do anything.
-if [ ! -e %{_datadir}/squid/errors ]; then
-
-    # Try to create link to Polish, and then any directory but English.
-    if [ -d %{_datadir}/squid/errors.Polish ]; then
-	ln -sf %{_datadir}/squid/errors{.Polish,}
-	return
-    else
-	find %{_datadir}/squid/errors/ -type d -name 'errors.*'| while read NAME; do
-	    if [ $NAME != "English" ]; then
-		ln -sf $NAME %{_datadir}/squid/errors
-		return
-	    fi
-	done
-    fi
-
-    # Create symlink to English if everything else fails.
-    ln -sf %{_datadir}/squid/errors{.English,}
-fi
-}
-
-try_link
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
@@ -610,7 +580,6 @@ if [ "$1" = "0" ]; then
 		/etc/rc.d/init.d/squid stop >&2
 	fi
 	/sbin/chkconfig --del squid
-	rm -f %{_datadir}/squid/errors
 fi
 
 %postun
@@ -642,32 +611,33 @@ fi
 %attr(640,root,root) %{_sysconfdir}/squid.conf.default
 
 %dir %{_datadir}/squid
+%dir %{_datadir}/errors
 %{_datadir}/squid/icons
 %{_datadir}/squid/mib.txt
-%lang(bg) %{_datadir}/squid/errors.Bulgarian
-%lang(cs) %{_datadir}/squid/errors.Czech
-%lang(da) %{_datadir}/squid/errors.Danish
-%lang(nl) %{_datadir}/squid/errors.Dutch
-%{_datadir}/squid/errors.English
-%lang(et) %{_datadir}/squid/errors.Estonian
-%lang(fi) %{_datadir}/squid/errors.Finnish
-%lang(fr) %{_datadir}/squid/errors.French
-%lang(de) %{_datadir}/squid/errors.German
-%lang(hu) %{_datadir}/squid/errors.Hungarian
-%lang(it) %{_datadir}/squid/errors.Italian
-%lang(ja) %{_datadir}/squid/errors.Japanese
-%lang(ko) %{_datadir}/squid/errors.Korean
-%lang(pl) %{_datadir}/squid/errors.Polish
-%lang(pt) %{_datadir}/squid/errors.Portuguese
-%lang(ro) %{_datadir}/squid/errors.Romanian
-%lang(ru) %{_datadir}/squid/errors.Russian-1251
-%lang(ru) %{_datadir}/squid/errors.Russian-koi8-r
-%lang(zh) %{_datadir}/squid/errors.Simplify_Chinese
-%lang(sk) %{_datadir}/squid/errors.Slovak
-%lang(es) %{_datadir}/squid/errors.Spanish
-%lang(sv) %{_datadir}/squid/errors.Swedish
-%lang(zh) %{_datadir}/squid/errors.Traditional_Chinese
-%lang(tr) %{_datadir}/squid/errors.Turkish
+%lang(bg) %{_datadir}/squid/errors/Bulgarian
+%lang(cs) %{_datadir}/squid/errors/Czech
+%lang(da) %{_datadir}/squid/errors/Danish
+%lang(nl) %{_datadir}/squid/errors/Dutch
+%{_datadir}/squid/errors/English
+%lang(et) %{_datadir}/squid/errors/Estonian
+%lang(fi) %{_datadir}/squid/errors/Finnish
+%lang(fr) %{_datadir}/squid/errors/French
+%lang(de) %{_datadir}/squid/errors/German
+%lang(hu) %{_datadir}/squid/errors/Hungarian
+%lang(it) %{_datadir}/squid/errors/Italian
+%lang(ja) %{_datadir}/squid/errors/Japanese
+%lang(ko) %{_datadir}/squid/errors/Korean
+%lang(pl) %{_datadir}/squid/errors/Polish
+%lang(pt) %{_datadir}/squid/errors/Portuguese
+%lang(ro) %{_datadir}/squid/errors/Romanian
+%lang(ru) %{_datadir}/squid/errors/Russian-1251
+%lang(ru) %{_datadir}/squid/errors/Russian-koi8-r
+%lang(zh) %{_datadir}/squid/errors/Simplify_Chinese
+%lang(sk) %{_datadir}/squid/errors/Slovak
+%lang(es) %{_datadir}/squid/errors/Spanish
+%lang(sv) %{_datadir}/squid/errors/Swedish
+%lang(zh) %{_datadir}/squid/errors/Traditional_Chinese
+%lang(tr) %{_datadir}/squid/errors/Turkish
 
 %attr(755,root,root) %dir %{_libexecdir}
 %attr(755,root,root) %{_libexecdir}/*.pl
