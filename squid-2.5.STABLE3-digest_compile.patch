@@ -1,0 +1,28 @@
+Index: squid/src/auth/digest/auth_digest.c
+diff -c squid/src/auth/digest/auth_digest.c:1.10.2.6 squid/src/auth/digest/auth_digest.c:1.10.2.7
+*** squid/src/auth/digest/auth_digest.c:1.10.2.6	Sun May 18 15:49:20 2003
+--- squid/src/auth/digest/auth_digest.c	Sun Aug 10 01:31:33 2003
+***************
+*** 711,718 ****
+  		return;
+  	    } else {
+  		const char *useragent = httpHeaderGetStr(&request->header, HDR_USER_AGENT);
+! 		static struct in_addr last_broken_addr =
+! 		{0};
+  		if (memcmp(&last_broken_addr, &request->client_addr, sizeof(last_broken_addr)) != 0) {
+  		    debug(29, 1) ("\nDigest POST bug detected from %s using '%s'. Please upgrade browser. See Bug #630 for details.\n", inet_ntoa(request->client_addr), useragent ? useragent : "-");
+  		    last_broken_addr = request->client_addr;
+--- 711,723 ----
+  		return;
+  	    } else {
+  		const char *useragent = httpHeaderGetStr(&request->header, HDR_USER_AGENT);
+! 		static struct in_addr last_broken_addr;
+! 		static int seen_broken_client = 0;
+! 
+! 		if (!seen_broken_client) {
+! 		    last_broken_addr = no_addr;
+! 		    seen_broken_client = 1;
+! 		}
+  		if (memcmp(&last_broken_addr, &request->client_addr, sizeof(last_broken_addr)) != 0) {
+  		    debug(29, 1) ("\nDigest POST bug detected from %s using '%s'. Please upgrade browser. See Bug #630 for details.\n", inet_ntoa(request->client_addr), useragent ? useragent : "-");
+  		    last_broken_addr = request->client_addr;
