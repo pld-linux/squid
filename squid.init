@@ -51,6 +51,9 @@ else
 	exit 0
 fi
 
+# initial value:
+DELAY_IN_RESTART=30
+
 # Sanity check
 [ -f /etc/squid/squid.conf ] || exit 0
 
