@@ -4,7 +4,7 @@
 #
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para WWW/FTP/gopher
-Summary(pl):	Uniwersalny proxy-cache server
+Summary(pl):	Uniwersalny serwer proxy-cache
 Summary(pt_BR):	Cache Squid de objetos Internet
 Summary(ru):	Squid - кэш объектов Internet
 Summary(uk):	Squid - кеш об'╓кт╕в Internet
