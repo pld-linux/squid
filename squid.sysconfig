@@ -9,5 +9,5 @@ SERVICE_RUN_NICE_LEVEL="+5"
 #SQUID_OPTS="-D"
 
 # delay in seconds between stop and start phase, some systems need long delay
-DELAY_BETWEEN_RESTARTS=30
+DELAY_IN_RESTART=30
 
