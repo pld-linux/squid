@@ -1,32 +1,32 @@
-%define		calamaris_ver	2.24
-
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
-Version:	2.2.STABLE4
-Release:	2
+Version:	2.3.STABLE2
+Release:	1
 Copyright:	GPL
 Group:		Daemons
 Group(pl):	Serwery
-Source0:	ftp://squid.nlanr.net/pub/Squid/squid-2/%{name}-%{version}-src.tar.gz
+Source0:	http://www.squid-cache.org/Versions/v2/2.3/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
-Source3:	http://www.detmold.netsurf.de/homepages/cord/tools/squid/calamaris/calamaris-%{calamaris_ver}.tar.gz
-Source4:	%{name}.crontab
-Source5:	fix.pl
-Source6:	%{name}.conf
-Source7:	http://cache.is.co.za/squid-docs.tar.gz
-Source8:	calamaris.crontab
-Source9:	%{name}.sysconfig
-Patch0:		%{name}-2.0-make.patch
-Patch1:		%{name}-perl.patch
+Source3:	%{name}.sysconfig
+Source4:	http://cache.is.co.za/squid-docs.tar.gz
+Source5:	squid.conf
+Source6:	squid.logrotate
+Patch0:		squid-2.0-make.patch
+Patch1:		squid-perl.patch
 Patch2:		squid-linux.patch
 Patch3:		squid-fhs.patch
-Patch4:		squid-version.patch
+# Bug fixes from Squid home page.
+Patch10:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-EOF_in_cf.data.pre.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-USE_DNSSERVER.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-USE_DNSSERVER_part2.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getMyHostname.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-hostname_whitespace.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-netdb_exchange_loop.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-redirected_username_logging.patch
 BuildRoot:	/tmp/%{name}-%{version}-root
 Prereq:		/sbin/chkconfig
-Requires:	/etc/cron.d
-Requires:	crontabs
 Requires:	rc-scripts
 
 %define		_libexecdir	%{_libdir}/%{name}
@@ -69,28 +69,38 @@ ftpget, oraz pomocnicze programy do zarz±dzania.
 
 Squid wywodzi siê ze sponsorowanego przez ARPA projektu Harvest.
 
+%package cachemgr
+Summary:	CGI script for Squid management
+Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
+Group:		Networking/Admin
+Group(pl):	Sieciowe/Administracja
+
+%description cachemgr
+Cachemgr.cgi is a CGI script that allows administrator to chceck various
+informations about Squid via WWW.
+
+%description -l pl cachemgr
+Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi zapoznaæ
+siê z informacjami o pracy Squid'a poprzez WWW.
+
 %prep
-%setup -q -a 1 -a 7 -a 3
+%setup -q -a 1 -a 4
 %patch0 -p1 
 %patch1 -p1 
 %patch2 -p1 
 %patch3 -p1
-%patch4 -p1
+
+cd src
+%patch10 -p0
+%patch11 -p0
+%patch12 -p0
+%patch13 -p0
+%patch14 -p0
+%patch15 -p0
+%patch16 -p0
+cd ..
 
 %build
-install -d  $RPM_BUILD_DIR/%{name}-%{version}/errors/{English.Polish,tmp}
-cd $RPM_BUILD_DIR/%{name}-%{version}/errors/English
-for i in ERR* 
-do awk '/BODY/,/\/BODY/ {print}' ../Polish/$i | sed 's/<BODY>/<HR>/g' | \
-sed 's/<\/BODY>/<HR>/g' > ../tmp/$i 
-cat $i ../tmp/$i > ../English.Polish/$i 
-done 
-
-cd ../English.Polish 
-perl %{SOURCE5} +m ERR* 
-
-cd ../..
-pwd
 autoconf
 LDFLAGS="-s" ; export LDFLAGS
 %configure \
@@ -99,9 +109,9 @@ LDFLAGS="-s" ; export LDFLAGS
 	--enable-useragent-log \
 	--enable-snmp \
 	--enable-arp-acl \
-	--enable-err-language=English.Polish \
+	--enable-err-language=English \
 	--enable-htcp \
-	--enable-carp 
+	--enable-carp
 
 mv -f squid/* doc
 make 
@@ -111,9 +121,11 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
-	$RPM_BUILD_ROOT/etc/{rc.d/init.d,cron.d,sysconfig} \
-	$RPM_BUILD_ROOT%{_prefix}/{sbin,bin,lib/squid,share/{man/man1,squid}} \
-	$RPM_BUILD_ROOT/var/cache/squid
+	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig,logrotate.d} \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
+	$RPM_BUILD_ROOT%{_mandir}/man1 \
+	$RPM_BUILD_ROOT%{_datadir}/squid \
+	$RPM_BUILD_ROOT/var/{cache,log/archiv}/squid
 
 make install \
 	prefix=$RPM_BUILD_ROOT%{_prefix} \
@@ -124,44 +136,71 @@ make install \
 	localstatedir=$RPM_BUILD_ROOT/var \
 	datadir=$RPM_BUILD_ROOT%{_datadir}
 
+mv contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
+
 mv $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
 mv $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
-mv $RPM_BUILD_ROOT/etc/squid/errors	$RPM_BUILD_ROOT%{_datadir}/squid
 mv $RPM_BUILD_ROOT/etc/squid/icons	$RPM_BUILD_ROOT%{_datadir}/squid
 
+cd errors
+for LNG in *; do
+	if [ -d $LNG ]; then
+		mv $LNG $RPM_BUILD_ROOT%{_datadir}/squid/errors.$LNG
+	fi
+done
+cd ..
+
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/cron.d/squid
-install %{SOURCE8} $RPM_BUILD_ROOT/etc/cron.d/calamaris
-install %{SOURCE6} $RPM_BUILD_ROOT/etc/squid
-install %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/squid
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/squid
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/squid
+install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
-install calamaris-%{calamaris_ver}/calamaris $RPM_BUILD_ROOT%{_bindir}
-install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT%{_mandir}/man1
+install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 
-install scripts/*.pl $RPM_BUILD_ROOT%{_libdir}/squid
+touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
-touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}
-
+# These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
-gzip -9nf README ChangeLog QUICKSTART \
-	contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl \
-	$RPM_BUILD_ROOT%{_mandir}/man*/*
+gzip -9nf CONTRIBUTORS COPYING COPYRIGHT CREDITS README ChangeLog QUICKSTART \
+	TODO
 
 %post
-/sbin/chkconfig --add squid
-
-if [ -f /var/lock/sybsys/squid ]; then
-    /etc/rc.d/init.d/squid restart >&2
+if [ "$1" = "1" ]; then
+	/sbin/chkconfig --add squid
+	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
+else
+	if [ -f /var/lock/subsys/squid ]; then
+		/etc/rc.d/init.d/squid restart >&2
+	fi
 fi
+
+# If there is already link, don't do anything.
+if [ -e %{_datadir}/squid/errors ]; then exit; fi
+
+# Try to create link to Polish, and then any directory but English.
+if [ -d %{_datadir}/squid/errors.Polish ]; then
+	ln -sf {_datadir}/squid/errors{.Polish,}
+	exit
+else
+	find %{_datadir}/squid/errors/ -type d -name 'errors.*'| while read NAME; do
+		if [ $NAME != "English" ]; then
+			ln -fs $NAME %{_datadir}/squid/errors
+			exit
+		fi
+	done
+fi
+
+# Create symlink to English if everything else fails.
+ln -sf {_datadir}/squid/errors{.English,}
 
 %preun
-if [ -f /var/lock/sybsys/squid ]; then
-    /etc/rc.d/init.d/squid stop >&2
-fi
-
 if [ "$1" = 0 ]; then
-    /sbin/chkconfig --del squid
+	if [ -f /var/lock/sybsys/squid ]; then
+		/etc/rc.d/init.d/squid stop >&2
+	fi
+	/sbin/chkconfig --del squid
+	rm -f {_datadir}/squid/errors
 fi
 
 %clean
@@ -169,33 +208,54 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc faq/* README* ChangeLog* QUICKSTART* doc/*
-%doc contrib/url-normalizer.pl* contrib/rredir.pl* 
-%doc contrib/user-agents.pl*
+%doc faq *.gz doc/*
 
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 
-%attr(755,root,root) %dir /etc/squid
-
-%attr(640,root,root) %config %verify(not md5 mtime size) /etc/squid/squid.conf
-%attr(644,root,root) %config %verify(not md5 mtime size) /etc/squid/mime.conf
-/etc/squid/mime.conf.default
-/etc/squid/squid.conf.default
-
-%{_datadir}/squid
-
-%attr(640,root,root) /etc/cron.d/*
-
-%attr(755,nobody,nobody) /home/httpd/cgi-bin/*
+%attr(755,root,root) %dir %{_sysconfdir}
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
-%attr(640,root,root) /etc/sysconfig/squid
+%attr(640,root,root) /etc/logrotate.d/squid
+%attr(640,root,root) %config(noreplace) /etc/sysconfig/squid
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
+%attr(640,root,root) %{_sysconfdir}/mime.conf.default
+%attr(640,root,root) %{_sysconfdir}/squid.conf.default
 
-%attr(750,root,root) %dir %{_libdir}/squid
-%attr(750,root,root) %{_libdir}/squid/*
+%{_datadir}/squid/icons
+%{_datadir}/squid/mib.txt
+%lang(bg) %{_datadir}/squid/errors.Bulgarian
+%lang(cs) %{_datadir}/squid/errors.Czech
+%lang(da) %{_datadir}/squid/errors.Danish
+%lang(nl) %{_datadir}/squid/errors.Dutch
+%{_datadir}/squid/errors.English
+%lang(et) %{_datadir}/squid/errors.Estonian
+%lang(fi) %{_datadir}/squid/errors.Finnish
+%lang(fr) %{_datadir}/squid/errors.French
+%lang(de) %{_datadir}/squid/errors.German
+%lang(hu) %{_datadir}/squid/errors.Hungarian
+%lang(it) %{_datadir}/squid/errors.Italian
+%lang(ja) %{_datadir}/squid/errors.Japanese
+%lang(ko) %{_datadir}/squid/errors.Korean
+%lang(pl) %{_datadir}/squid/errors.Polish
+%lang(pt) %{_datadir}/squid/errors.Portuguese
+%lang(ro) %{_datadir}/squid/errors.Romanian
+%lang(ru) %{_datadir}/squid/errors.Russian-1251
+%lang(ru) %{_datadir}/squid/errors.Russian-koi8-r
+%lang(sk) %{_datadir}/squid/errors.Slovak
+%lang(es) %{_datadir}/squid/errors.Spanish
+%lang(sv) %{_datadir}/squid/errors.Swedish
+%lang(zh) %{_datadir}/squid/errors.Traditional_Chinese
+%lang(tr) %{_datadir}/squid/errors.Turkish
 
+%attr(750,root,root) %{_libexecdir}
+
+%attr(750,nobody,root) %dir /var/log/archiv/squid
 %attr(750,nobody,root) %dir /var/log/squid
-%ghost %attr(644,nobody,nobody) /var/log/squid/*
+%attr(640,nobody,root) %ghost /var/log/squid/*
 
 %attr(750,nobody,root) %dir /var/cache/squid
+
+%files cachemgr
+%attr(755,nobody,nobody) /home/httpd/cgi-bin/*
