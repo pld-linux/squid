@@ -620,7 +620,7 @@ fi
 %{_datadir}/squid/icons
 %{_datadir}/squid/mib.txt
 %lang(bg) %{_datadir}/squid/errors/Bulgarian
-%lang(ct) %{_datadir}/squid/errors/Catalan
+%lang(ca) %{_datadir}/squid/errors/Catalan
 %lang(cs) %{_datadir}/squid/errors/Czech
 %lang(da) %{_datadir}/squid/errors/Danish
 %lang(nl) %{_datadir}/squid/errors/Dutch
