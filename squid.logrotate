@@ -3,7 +3,7 @@
 	daily
 	rotate 7
 	compress
-	create 640 nobody root
+	create 660 root squid
 	postrotate
 		# signal Squid to restart logging with the new files
 		/usr/bin/killall -USR1 squid
@@ -15,7 +15,7 @@
 	weekly
 	rotate 4
 	compress
-	create 640 nobody root
+	create 660 root squid
 	postrotate
 		# signal Squid to restart logging with the new files
 		/usr/bin/killall -USR1 squid
