@@ -1,49 +1,28 @@
---- squid.conf	Sun Feb 11 12:02:37 2001
-+++ squid.conf.default	Sun Feb 11 12:02:38 2001
-@@ -460,6 +460,9 @@
- #	will be created under each first-level directory.  The default
- #	is 256.
+--- squid.conf.default	Thu Mar 22 14:55:47 2001
++++ squid.conf	Thu Mar 22 15:09:11 2001
+@@ -595,8 +595,12 @@
+ #	the cache_dir lines with the smallest max-size value first and the
+ #	ones with no max-size specification last.
  #
 +#	NOTE: Remeber to initialize cache directories:
 +#	      squid -z -F
 +#
- #cache_dir ufs /var/cache/squid 100 16 256
+ #Default:
+ # cache_dir ufs /var/cache/squid 100 16 256
++cache_dir diskd /var/cache/squid 100 16 256
  
  #  TAG: cache_access_log
-@@ -467,6 +470,7 @@
- #	every HTTP and ICP queries received.
- #
- #cache_access_log /var/log/squid/access
-+cache_access_log /var/log/squid/access.log
- 
- #  TAG: cache_log
- #	Cache logging file. This is where general information about
-@@ -474,6 +478,7 @@
- #	logged to this file with the "debug_options" tag below.
- #
- #cache_log /var/log/squid/cache
-+cache_log /var/log/squid/cache.log
- 
- #  TAG: cache_store_log
- #	Logs the activities of the storage manager.  Shows which
-@@ -483,6 +488,7 @@
- #	disable it.
- #
- #cache_store_log /var/log/squid/store
-+cache_store_log /var/log/squid/store.log
- 
- #  TAG: cache_swap_log
- #	Location for the cache "swap.log."  This log file holds the
-@@ -1282,6 +1288,8 @@
- #
- #cache_effective_user nobody
- #cache_effective_group nogroup
-+cache_effective_user squid 
+ #	Logs the client request activity.  Contains an entry for
+@@ -1533,6 +1537,8 @@
+ #Default:
+ # cache_effective_user nobody
+ # cache_effective_group nogroup
++cache_effective_user squid
 +cache_effective_group squid
  
  #  TAG: visible_hostname
  #	If you want to present a special hostname in error messages, etc,
-@@ -1416,7 +1424,12 @@
+@@ -1702,8 +1708,14 @@
  #	in the habit of using 'squid -k rotate' instead of 'kill -USR1
  #	<pid>'.
  #
@@ -51,7 +30,9 @@
 +#	which is more configurable, to perform this task. Setting this
 +#	value to '0' disables built-in log rotation and allows 'logrotate'
 +#	to do it's job.
- #logfile_rotate 10
++#
+ #Default:
+ # logfile_rotate 10
 +logfile_rotate 0
  
  #  TAG: append_domain
