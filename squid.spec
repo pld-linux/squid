@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE7
-Release:	5
+Release:	6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -34,6 +34,8 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
 Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-half_closed_POST.patch
 Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7_req_resp_header.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-non_blocking_disk.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-blank_response.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -424,11 +426,11 @@ Samba 2.2.4 lub wy¿szego.
 
 %prep
 %setup -q -a1 -a4
-
 # Bug fixes from Squid home page:
 %patch0 -p1
 %patch1 -p1
-
+%patch2 -p1
+%patch3 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
