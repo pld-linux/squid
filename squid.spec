@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE2
-Release:	3
+Release:	4
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -23,6 +23,7 @@ Patch4:		%{name}-domainmatch.patch
 Patch5:		%{name}-ftp-bugfix.patch
 BuildRequires:	autoconf
 Prereq:		rc-scripts >= 0.2.0
+Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
@@ -74,7 +75,7 @@ various informations about Squid via WWW.
 
 %description -l pl cachemgr
 Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi
-zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
+zapoznaæ siê z informacjami o pracy Squida poprzez WWW.
 
 %prep
 %setup -q -a 1 -a 4
@@ -151,7 +152,7 @@ done
 cd ..
 
 cd $RPM_BUILD_ROOT/etc/squid
-cp squid.conf{,.default}
+cp -f squid.conf{,.default}
 patch -p0 < %{SOURCE5}
 cd -
 
@@ -168,6 +169,9 @@ rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
 gzip -9nf CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART \
 	TODO
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %pre
 grep -q squid /etc/group || (
@@ -217,9 +221,6 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del squid
 	rm -f %{_datadir}/squid/errors
 fi
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
