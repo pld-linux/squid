@@ -16,7 +16,7 @@
 @@ -804,6 +808,7 @@
  #
  #Default:
- # pid_filename /var/log/squid/squid.pid
+ # pid_filename /var/run/squid.pid
 +pid_filename /var/run/squid.pid
  
  #  TAG: debug_options
