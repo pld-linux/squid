@@ -1,0 +1,10 @@
+/var/log/squid/access.log {
+	olddir /var/log/archiv/squid
+	daily
+	rotate 7
+	compress
+	postrotate
+		# signal Squid to restart logging with the new files
+		/usr/bin/killall -USR1 squid
+	endscript
+}
