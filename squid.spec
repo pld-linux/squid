@@ -58,7 +58,7 @@ Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-contrib.patch
 BuildRequires:	autoconf
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.7
 BuildRequires:	pam-devel
 BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
