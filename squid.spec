@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷.
 Name:		squid
 Version:	2.4.STABLE7
-Release:	2
+Release:	3
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -400,6 +400,7 @@ fi
 %attr(640,root,root) %{_sysconfdir}/mime.conf.default
 %attr(640,root,root) %{_sysconfdir}/squid.conf.default
 
+%dir %{_datadir}/squid
 %{_datadir}/squid/icons
 %{_datadir}/squid/mib.txt
 %lang(bg) %{_datadir}/squid/errors.Bulgarian
