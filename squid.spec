@@ -502,6 +502,7 @@ mv -f squid/* doc
 %{__make}
 
 perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g' contrib/*
+find helpers/ -type f | xargs perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g'
 
 %install
 rm -rf $RPM_BUILD_ROOT
