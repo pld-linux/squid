@@ -566,6 +566,10 @@ fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
 %post
+if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
+	echo visible_hostname `/bin/hostname -f` >> /etc/squid/squid.conf
+fi
+
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
