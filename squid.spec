@@ -34,20 +34,19 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
 Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-half_closed_POST.patch
 Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7_req_resp_header.patch
-
 # Other patches:
-Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
-Patch120:	%{name}-fhs.patch
-Patch130:	%{name}-location.patch
-Patch140:	%{name}-domainmatch.patch
-Patch150:	%{name}-libnsl_fixes.patch
-Patch170:	%{name}-ac_fix.patch
-Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
-Patch200:	%{name}-nolibs.patch
-Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
-Patch220:	%{name}-empty-referer.patch
-Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
+Patch101:	%{name}-fhs.patch
+Patch102:	%{name}-location.patch
+Patch103:	%{name}-domainmatch.patch
+Patch104:	%{name}-libnsl_fixes.patch
+Patch105:	%{name}-ac_fix.patch
+Patch106:	%{name}-crash-on-ENOSPC.patch
+Patch107:	%{name}-newssl.patch
+Patch108:	%{name}-nolibs.patch
+Patch109:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
+Patch110:	%{name}-empty-referer.patch
+Patch111:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -429,18 +428,18 @@ Samba 2.2.4 lub wy¿szego.
 %patch1 -p1
 
 # Other patches:
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+%patch103 -p1
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
+%patch107 -p1
+%patch108 -p1
+%patch109 -p1
 %patch110 -p1
-%patch120 -p1
-%patch130 -p1
-%patch140 -p1
-%patch150 -p1
-%patch170 -p1
-%patch180 -p1
-%patch190 -p1
-%patch200 -p1
-%patch210 -p1
-%patch220 -p1
-%{?with_combined_log:%patch230 -p1}
+%{?with_combined_log:%patch111 -p1}
 
 %build
 %{__aclocal}
