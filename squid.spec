@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE4
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -27,10 +27,24 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdnnegcache.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirect_login_space.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-digest_auth_pwchange.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-reconfigure_message.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-reconfigure_message.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-digest_auth_pwchange.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-redirect_login_space.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdnnegcache.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/pam_auth-2.2.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4_auth_param_doc.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-errorpages.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-error_load_text.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-xpi_mime.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-size_overflow.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-extacl_auth_loop.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-squid_ldap_group.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-positive_dns_ttl.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-gopherhtml.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-netroute.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-synflood.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-fqdn.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE4-connect_cleanup.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -422,6 +436,20 @@ Samba 2.2.4 lub wy¿szego.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
 
 # Other patches:
 %patch110 -p1
