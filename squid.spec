@@ -17,12 +17,14 @@ License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
 # Source0-md5:	7fd964ac27b43b613d6b981cc702a29e
-Source1:	%{name}-1.1.19-faq.tar.gz
-# Source1-md5:	77d04ae621d19548797e3a0deb540df6
+# http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
+Source1:	%{name}-FAQ.tar.gz
+# Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
-Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
-# Source4-md5:	0cfee556bf6394a0bd3c438c89dd2e63
+# http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
+Source4:	%{name}-book-full-html.zip
+# Source4-md5:	4f3b6dab1de9cbb847df89d8b417378a
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
@@ -415,7 +417,7 @@ przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd z pakietu
 Samba 2.2.4 lub wy¿szego.
 
 %prep
-%setup -q -a 1 -a 4
+%setup -q -a1 -a4
 
 # Bug fixes from Squid home page:
 %patch0 -p1
@@ -467,7 +469,6 @@ Samba 2.2.4 lub wy¿szego.
 	--sysconfdir=%{_sysconfdir} \
 	--with-pthreads
 
-mv -f squid/* doc
 %{__make}
 
 perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' contrib/*
@@ -571,8 +572,8 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS doc/* src/mib.txt
+%doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
+%doc doc/* src/mib.txt FAQ*.html book-full.html
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
