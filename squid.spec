@@ -4,7 +4,7 @@ Summary(pl):	Uniwersalny proxy-cache server
 Summary(pt_BR):	Cache Squid de objetos Internet
 Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
-Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷.
+Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
 Version:	2.4.STABLE7
 Release:	6
