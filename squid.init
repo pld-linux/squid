@@ -62,8 +62,8 @@ case "$1" in
 	;;
   restart)
 	$0 stop
-	echo -n "Waiting 30 seconds..."
-	sleep 30
+	echo -n "Waiting $DELAY_BETWEEN_RESTARTS seconds..."
+	sleep $DELAY_BETWEEN_RESTARTS
 	echo "done."
 	$0 start
 	;;
