@@ -1,6 +1,6 @@
-diff -urN squid-2.5.STABLE2.org/QUICKSTART squid-2.5.STABLE2/QUICKSTART
---- squid-2.5.STABLE2.org/QUICKSTART	Sat Apr 12 12:06:45 2003
-+++ squid-2.5.STABLE2/QUICKSTART	Sat Apr 12 12:18:58 2003
+diff -urN squid-2.5.STABLE4.org/QUICKSTART squid-2.5.STABLE4/QUICKSTART
+--- squid-2.5.STABLE4.org/QUICKSTART	2003-10-26 14:34:44.000000000 +0100
++++ squid-2.5.STABLE4/QUICKSTART	2003-10-26 14:35:42.000000000 +0100
 @@ -12,10 +12,9 @@
  INSTALL in the same directory), you have to configure the squid.conf
  file. This is the list of the values you *need* to change, because no
@@ -14,16 +14,16 @@ diff -urN squid-2.5.STABLE2.org/QUICKSTART squid-2.5.STABLE2/QUICKSTART
  
  ==============================================================================
  
-@@ -31,7 +30,7 @@
-     Warning: Squid uses much more than this value.  Rule of thumb: if
-     you have N megabytes free for Squid, put N/3 here.
+@@ -26,7 +25,7 @@
+     always ask permission before adding a parent cache. See also the
+     never_direct/always_direct directives.
  
 -cache_dir /usr/local/squid/var/cache 100 16 256
 +cache_dir /var/cache/squid 100 16 256
  
      Add here (first number, here 100) the amount of hard disk space 
      (in megabytes) to devote to caching.
-@@ -77,10 +76,10 @@
+@@ -69,10 +68,10 @@
  After editing squid.conf to your liking, run Squid from the command
  line TWICE:
  
@@ -34,6 +34,6 @@ diff -urN squid-2.5.STABLE2.org/QUICKSTART squid-2.5.STABLE2/QUICKSTART
  
 -Check in the cache.log (/usr/local/squid/var/logs/cache.log) that
 +Check in the cache.log (/var/log/squid/cache.log) that
- everything is all right.  Note that "WARNING: Cannot write to swap
- directory" is normal the first time you run Squid.
+ everything is all right.
  
+ Once Squid created all its files (it can take several minutes on some
