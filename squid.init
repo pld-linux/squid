@@ -60,10 +60,21 @@ case "$1" in
 		exit 1
 	fi
 	;;
-  restart|reload)
+  restart)
 	$0 stop
 	$0 start
 	;;
+  reload)
+	if [ -f /var/lock/subsys/squid ]; then
+		msg_reloading squid
+		busy
+		squid -k reconfigure
+		ok
+	else
+		msg_Not_Running squid
+		exit 1
+	fi
+  	;;
   status)
 	status squid
 	exit $?
