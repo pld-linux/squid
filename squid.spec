@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE2
-Release:	4
+Release:	5
 License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
@@ -28,6 +28,7 @@ Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-redir
 Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-snmp-problems.patch
 Patch18:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getpwnam_return_value.patch
 Patch19:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-mimeGetIconURL_returns_NULL.patch
+Patch20:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-Solaris_malloc_link.patch
 Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -100,6 +101,7 @@ cd src
 %patch18 -p1
 %patch19 -p1
 cd ..
+%patch20 -p0
 
 %build
 autoconf
