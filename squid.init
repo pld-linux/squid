@@ -79,8 +79,12 @@ case "$1" in
 	status squid
 	exit $?
 	;;
+  init)
+	echo "Initializing squid"
+	squid -z
+	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart|reload}"
+	msg_Usage "$0 {start|stop|status|restart|reload|init}"
 	exit 1
 esac
 
