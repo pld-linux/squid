@@ -1,0 +1,61 @@
+Index: squid/src/Makefile.am
+diff -c squid/src/Makefile.am:1.16.2.8 squid/src/Makefile.am:1.16.2.9
+*** squid/src/Makefile.am:1.16.2.8	Sun Sep 29 06:56:27 2002
+--- squid/src/Makefile.am	Sun Nov 10 08:30:03 2002
+***************
+*** 367,376 ****
+  		echo "rm -f $(DESTDIR)$(DEFAULT_MIME_TABLE)"; \
+  		$(RM) -f $(DESTDIR)$(DEFAULT_MIME_TABLE); \
+  	fi
+! 	@if test -f $(DESTDIR)$(DEFAULT_CONFIG_FILE) ; then \
+! 		echo "rm -f $(DESTDIR)$(DEFAULT_CONFIG_FILE)"; \
+! 		$(RM) -f $(DESTDIR)$(DEFAULT_CONFIG_FILE); \
+! 	fi
+  
+  DISTCLEANFILES = cf_gen_defines.h cf.data cf_parser.h squid.conf.default \
+  	globals.c string_arrays.c repl_modules.c auth_modules.c store_modules.c
+--- 367,378 ----
+  		echo "rm -f $(DESTDIR)$(DEFAULT_MIME_TABLE)"; \
+  		$(RM) -f $(DESTDIR)$(DEFAULT_MIME_TABLE); \
+  	fi
+! 
+! # Don't automatically uninstall config files
+! #	@if test -f $(DESTDIR)$(DEFAULT_CONFIG_FILE) ; then \
+! #		echo "rm -f $(DESTDIR)$(DEFAULT_CONFIG_FILE)"; \
+! #		$(RM) -f $(DESTDIR)$(DEFAULT_CONFIG_FILE); \
+! #	fi
+  
+  DISTCLEANFILES = cf_gen_defines.h cf.data cf_parser.h squid.conf.default \
+  	globals.c string_arrays.c repl_modules.c auth_modules.c store_modules.c
+Index: squid/src/Makefile.in
+diff -c squid/src/Makefile.in:1.225.2.10 squid/src/Makefile.in:1.225.2.11
+*** squid/src/Makefile.in:1.225.2.10	Mon Sep 30 00:15:31 2002
+--- squid/src/Makefile.in	Sun Nov 10 21:33:42 2002
+***************
+*** 388,393 ****
+--- 388,399 ----
+  
+  DEFS = @DEFS@ -DDEFAULT_CONFIG_FILE=\"$(DEFAULT_CONFIG_FILE)\"
+  
++ 
++ # Don't automatically uninstall config files
++ #	@if test -f $(DESTDIR)$(DEFAULT_CONFIG_FILE) ; then \
++ #		echo "rm -f $(DESTDIR)$(DEFAULT_CONFIG_FILE)"; \
++ #		$(RM) -f $(DESTDIR)$(DEFAULT_CONFIG_FILE); \
++ #	fi
+  DISTCLEANFILES = cf_gen_defines.h cf.data cf_parser.h squid.conf.default \
+  	globals.c string_arrays.c repl_modules.c auth_modules.c store_modules.c
+  
+***************
+*** 1161,1170 ****
+  	@if test -f $(DESTDIR)$(DEFAULT_MIME_TABLE) ; then \
+  		echo "rm -f $(DESTDIR)$(DEFAULT_MIME_TABLE)"; \
+  		$(RM) -f $(DESTDIR)$(DEFAULT_MIME_TABLE); \
+- 	fi
+- 	@if test -f $(DESTDIR)$(DEFAULT_CONFIG_FILE) ; then \
+- 		echo "rm -f $(DESTDIR)$(DEFAULT_CONFIG_FILE)"; \
+- 		$(RM) -f $(DESTDIR)$(DEFAULT_CONFIG_FILE); \
+  	fi
+  # Tell versions [3.59,3.63) of GNU make to not export all variables.
+  # Otherwise a system limit (for SysV at least) may be exceeded.
+--- 1167,1172 ----

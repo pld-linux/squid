@@ -1,0 +1,21 @@
+Index: squid/src/dns.c
+diff -c squid/src/dns.c:1.86 squid/src/dns.c:1.86.2.1
+*** squid/src/dns.c:1.86	Tue Mar 13 16:22:42 2001
+--- squid/src/dns.c	Tue Nov 12 00:12:22 2002
+***************
+*** 97,103 ****
+  	if (squid_curtime - first_warn > 3 * 60)
+  	    fatal("DNS servers not responding for 3 minutes");
+  	debug(34, 1) ("dnsSubmit: queue overload, rejecting %s\n", lookup);
+! 	callback(data, "$fail temporary network problem, pleas retry later");
+  	return;
+      }
+      first_warn = 0;
+--- 97,103 ----
+  	if (squid_curtime - first_warn > 3 * 60)
+  	    fatal("DNS servers not responding for 3 minutes");
+  	debug(34, 1) ("dnsSubmit: queue overload, rejecting %s\n", lookup);
+! 	callback(data, "$fail Temporary network problem, please retry later");
+  	return;
+      }
+      first_warn = 0;
