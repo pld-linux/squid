@@ -195,6 +195,34 @@ Samba.
 To jest modu³ autentykacji proxy. Z smb_auth mo¿esz autentyfikowaæ
 u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 
+%package msnt_auth
+Summary:	MSNT domain authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji domen MSNT dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description msnt_auth
+This is an authentication module for the Squid proxy server to 
+authenticate users on an NT domain.
+
+%description msnt_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy w domenie NT.
+
+%package yp_auth
+Summary:	YP authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji YP dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description yp_auth
+This is an authentication module for the Squid proxy server to
+authenticate users on YP.
+
+%description yp_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy poprzez YP.
+
 %prep
 %setup -q -a 1 -a 4
 
@@ -229,8 +257,6 @@ u¿ytkowników proxy na serwerach SMB, jak Windows NT czy Samba.
 	--with-pthreads \
 	--enable-cache-digests \
 	--with-auth-modules=yes
-# old dns-checker:
-#	--disable-internal-dns \
 # for 2.4 kernel:
 #	--enable-linux-netfilter\
 
@@ -264,15 +290,14 @@ install src/pinger $RPM_BUILD_ROOT%{_bindir}
 mv -f contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 
 # auth modules
-install auth_modules/LDAP/squid_ldap_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-install -d $RPM_BUILD_ROOT%{_mandir}/man8
-install auth_modules/LDAP/squid_ldap_auth.8 $RPM_BUILD_ROOT%{_mandir}/man8
-
-install auth_modules/PAM/pam_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
+install auth_modules/LDAP/squid_ldap_auth	$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+install auth_modules/LDAP/squid_ldap_auth.8	$RPM_BUILD_ROOT%{_mandir}/man8
+install auth_modules/SMB/smb_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+install auth_modules/MSNT/msnt_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+install auth_modules/YP/yp_auth			$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+install auth_modules/PAM/pam_auth		$RPM_BUILD_ROOT%{_libexecdir}/auth_modules
+install %{SOURCE7}				$RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
-
-install auth_modules/SMB/smb_auth $RPM_BUILD_ROOT%{_libexecdir}/auth_modules
 
 mv -f $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
 mv -f $RPM_BUILD_ROOT%{_bindir}/squid	$RPM_BUILD_ROOT%{_sbindir}/
@@ -303,7 +328,7 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %pre
 grep -q squid /etc/group || (
@@ -360,8 +385,6 @@ fi
 %doc doc/*
 %attr(755,root,root) %{_bindir}/client
 %attr(755,root,root) %{_bindir}/diskd
-# It's obsolete while internal-dns is enabled
-#%attr(755,root,root) %{_bindir}/dnsserver
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4754,root,squid) %{_bindir}/pinger
 %attr(755,root,root) %{_bindir}/unlinkd
@@ -435,4 +458,14 @@ fi
 %files smb_auth
 %defattr(644,root,root,755)
 %doc auth_modules/SMB/{README,Changelog,smb_auth.sh}
+%doc auth_modules/multi-domain-NTLM/*
 %attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth
+
+%files msnt_auth
+%defattr(644,root,root,755)
+%doc auth_modules/MSNT/README*
+%attr(755,root,root) %{_libexecdir}/auth_modules/msnt_auth
+
+%files yp_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/auth_modules/yp_auth
