@@ -62,6 +62,9 @@ case "$1" in
 	;;
   restart)
 	$0 stop
+	echo -n "Waiting 30 second..."
+	sleep 30
+	echo "done."
 	$0 start
 	;;
   reload)
