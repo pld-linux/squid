@@ -1,0 +1,21 @@
+Index: squid/src/authenticate.c
+diff -c squid/src/authenticate.c:1.36.2.8 squid/src/authenticate.c:1.36.2.9
+*** squid/src/authenticate.c:1.36.2.8	Tue Feb  4 16:31:42 2003
+--- squid/src/authenticate.c	Sun May 11 15:44:31 2003
+***************
+*** 489,495 ****
+      }
+      /* we have a proxy auth header and as far as we know this connection has
+       * not had bungled connection oriented authentication happen on it. */
+!     debug(28, 9) ("authenticateAuthenticate: header %s.\n", proxy_auth);
+      if (*auth_user_request == NULL) {
+  	debug(28, 9) ("authenticateAuthenticate: This is a new checklist test on FD:%d\n",
+  	    conn ? conn->fd : -1);
+--- 489,495 ----
+      }
+      /* we have a proxy auth header and as far as we know this connection has
+       * not had bungled connection oriented authentication happen on it. */
+!     debug(28, 9) ("authenticateAuthenticate: header %s.\n", proxy_auth ? proxy_auth : NULL);
+      if (*auth_user_request == NULL) {
+  	debug(28, 9) ("authenticateAuthenticate: This is a new checklist test on FD:%d\n",
+  	    conn ? conn->fd : -1);
