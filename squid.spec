@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE4
-Release:	7
+Release:	8
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -13,7 +13,7 @@ Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
-Source5:	%{name}.conf
+Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Patch0:		%{name}-2.0-make.patch
 Patch1:		%{name}-perl.patch
@@ -27,6 +27,7 @@ Patch13:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-inv
 Patch14:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-accel_only_access.patch
 Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-html_quoting.patch
 Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-carp-assertion.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-snmp-community-null-pointer.patch
 Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -93,6 +94,10 @@ zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
 %patch11 -p0
 %patch12 -p0
 %patch13 -p0
+%patch14 -p0
+%patch15 -p0
+%patch16 -p0
+%patch17 -p0
 
 %build
 autoconf
@@ -147,10 +152,13 @@ for LNG in *; do
 done
 cd ..
 
+cp $RPM_BUILD_ROOT/etc/squid/squid.conf{,.default}
+cd $RPM_BUILD_ROOT/etc/squid
+patch -p0 < %{SOURCE5}
+cd -
+
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/squid
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/squid
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/squid/squid.conf.default
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
 install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
