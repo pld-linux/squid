@@ -1,0 +1,21 @@
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.8 squid/src/http.c:1.384.2.9
+*** squid/src/http.c:1.384.2.8	Wed Aug  6 07:49:01 2003
+--- squid/src/http.c	Mon Aug 18 11:24:25 2003
+***************
+*** 856,862 ****
+      /* append X-Forwarded-For */
+      strFwd = httpHeaderGetList(hdr_in, HDR_X_FORWARDED_FOR);
+      strListAdd(&strFwd,
+! 	(orig_request->client_addr.s_addr != no_addr.s_addr ?
+  	    inet_ntoa(orig_request->client_addr) : "unknown"), ',');
+      httpHeaderPutStr(hdr_out, HDR_X_FORWARDED_FOR, strBuf(strFwd));
+      stringClean(&strFwd);
+--- 856,862 ----
+      /* append X-Forwarded-For */
+      strFwd = httpHeaderGetList(hdr_in, HDR_X_FORWARDED_FOR);
+      strListAdd(&strFwd,
+! 	(((orig_request->client_addr.s_addr != no_addr.s_addr) && opt_forwarded_for) ?
+  	    inet_ntoa(orig_request->client_addr) : "unknown"), ',');
+      httpHeaderPutStr(hdr_out, HDR_X_FORWARDED_FOR, strBuf(strFwd));
+      stringClean(&strFwd);
