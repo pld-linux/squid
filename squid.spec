@@ -2,7 +2,7 @@ Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
 Version:	2.4.STABLE2
-Release:	2
+Release:	3
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -20,6 +20,7 @@ Patch1:		%{name}-linux.patch
 Patch2:		%{name}-fhs.patch
 Patch3:		%{name}-location.patch
 Patch4:		%{name}-domainmatch.patch
+Patch5:		%{name}-ftp-bugfix.patch
 BuildRequires:	autoconf
 Prereq:		rc-scripts >= 0.2.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -86,6 +87,7 @@ zapoznaæ siê z informacjami o pracy Squid'a poprzez WWW.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 autoconf
