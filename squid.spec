@@ -23,56 +23,56 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page:
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-ncsa_auth_passwdfile.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-multicast-ICP-timeout.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-407_user_name.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-digest_compile.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-aufs_threads.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-aufs_open_fail.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-mem_cfd.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-blank-username-log.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-coss-improvements.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-syscalls.disk-counters.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-round_robin_max_size.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-peer_digest_not_found_assertion.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-SENT_PASV.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-ie_refresh.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-reply_body_max_size.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-hostheader.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-tcp_reset_leak.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-ERR_TOO_BIG_Spanish.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-minimum_retry_timeout.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-cachePeerPingsSentsnmp.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-store_check_cachable_stats.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-hostscomments.patch
-Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-memwarnsbrk.patch
-Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-header_access_peer.patch
-Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-neighbor_type_domain.patch
-Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-carpfactor.patch
-Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-gcc-3_3.patch
-Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-aufs-openingfds.patch
-Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-external_acl_ident.patch
-Patch29:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-icmpRecv.patch
-Patch30:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-rfc_reference.patch
-Patch31:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-log_quote.patch
-Patch32:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-devnull.patch
-Patch33:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-cache_dir_doc.patch
-Patch34:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-deny_info.patch
-Patch35:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-HttpHeaderTools.patch
-Patch36:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-Lithuanian.patch
-Patch37:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-forwarded_for.patch
-Patch38:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-coss-improvements-2.patch
-Patch39:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE3-http_reply_access-denied.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-ncsa_auth_passwdfile.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-multicast-ICP-timeout.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-407_user_name.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-digest_compile.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-aufs_threads.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-aufs_open_fail.patch
+Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-mem_cfd.patch
+Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-blank-username-log.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-coss-improvements.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-syscalls.disk-counters.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-round_robin_max_size.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-peer_digest_not_found_assertion.patch
+Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-SENT_PASV.patch
+Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-ie_refresh.patch
+Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-reply_body_max_size.patch
+Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-hostheader.patch
+Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-tcp_reset_leak.patch
+Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-ERR_TOO_BIG_Spanish.patch
+Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-minimum_retry_timeout.patch
+Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-cachePeerPingsSentsnmp.patch
+Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-store_check_cachable_stats.patch
+Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-hostscomments.patch
+Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-memwarnsbrk.patch
+Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-header_access_peer.patch
+Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-neighbor_type_domain.patch
+Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-carpfactor.patch
+Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-gcc-3_3.patch
+Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-aufs-openingfds.patch
+Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-external_acl_ident.patch
+Patch29:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-icmpRecv.patch
+Patch30:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-rfc_reference.patch
+Patch31:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-log_quote.patch
+Patch32:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-devnull.patch
+Patch33:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-cache_dir_doc.patch
+Patch34:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-deny_info.patch
+Patch35:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-HttpHeaderTools.patch
+Patch36:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-Lithuanian.patch
+Patch37:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-forwarded_for.patch
+Patch38:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-coss-improvements-2.patch
+Patch39:	http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE3-http_reply_access-denied.patch
 
 # Other patches:
-Patch110:	http://www.sed.pl/~mrk/qos/squid_hit_miss_mark.patch
+Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch120:	%{name}-fhs.patch
 Patch130:	%{name}-location.patch
 Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	http://piorun.ds.pg.gda.pl/~blues/patches/squid-more_FD-new.patch
+Patch190:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	cyrus-sasl-devel >= 1.5.27
@@ -370,8 +370,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ip_acl
-This is an external ACL module for the Squid proxy server to
-limit acces for users based on IP address.
+This is an external ACL module for the Squid proxy server to limit
+acces for users based on IP address.
 
 %description ip_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -384,8 +384,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ldap_acl
-This is an external ACL module for the Squid proxy server to
-limit acces for users based on LDAP group membership.
+This is an external ACL module for the Squid proxy server to limit
+acces for users based on LDAP group membership.
 
 %description ldap_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -399,8 +399,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description unix_acl
-This is an external ACL module for the Squid proxy server to
-limit acces for users based on UNIX group membership.
+This is an external ACL module for the Squid proxy server to limit
+acces for users based on UNIX group membership.
 
 %description unix_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
@@ -414,8 +414,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description wbinfo_acl
-This is an external ACL module for the Squid proxy server to
-limit acces for users based on NT domain group membership using wbinfo.
+This is an external ACL module for the Squid proxy server to limit
+acces for users based on NT domain group membership using wbinfo.
 
 
 %description wbinfo_acl -l pl
@@ -430,15 +430,15 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description winbind_acl
-This is an external ACL module for the Squid proxy server to
-limit acces for users based on NT domain group membership
-based on Samba Winbindd from Samba 2.2.4 or greater.
+This is an external ACL module for the Squid proxy server to limit
+acces for users based on NT domain group membership based on Samba
+Winbindd from Samba 2.2.4 or greater.
 
 %description winbind_acl -l pl
 Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
 ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
-przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd
-z pakietu Samba 2.2.4 lub wy¿szego.
+przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd z pakietu
+Samba 2.2.4 lub wy¿szego.
 
 %prep
 %setup -q -a 1 -a 4
@@ -523,14 +523,14 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
-	--with-pthreads 
+	--with-pthreads
 
 mv -f squid/* doc
 %{__make}
 
-perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g' contrib/*
-perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g' scripts/*
-find helpers/ -type f | xargs perl -pi -e 's#/usr/.*bin/perl#/usr/bin/perl#g'
+perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' contrib/*
+perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' scripts/*
+find helpers/ -type f | xargs perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g'
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -575,7 +575,7 @@ rm -f doc/Makefile*
 
 # We don't like message: rpm found unpackaged files ...
 rm -f	 $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
-	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig 
+	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
