@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE7
-Release:	10
+Release:	11
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -37,6 +37,10 @@ Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-cache
 Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-dothost.patch
 Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-empty_acls.patch
 Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-header_parsing.patch
+Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-gopher_html_parsing.patch
+Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-wccp_denial_of_service.patch
+Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-ldap_spaces.patch
+Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE7-response_splitting.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -434,8 +438,12 @@ Samba 2.2.4 lub wy¿szego.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6	-p1
+%patch6 -p1
 %patch7 -p1
+%patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
