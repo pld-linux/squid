@@ -3,6 +3,19 @@
 	daily
 	rotate 7
 	compress
+	create 640 nobody root
+	postrotate
+		# signal Squid to restart logging with the new files
+		/usr/bin/killall -USR1 squid
+	endscript
+}
+
+/var/log/squid/[sc]*.log {
+	olddir /var/log/archiv/squid
+	weekly
+	rotate 4
+	compress
+	create 640 nobody root
 	postrotate
 		# signal Squid to restart logging with the new files
 		/usr/bin/killall -USR1 squid
