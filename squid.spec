@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE6
-Release:	1.4
+Release:	1.5
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -34,6 +34,7 @@ Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_
 Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-client_db_gc.patch
 Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-heap_segfault.patch
 Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-ntlm_fetch_string.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE6-digest_crash.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -425,6 +426,7 @@ Samba 2.2.4 lub wy¿szego.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 # Other patches:
 %patch110 -p1
