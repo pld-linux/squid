@@ -7,7 +7,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷.
 Name:		squid
 Version:	2.4.STABLE7
-Release:	4
+Release:	5
 Epoch:		6
 License:	GPL v2
 Group:		Networking/Daemons
@@ -340,27 +340,29 @@ grep -q squid /etc/passwd || (
 )
 
 %post
+try_link() {
 # If there is already link, don't do anything.
 if [ ! -e %{_datadir}/squid/errors ]; then
 
-# Try to create link to Polish, and then any directory but English.
-if [ -d %{_datadir}/squid/errors.Polish ]; then
+    # Try to create link to Polish, and then any directory but English.
+    if [ -d %{_datadir}/squid/errors.Polish ]; then
 	ln -sf %{_datadir}/squid/errors{.Polish,}
-	exit
-else
+	return
+    else
 	find %{_datadir}/squid/errors/ -type d -name 'errors.*'| while read NAME; do
-		if [ $NAME != "English" ]; then
-			ln -fs $NAME %{_datadir}/squid/errors
-			exit
-		fi
+	    if [ $NAME != "English" ]; then
+		ln -fs $NAME %{_datadir}/squid/errors
+		return
+	    fi
 	done
+    fi
+
+    # Create symlink to English if everything else fails.
+    ln -sf %{_datadir}/squid/errors{.English,}
 fi
+}
 
-# Create symlink to English if everything else fails.
-ln -sf %{_datadir}/squid/errors{.English,}
-
-fi
-
+try_link
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
