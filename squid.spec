@@ -235,6 +235,7 @@ Summary:	PAM authentication helper for Squid
 Summary(pl):	Wsparcie autentykacji PAM dla squida
 Group:		Networking/Admin
 Requires:	%{name}
+Requires:	pam >= 0.77.3
 
 %description pam_auth
 This program authenticates users against a PAM configured
