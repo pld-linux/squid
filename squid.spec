@@ -67,7 +67,7 @@ Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
 Group(pl):	Sieciowe/Administracja
-Require:	%{name} = %{version}
+Requires:	%{name} = %{version}
 
 %description cachemgr
 Cachemgr.cgi is a CGI script that allows administrator to chceck various
