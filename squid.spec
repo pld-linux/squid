@@ -9,7 +9,7 @@ Name:		squid
 Version:	2.4.STABLE7
 Release:	3
 Epoch:		6
-License:	GPL
+License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.4/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
