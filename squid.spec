@@ -20,10 +20,8 @@ Patch1:		%{name}-linux.patch
 Patch2:		%{name}-fhs.patch
 Patch3:		%{name}-location.patch
 Patch4:		%{name}-domainmatch.patch
-# Bug fixes from Squid home page.
-# Patch10:
+BuildRequires:	autoconf
 Prereq:		rc-scripts >= 0.2.0
-Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
@@ -116,7 +114,6 @@ mv -f squid/* doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 install -d \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig,logrotate.d} \
