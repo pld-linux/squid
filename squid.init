@@ -27,7 +27,7 @@
 [ -f /etc/sysconfig/squid ] && . /etc/sysconfig/squid
 
 # Check that networking is up.
-[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down"; exit 0
+[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down" && exit 0
 
 # Sanity check
 [ -f /etc/squid/squid.conf ] || exit 0
