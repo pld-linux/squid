@@ -12,6 +12,21 @@
 #		Web browsers can then use the local Squid cache as a proxy \
 #		HTTP server, reducing access time as well as bandwidth \
 #		consumption.
+# description(es): Squid - Cache de Objetos de Internet.  Cache de objetos \
+#		es una manera de almacenar objetos Internet (i.e. Datos \
+#		disponibles vía protocolos HTTP, FTP y gopher) en un \
+#		sistema más próximo al site solicitador que el sistema \
+#		original en internet.  Navegadores www pueden usar el \
+#		cache squid local como un servidor proxy HTTP, reduciendo \
+#		tanto el tiempo de acceso así como el consumo de banda de \
+#		comunicación.
+# description(pt_BR): Squid - Cache de Objetos da Internet. Cache de objetos \
+#		é uma maneira de armazenar objetos Internet (i.e. dados \
+#		disponíveis via protocolos HTTP, FTP e gopher) em um \
+#		sistema mais próximo ao site requisitante do que o sistema \
+#		original na internet. Navegadores www podem usar o cache \
+#		squid local como um servidor proxy HTTP, reduzindo o tempo \
+#		de acesso bem como o consumo de banda de comunicação.
 #
 # pidfile:	/var/run/squid.pid
 # config:	/etc/squid/squid.conf
