@@ -123,7 +123,7 @@ install %{SOURCE6} $RPM_BUILD_ROOT/etc/squid
 install %{SOURCE9} $RPM_BUILD_ROOT/etc/sysconfig/squid
 
 install calamaris-%{calamaris_ver}/calamaris $RPM_BUILD_ROOT/usr/bin
-install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT/usr/man/man1
+install calamaris-%{calamaris_ver}/calamaris.1 $RPM_BUILD_ROOT%{_mandir}/man1
 
 install scripts/*.pl $RPM_BUILD_ROOT/usr/lib/squid
 
@@ -133,7 +133,7 @@ rm -f $RPM_BUILD_ROOT/usr/bin/R*
 
 gzip -9nf README ChangeLog QUICKSTART \
 	contrib/url-normalizer.pl contrib/rredir.pl contrib/user-agents.pl \
-	$RPM_BUILD_ROOT/usr/man/man*/*
+	$RPM_BUILD_ROOT%{_mandir}/man*/*
 
 %post
 /sbin/chkconfig --add squid
