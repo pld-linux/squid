@@ -1,6 +1,6 @@
 #
 # Conditional build:
-# _with_apache_like_combined_log - enables apache-like combined log format
+# _with_combined_log - enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
 Summary(es):	proxy/cache para www/ftp/gopher
@@ -448,6 +448,8 @@ przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd
 z pakietu Samba 2.2.4 lub wy¿szego.
 
 %prep
+%{?_with_combined_log:echo aaaaaaaaaaaaaaaa}
+
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page:
@@ -536,7 +538,7 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-external-acl-helpers=yes \
 	--enable-x-accelerator-vary \
 	--enable-linux-netfilter \
-%{?_with_apache_like_combined_log:	--enable-apache-like-combined-log}
+	%{?_with_combined_log:--enable-apache-like-combined-log}
 
 mv -f squid/* doc
 %{__make}
