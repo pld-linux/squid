@@ -1,0 +1,128 @@
+diff -ur squid-2.3.STABLE2.orig/contrib/url-normalizer.pl squid-2.3.STABLE2/contrib/url-normalizer.pl
+--- squid-2.3.STABLE2.orig/contrib/url-normalizer.pl	Fri Dec  6 18:54:31 1996
++++ squid-2.3.STABLE2/contrib/url-normalizer.pl	Fri Mar 17 15:54:42 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -Tw
++#!/usr/bin/perl -Tw
+ 
+ # From:    Markus Gyger <mgyger@itr.ch>
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/AnnounceCache.pl squid-2.3.STABLE2/scripts/AnnounceCache.pl
+--- squid-2.3.STABLE2.orig/scripts/AnnounceCache.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.3.STABLE2/scripts/AnnounceCache.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ $|=1;
+ 
+diff -ur squid-2.3.STABLE2.orig/scripts/access-log-matrix.pl squid-2.3.STABLE2/scripts/access-log-matrix.pl
+--- squid-2.3.STABLE2.orig/scripts/access-log-matrix.pl	Tue Aug 24 18:43:50 1999
++++ squid-2.3.STABLE2/scripts/access-log-matrix.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # access-log-matrix.pl
+ # 
+diff -ur squid-2.3.STABLE2.orig/scripts/cache-compare.pl squid-2.3.STABLE2/scripts/cache-compare.pl
+--- squid-2.3.STABLE2.orig/scripts/cache-compare.pl	Tue Sep 17 18:32:27 1996
++++ squid-2.3.STABLE2/scripts/cache-compare.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # cache-compare.pl
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/cachetrace.pl squid-2.3.STABLE2/scripts/cachetrace.pl
+--- squid-2.3.STABLE2.orig/scripts/cachetrace.pl	Tue Mar  4 06:16:23 1997
++++ squid-2.3.STABLE2/scripts/cachetrace.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ require 'sys/socket.ph';
+ 
+diff -ur squid-2.3.STABLE2.orig/scripts/check_cache.pl squid-2.3.STABLE2/scripts/check_cache.pl
+--- squid-2.3.STABLE2.orig/scripts/check_cache.pl	Tue Feb  4 00:42:21 1997
++++ squid-2.3.STABLE2/scripts/check_cache.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # check_cache.pl 
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/fileno-to-pathname.pl squid-2.3.STABLE2/scripts/fileno-to-pathname.pl
+--- squid-2.3.STABLE2.orig/scripts/fileno-to-pathname.pl	Wed Jul 16 22:31:55 1997
++++ squid-2.3.STABLE2/scripts/fileno-to-pathname.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # $Id$
+ # Convert hexadecimal cache file numbers (from swap log) into full pathnames.  
+Only in squid-2.3.STABLE2/scripts: fileno-to-pathname.pl~
+diff -ur squid-2.3.STABLE2.orig/scripts/flag_truncs.pl squid-2.3.STABLE2/scripts/flag_truncs.pl
+--- squid-2.3.STABLE2.orig/scripts/flag_truncs.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.3.STABLE2/scripts/flag_truncs.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # flag_truncs.pl - martin hamilton <m.t.hamilton@lut.ac.uk>
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/icp-test.pl squid-2.3.STABLE2/scripts/icp-test.pl
+--- squid-2.3.STABLE2.orig/scripts/icp-test.pl	Thu Aug 13 18:52:25 1998
++++ squid-2.3.STABLE2/scripts/icp-test.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # icp-test.pl 
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/icpserver.pl squid-2.3.STABLE2/scripts/icpserver.pl
+--- squid-2.3.STABLE2.orig/scripts/icpserver.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.3.STABLE2/scripts/icpserver.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # parse and answer ICP type 1 requests via unicast/multicast UDP
+ # cf. <URL:http://excalibur.usc.edu/icpdoc/icp.html>
+diff -ur squid-2.3.STABLE2.orig/scripts/tcp-banger.pl squid-2.3.STABLE2/scripts/tcp-banger.pl
+--- squid-2.3.STABLE2.orig/scripts/tcp-banger.pl	Thu Apr  4 03:57:54 1996
++++ squid-2.3.STABLE2/scripts/tcp-banger.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # tcp-banger.pl	
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/udp-banger.pl squid-2.3.STABLE2/scripts/udp-banger.pl
+--- squid-2.3.STABLE2.orig/scripts/udp-banger.pl	Thu Jan 14 17:22:58 1999
++++ squid-2.3.STABLE2/scripts/udp-banger.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # udp-banger.pl 
+ #
+diff -ur squid-2.3.STABLE2.orig/scripts/upgrade-1.0-store.pl squid-2.3.STABLE2/scripts/upgrade-1.0-store.pl
+--- squid-2.3.STABLE2.orig/scripts/upgrade-1.0-store.pl	Fri Oct 11 21:56:06 1996
++++ squid-2.3.STABLE2/scripts/upgrade-1.0-store.pl	Fri Mar 17 15:52:59 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # $Id$
+ 
+Only in squid-2.3.STABLE2/scripts: upgrade-1.0-store.pl~
+diff -ur squid-2.3.STABLE2.orig/src/test-ellipses.pl squid-2.3.STABLE2/src/test-ellipses.pl
+--- squid-2.3.STABLE2.orig/src/test-ellipses.pl	Mon Mar  9 08:32:53 1998
++++ squid-2.3.STABLE2/src/test-ellipses.pl	Fri Mar 17 15:53:51 2000
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl -w
++#!/usr/bin/perl -w
+ use strict;
+ 
+ # $Id$
