@@ -1,0 +1,664 @@
+Index: squid/src/fs/coss/async_io.c
+diff -c squid/src/fs/coss/async_io.c:1.7.2.3 squid/src/fs/coss/async_io.c:1.7.2.4
+*** squid/src/fs/coss/async_io.c:1.7.2.3	Wed Jul 23 15:12:56 2003
+--- squid/src/fs/coss/async_io.c	Tue Jul 29 15:44:47 2003
+***************
+*** 62,75 ****
+  
+      assert(q->aq_state == AQ_STATE_SETUP);
+  
+- #if 0
+-     file_read(fd, buf, req_len, offset, callback, data);
+- #endif
+      /* Find a free slot */
+      slot = a_file_findslot(q);
+      if (slot < 0) {
+  	/* No free slot? Callback error, and return */
+! 	fatal("Aiee! out of aiocb slots!\n");
+      }
+      /* Mark slot as ours */
+      qe = &q->aq_queue[slot];
+--- 62,75 ----
+  
+      assert(q->aq_state == AQ_STATE_SETUP);
+  
+      /* Find a free slot */
+      slot = a_file_findslot(q);
+      if (slot < 0) {
+  	/* No free slot? Callback error, and return */
+! 	debug(79, 1) ("WARNING: out of aiocb slots!\n");
+! 	/* fall back to blocking method */
+! 	file_read(fd, buf, req_len, offset, callback, data);
+! 	return;
+      }
+      /* Mark slot as ours */
+      qe = &q->aq_queue[slot];
+***************
+*** 94,100 ****
+  
+      /* Initiate aio */
+      if (aio_read(&qe->aq_e_aiocb) < 0) {
+! 	fatalf("Aiee! aio_read() returned error: %s\n", xstrerror());
+      }
+  }
+  
+--- 94,102 ----
+  
+      /* Initiate aio */
+      if (aio_read(&qe->aq_e_aiocb) < 0) {
+! 	debug(79, 1) ("WARNING: aio_read() returned error: %s\n", xstrerror());
+! 	/* fall back to blocking method */
+! 	file_read(fd, buf, req_len, offset, callback, data);
+      }
+  }
+  
+***************
+*** 108,121 ****
+  
+      assert(q->aq_state == AQ_STATE_SETUP);
+  
+- #if 0
+-     file_write(fd, offset, buf, len, callback, data, freefunc);
+- #endif
+      /* Find a free slot */
+      slot = a_file_findslot(q);
+      if (slot < 0) {
+  	/* No free slot? Callback error, and return */
+! 	fatal("Aiee! out of aiocb slots!\n");
+      }
+      /* Mark slot as ours */
+      qe = &q->aq_queue[slot];
+--- 110,123 ----
+  
+      assert(q->aq_state == AQ_STATE_SETUP);
+  
+      /* Find a free slot */
+      slot = a_file_findslot(q);
+      if (slot < 0) {
+  	/* No free slot? Callback error, and return */
+! 	debug(79, 1) ("WARNING: out of aiocb slots!\n");
+! 	/* fall back to blocking method */
+! 	file_write(fd, offset, buf, len, callback, data, freefunc);
+! 	return;
+      }
+      /* Mark slot as ours */
+      qe = &q->aq_queue[slot];
+***************
+*** 140,146 ****
+  
+      /* Initiate aio */
+      if (aio_write(&qe->aq_e_aiocb) < 0) {
+! 	fatalf("Aiee! aio_write() returned error: %s\n", xstrerror());
+      }
+  }
+  
+--- 142,150 ----
+  
+      /* Initiate aio */
+      if (aio_write(&qe->aq_e_aiocb) < 0) {
+! 	debug(79, 1) ("WARNING: aio_write() returned error: %s\n", xstrerror());
+! 	/* fall back to blocking method */
+! 	file_write(fd, offset, buf, len, callback, data, freefunc);
+      }
+  }
+  
+Index: squid/src/fs/coss/store_coss.h
+diff -c squid/src/fs/coss/store_coss.h:1.6.2.1 squid/src/fs/coss/store_coss.h:1.6.2.2
+*** squid/src/fs/coss/store_coss.h:1.6.2.1	Wed Jul 23 15:00:33 2003
+--- squid/src/fs/coss/store_coss.h	Tue Jul 29 16:19:43 2003
+***************
+*** 12,17 ****
+--- 12,36 ----
+  #define COSS_ALLOC_ALLOCATE		1
+  #define COSS_ALLOC_REALLOC		2
+  
++ struct _coss_stats {
++     int stripes;
++     struct {
++ 	int alloc;
++ 	int realloc;
++ 	int collisions;
++     } alloc;
++     int disk_overflows;
++     int stripe_overflows;
++     int open_mem_hits;
++     int open_mem_misses;
++     struct {
++ 	int ops;
++ 	int success;
++ 	int fail;
++     } open, create, close, unlink, read, write, stripe_write;
++ };
++ 
++ 
+  struct _cossmembuf {
+      dlink_node node;
+      size_t diskstart;		/* in blocks */
+***************
+*** 89,93 ****
+--- 108,114 ----
+  extern void storeCossAdd(SwapDir *, StoreEntry *);
+  extern void storeCossRemove(SwapDir *, StoreEntry *);
+  extern void storeCossStartMembuf(SwapDir * SD);
++ 
++ extern struct _coss_stats coss_stats;
+  
+  #endif
+Index: squid/src/fs/coss/store_dir_coss.c
+diff -c squid/src/fs/coss/store_dir_coss.c:1.30.2.7 squid/src/fs/coss/store_dir_coss.c:1.30.2.8
+*** squid/src/fs/coss/store_dir_coss.c:1.30.2.7	Fri Jul 25 10:56:02 2003
+--- squid/src/fs/coss/store_dir_coss.c	Tue Jul 29 16:19:43 2003
+***************
+*** 91,96 ****
+--- 91,97 ----
+  static STCALLBACK storeCossDirCallback;
+  static void storeCossDirParseBlkSize(SwapDir *, const char *, const char *, int);
+  static void storeCossDirDumpBlkSize(StoreEntry *, const char *, SwapDir *);
++ static OBJH storeCossStats;
+  
+  /* The "only" externally visible function */
+  STSETUP storeFsSetup_coss;
+***************
+*** 101,106 ****
+--- 102,109 ----
+      {NULL, NULL}
+  };
+  
++ struct _coss_stats coss_stats;
++ 
+  static char *
+  storeCossDirSwapLogFile(SwapDir * sd, const char *ext)
+  {
+***************
+*** 956,961 ****
+--- 959,995 ----
+      coss_initialised = 0;
+  }
+  
++ static void
++ storeCossStats(StoreEntry * sentry)
++ {
++     const char *tbl_fmt = "%10s %10d %10d %10d\n";
++     storeAppendPrintf(sentry, "\n                   OPS     SUCCESS        FAIL\n");
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"open", coss_stats.open.ops, coss_stats.open.success, coss_stats.open.fail);
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"create", coss_stats.create.ops, coss_stats.create.success, coss_stats.create.fail);
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"close", coss_stats.close.ops, coss_stats.close.success, coss_stats.close.fail);
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"unlink", coss_stats.unlink.ops, coss_stats.unlink.success, coss_stats.unlink.fail);
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"read", coss_stats.read.ops, coss_stats.read.success, coss_stats.read.fail);
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"write", coss_stats.write.ops, coss_stats.write.success, coss_stats.write.fail);
++     storeAppendPrintf(sentry, tbl_fmt,
++ 	"s_write", coss_stats.stripe_write.ops, coss_stats.stripe_write.success, coss_stats.stripe_write.fail);
++ 
++     storeAppendPrintf(sentry, "\n");
++     storeAppendPrintf(sentry, "stripes:          %d\n", coss_stats.stripes);
++     storeAppendPrintf(sentry, "alloc.alloc:      %d\n", coss_stats.alloc.alloc);
++     storeAppendPrintf(sentry, "alloc.realloc:    %d\n", coss_stats.alloc.realloc);
++     storeAppendPrintf(sentry, "alloc.collisions: %d\n", coss_stats.alloc.collisions);
++     storeAppendPrintf(sentry, "disk_overflows:   %d\n", coss_stats.disk_overflows);
++     storeAppendPrintf(sentry, "stripe_overflows: %d\n", coss_stats.stripe_overflows);
++     storeAppendPrintf(sentry, "open_mem_hits:    %d\n", coss_stats.open_mem_hits);
++     storeAppendPrintf(sentry, "open_mem_misses:  %d\n", coss_stats.open_mem_misses);
++ }
++ 
+  void
+  storeFsSetup_coss(storefs_entry_t * storefs)
+  {
+***************
+*** 966,970 ****
+--- 1000,1005 ----
+      storefs->donefunc = storeCossDirDone;
+      coss_state_pool = memPoolCreate("COSS IO State data", sizeof(CossState));
+      coss_index_pool = memPoolCreate("COSS index data", sizeof(CossIndexNode));
++     cachemgrRegister("coss", "COSS Stats", storeCossStats, 0, 1);
+      coss_initialised = 1;
+  }
+Index: squid/src/fs/coss/store_io_coss.c
+diff -c squid/src/fs/coss/store_io_coss.c:1.13.2.6 squid/src/fs/coss/store_io_coss.c:1.13.2.8
+*** squid/src/fs/coss/store_io_coss.c:1.13.2.6	Wed Jul 23 15:12:56 2003
+--- squid/src/fs/coss/store_io_coss.c	Tue Jul 29 16:19:43 2003
+***************
+*** 78,87 ****
+      sfileno checkf;
+  
+      /* Make sure we chcek collisions if reallocating */
+!     if (which == COSS_ALLOC_REALLOC)
+  	checkf = e->swap_filen;
+!     else
+  	checkf = -1;
+  
+      if (e->swap_file_sz > 0)
+  	allocsize = e->swap_file_sz;
+--- 78,90 ----
+      sfileno checkf;
+  
+      /* Make sure we chcek collisions if reallocating */
+!     if (which == COSS_ALLOC_REALLOC) {
+  	checkf = e->swap_filen;
+! 	coss_stats.alloc.realloc++;
+!     } else {
+  	checkf = -1;
++ 	coss_stats.alloc.alloc++;
++     }
+  
+      if (e->swap_file_sz > 0)
+  	allocsize = e->swap_file_sz;
+***************
+*** 92,104 ****
+      assert(which != COSS_ALLOC_NOTIFY);
+  
+      /* Check if we have overflowed the disk .. */
+!     if ((cs->current_offset + allocsize) > (SD->max_size << 10)) {
+  	/*
+  	 * tried to allocate past the end of the disk, so wrap
+  	 * back to the beginning
+  	 */
+  	cs->current_membuf->flags.full = 1;
+! 	cs->current_membuf->diskend = cs->current_offset - 1;
+  	storeCossMaybeWriteMemBuf(SD, cs->current_membuf);
+  	cs->current_offset = 0;	/* wrap back to beginning */
+  	debug(79, 2) ("storeCossAllocate: wrap to 0\n");
+--- 95,108 ----
+      assert(which != COSS_ALLOC_NOTIFY);
+  
+      /* Check if we have overflowed the disk .. */
+!     if ((cs->current_offset + allocsize) > ((off_t) SD->max_size << 10)) {
+  	/*
+  	 * tried to allocate past the end of the disk, so wrap
+  	 * back to the beginning
+  	 */
++ 	coss_stats.disk_overflows++;
+  	cs->current_membuf->flags.full = 1;
+! 	cs->current_membuf->diskend = cs->current_offset;
+  	storeCossMaybeWriteMemBuf(SD, cs->current_membuf);
+  	cs->current_offset = 0;	/* wrap back to beginning */
+  	debug(79, 2) ("storeCossAllocate: wrap to 0\n");
+***************
+*** 107,118 ****
+  	cs->current_membuf = newmb;
+  
+  	/* Check if we have overflowed the MemBuf */
+!     } else if ((cs->current_offset + allocsize) > cs->current_membuf->diskend) {
+  	/*
+  	 * Skip the blank space at the end of the stripe. start over.
+  	 */
+  	cs->current_membuf->flags.full = 1;
+! 	cs->current_offset = cs->current_membuf->diskend + 1;
+  	storeCossMaybeWriteMemBuf(SD, cs->current_membuf);
+  	debug(79, 2) ("storeCossAllocate: New offset - %ld\n",
+  	    (long int) cs->current_offset);
+--- 111,123 ----
+  	cs->current_membuf = newmb;
+  
+  	/* Check if we have overflowed the MemBuf */
+!     } else if ((cs->current_offset + allocsize) >= cs->current_membuf->diskend) {
+  	/*
+  	 * Skip the blank space at the end of the stripe. start over.
+  	 */
++ 	coss_stats.stripe_overflows++;
+  	cs->current_membuf->flags.full = 1;
+! 	cs->current_offset = cs->current_membuf->diskend;
+  	storeCossMaybeWriteMemBuf(SD, cs->current_membuf);
+  	debug(79, 2) ("storeCossAllocate: New offset - %ld\n",
+  	    (long int) cs->current_offset);
+***************
+*** 127,132 ****
+--- 132,138 ----
+  	cs->current_offset = ((cs->current_offset + cs->blksz_mask) >> cs->blksz_bits) << cs->blksz_bits;
+  	return storeCossDiskOffsetToFileno(retofs, cs);
+      } else {
++ 	coss_stats.alloc.collisions++;
+  	debug(79, 3) ("storeCossAllocate: Collision\n");
+  	return -1;
+      }
+***************
+*** 136,141 ****
+--- 142,149 ----
+  storeCossUnlink(SwapDir * SD, StoreEntry * e)
+  {
+      debug(79, 3) ("storeCossUnlink: offset %d\n", e->swap_filen);
++     coss_stats.unlink.ops++;
++     coss_stats.unlink.success++;
+      storeCossRemove(SD, e);
+  }
+  
+***************
+*** 146,152 ****
+      CossState *cstate;
+      storeIOState *sio;
+  
+!     CBDATA_INIT_TYPE_FREECB(storeIOState, storeCossIOFreeEntry);
+      sio = cbdataAlloc(storeIOState);
+      cstate = memPoolAlloc(coss_state_pool);
+      sio->fsstate = cstate;
+--- 154,160 ----
+      CossState *cstate;
+      storeIOState *sio;
+  
+!     coss_stats.create.ops++;
+      sio = cbdataAlloc(storeIOState);
+      cstate = memPoolAlloc(coss_state_pool);
+      sio->fsstate = cstate;
+***************
+*** 170,175 ****
+--- 178,184 ----
+  	(long int) storeCossFilenoToDiskOffset(sio->swap_filen, SD->fsdata),
+  	(long int) sio->st_size,
+  	(long int) (sio->swap_filen + sio->st_size));
++     assert(-1 != sio->swap_filen);
+  
+      sio->callback = callback;
+      sio->file_callback = file_callback;
+***************
+*** 186,191 ****
+--- 195,201 ----
+      storeCossAdd(SD, e);
+  
+      storeCossMemBufLock(SD, sio);
++     coss_stats.create.success++;
+      return sio;
+  }
+  
+***************
+*** 200,207 ****
+      CossInfo *cs = (CossInfo *) SD->fsdata;
+  
+      debug(79, 3) ("storeCossOpen: offset %d\n", f);
+  
+-     CBDATA_INIT_TYPE_FREECB(storeIOState, storeCossIOFreeEntry);
+      sio = cbdataAlloc(storeIOState);
+      cstate = memPoolAlloc(coss_state_pool);
+  
+--- 210,217 ----
+      CossInfo *cs = (CossInfo *) SD->fsdata;
+  
+      debug(79, 3) ("storeCossOpen: offset %d\n", f);
++     coss_stats.open.ops++;
+  
+      sio = cbdataAlloc(storeIOState);
+      cstate = memPoolAlloc(coss_state_pool);
+  
+***************
+*** 226,237 ****
+--- 236,249 ----
+      if (p) {
+  	cstate->readbuffer = xmalloc(sio->st_size);
+  	xmemcpy(cstate->readbuffer, p, sio->st_size);
++ 	coss_stats.open_mem_hits++;
+      } else {
+  	/* Do the allocation */
+  	/* this is the first time we've been called on a new sio
+  	 * read the whole object into memory, then return the 
+  	 * requested amount
+  	 */
++ 	coss_stats.open_mem_misses++;
+  	/*
+  	 * This bit of code actually does the LRU disk thing - we realloc
+  	 * a place for the object here, and the file_read() reads the object
+***************
+*** 241,246 ****
+--- 253,259 ----
+  	sio->swap_filen = storeCossAllocate(SD, e, COSS_ALLOC_REALLOC);
+  	if (sio->swap_filen == -1) {
+  	    /* We have to clean up neatly .. */
++ 	    coss_stats.open.fail++;
+  	    cbdataFree(sio);
+  	    cs->numcollisions++;
+  	    debug(79, 2) ("storeCossOpen: Reallocation of %d/%d failed\n", e->swap_dirn, e->swap_filen);
+***************
+*** 268,273 ****
+--- 281,287 ----
+  	 * return that pointer back to the caller
+  	 */
+      }
++     coss_stats.open.success++;
+      return sio;
+  }
+  
+***************
+*** 275,280 ****
+--- 289,296 ----
+  storeCossClose(SwapDir * SD, storeIOState * sio)
+  {
+      debug(79, 3) ("storeCossClose: offset %d\n", sio->swap_filen);
++     coss_stats.close.ops++;
++     coss_stats.close.success++;
+      storeCossMemBufUnlock(SD, sio);
+      storeCossIOCallback(sio, 0);
+  }
+***************
+*** 286,291 ****
+--- 302,308 ----
+      CossState *cstate = (CossState *) sio->fsstate;
+      CossInfo *cs = (CossInfo *) SD->fsdata;
+  
++     coss_stats.read.ops++;
+      assert(sio->read.callback == NULL);
+      assert(sio->read.callback_data == NULL);
+      sio->read.callback = callback;
+***************
+*** 300,306 ****
+      cstate->requestoffset = offset;
+      if (cstate->readbuffer == NULL) {
+  	p = storeCossMemPointerFromDiskOffset(SD, storeCossFilenoToDiskOffset(sio->swap_filen, cs), NULL);
+- 	/* Remember we need to translate the block offset to a disk offset! */
+  	a_file_read(&cs->aq, cs->fd,
+  	    p,
+  	    sio->st_size,
+--- 317,322 ----
+***************
+*** 332,337 ****
+--- 348,354 ----
+       * the squid code is broken
+       */
+      assert(sio->e->mem_obj->object_sz != -1);
++     coss_stats.write.ops++;
+  
+      debug(79, 3) ("storeCossWrite: offset %ld, len %lu\n", (long int) sio->offset, (unsigned long int) size);
+      diskoffset = storeCossFilenoToDiskOffset(sio->swap_filen, SD->fsdata) + sio->offset;
+***************
+*** 341,346 ****
+--- 358,364 ----
+      sio->offset += size;
+      if (free_func)
+  	(free_func) (buf);
++     coss_stats.write.success++;
+  }
+  
+  
+***************
+*** 361,369 ****
+  	sio->swap_filen, fd, len);
+      cstate->flags.reading = 0;
+      if (errflag) {
+! 	debug(79, 3) ("storeCossReadDone: got failure (%d)\n", errflag);
+  	rlen = -1;
+      } else {
+  	if (cstate->readbuffer == NULL) {
+  	    cstate->readbuffer = xmalloc(sio->st_size);
+  	    p = storeCossMemPointerFromDiskOffset(SD,
+--- 379,394 ----
+  	sio->swap_filen, fd, len);
+      cstate->flags.reading = 0;
+      if (errflag) {
+! 	coss_stats.read.fail++;
+! 	if (errflag > 0) {
+! 	    errno = errflag;
+! 	    debug(79, 1) ("storeCossReadDone: error: %s\n", xstrerror());
+! 	} else {
+! 	    debug(79, 1) ("storeCossReadDone: got failure (%d)\n", errflag);
+! 	}
+  	rlen = -1;
+      } else {
++ 	coss_stats.read.success++;
+  	if (cstate->readbuffer == NULL) {
+  	    cstate->readbuffer = xmalloc(sio->st_size);
+  	    p = storeCossMemPointerFromDiskOffset(SD,
+***************
+*** 407,413 ****
+  
+      for (m = cs->membufs.head; m; m = m->next) {
+  	t = m->data;
+! 	if ((offset >= t->diskstart) && (offset <= t->diskend)) {
+  	    if (mb)
+  		*mb = t;
+  	    return &t->buffer[offset - t->diskstart];
+--- 432,438 ----
+  
+      for (m = cs->membufs.head; m; m = m->next) {
+  	t = m->data;
+! 	if ((offset >= t->diskstart) && (offset < t->diskend)) {
+  	    if (mb)
+  		*mb = t;
+  	    return &t->buffer[offset - t->diskstart];
+***************
+*** 428,434 ****
+      off_t o = storeCossFilenoToDiskOffset(s, cs);
+      for (m = cs->membufs.head; m; m = m->next) {
+  	t = m->data;
+! 	if ((o >= t->diskstart) && (o <= t->diskend))
+  	    break;
+      }
+      assert(t);
+--- 453,459 ----
+      off_t o = storeCossFilenoToDiskOffset(s, cs);
+      for (m = cs->membufs.head; m; m = m->next) {
+  	t = m->data;
+! 	if ((o >= t->diskstart) && (o < t->diskend))
+  	    break;
+      }
+      assert(t);
+***************
+*** 503,512 ****
+  storeCossWriteMemBuf(SwapDir * SD, CossMemBuf * t)
+  {
+      CossInfo *cs = (CossInfo *) SD->fsdata;
+      debug(79, 3) ("storeCossWriteMemBuf: offset %ld, len %ld\n",
+  	(long int) t->diskstart, (long int) (t->diskend - t->diskstart));
+      t->flags.writing = 1;
+-     /* Remember that diskstart/diskend are block offsets! */
+      a_file_write(&cs->aq, cs->fd, t->diskstart, &t->buffer,
+  	t->diskend - t->diskstart, storeCossWriteMemBufDone, t, NULL);
+  }
+--- 528,537 ----
+  storeCossWriteMemBuf(SwapDir * SD, CossMemBuf * t)
+  {
+      CossInfo *cs = (CossInfo *) SD->fsdata;
++     coss_stats.stripe_write.ops++;
+      debug(79, 3) ("storeCossWriteMemBuf: offset %ld, len %ld\n",
+  	(long int) t->diskstart, (long int) (t->diskend - t->diskstart));
+      t->flags.writing = 1;
+      a_file_write(&cs->aq, cs->fd, t->diskstart, &t->buffer,
+  	t->diskend - t->diskstart, storeCossWriteMemBufDone, t, NULL);
+  }
+***************
+*** 519,529 ****
+      CossInfo *cs = (CossInfo *) t->SD->fsdata;
+  
+      debug(79, 3) ("storeCossWriteMemBufDone: buf %p, len %ld\n", t, (long int) len);
+!     if (errflag)
+! 	debug(79, 0) ("storeCossMemBufWriteDone: got failure (%d)\n", errflag);
+  
+      dlinkDelete(&t->node, &cs->membufs);
+      cbdataFree(t);
+  }
+  
+  static CossMemBuf *
+--- 544,560 ----
+      CossInfo *cs = (CossInfo *) t->SD->fsdata;
+  
+      debug(79, 3) ("storeCossWriteMemBufDone: buf %p, len %ld\n", t, (long int) len);
+!     if (errflag) {
+! 	coss_stats.stripe_write.fail++;
+! 	debug(79, 1) ("storeCossWriteMemBufDone: got failure (%d)\n", errflag);
+! 	debug(79, 1) ("FD %d, size=%x\n", fd, t->diskend - t->diskstart);
+!     } else {
+! 	coss_stats.stripe_write.success++;
+!     }
+  
+      dlinkDelete(&t->node, &cs->membufs);
+      cbdataFree(t);
++     coss_stats.stripes--;
+  }
+  
+  static CossMemBuf *
+***************
+*** 536,547 ****
+      int numreleased = 0;
+      CossInfo *cs = (CossInfo *) SD->fsdata;
+  
+-     CBDATA_INIT_TYPE_FREECB(CossMemBuf, NULL);
+      newmb = cbdataAlloc(CossMemBuf);
+      newmb->diskstart = start;
+      debug(79, 3) ("storeCossCreateMemBuf: creating new membuf at %ld\n", (long int) newmb->diskstart);
+      debug(79, 3) ("storeCossCreateMemBuf: at %p\n", newmb);
+!     newmb->diskend = newmb->diskstart + COSS_MEMBUF_SZ - 1;
+      newmb->flags.full = 0;
+      newmb->flags.writing = 0;
+      newmb->lockcount = 0;
+--- 567,577 ----
+      int numreleased = 0;
+      CossInfo *cs = (CossInfo *) SD->fsdata;
+  
+      newmb = cbdataAlloc(CossMemBuf);
+      newmb->diskstart = start;
+      debug(79, 3) ("storeCossCreateMemBuf: creating new membuf at %ld\n", (long int) newmb->diskstart);
+      debug(79, 3) ("storeCossCreateMemBuf: at %p\n", newmb);
+!     newmb->diskend = newmb->diskstart + COSS_MEMBUF_SZ;
+      newmb->flags.full = 0;
+      newmb->flags.writing = 0;
+      newmb->lockcount = 0;
+***************
+*** 566,573 ****
+  	o = storeCossFilenoToDiskOffset(e->swap_filen, cs);
+  	if (curfn == e->swap_filen)
+  	    *collision = 1;	/* Mark an object alloc collision */
+! 	if ((o >= newmb->diskstart) &&
+! 	    (o <= newmb->diskend)) {
+  	    storeRelease(e);
+  	    numreleased++;
+  	} else
+--- 596,602 ----
+  	o = storeCossFilenoToDiskOffset(e->swap_filen, cs);
+  	if (curfn == e->swap_filen)
+  	    *collision = 1;	/* Mark an object alloc collision */
+! 	if ((o >= newmb->diskstart) && (o < newmb->diskend)) {
+  	    storeRelease(e);
+  	    numreleased++;
+  	} else
+***************
+*** 575,580 ****
+--- 604,610 ----
+      }
+      if (numreleased > 0)
+  	debug(79, 3) ("storeCossCreateMemBuf: this allocation released %d storeEntries\n", numreleased);
++     coss_stats.stripes++;
+      return newmb;
+  }
+  
+***************
+*** 585,591 ****
+  storeCossStartMembuf(SwapDir * sd)
+  {
+      CossInfo *cs = (CossInfo *) sd->fsdata;
+!     CossMemBuf *newmb = storeCossCreateMemBuf(sd, cs->current_offset, -1, NULL);
+      assert(!cs->current_membuf);
+      cs->current_membuf = newmb;
+  }
+--- 615,625 ----
+  storeCossStartMembuf(SwapDir * sd)
+  {
+      CossInfo *cs = (CossInfo *) sd->fsdata;
+!     CossMemBuf *newmb;
+!     CBDATA_INIT_TYPE_FREECB(storeIOState, storeCossIOFreeEntry);
+!     CBDATA_INIT_TYPE_FREECB(CossMemBuf, NULL);
+!     CBDATA_INIT_TYPE_FREECB(storeIOState, storeCossIOFreeEntry);
+!     newmb = storeCossCreateMemBuf(sd, cs->current_offset, -1, NULL);
+      assert(!cs->current_membuf);
+      cs->current_membuf = newmb;
+  }
