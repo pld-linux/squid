@@ -260,6 +260,165 @@ authenticate users on YP.
 Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
 u¿ytkowników proxy poprzez YP.
 
+%package ncsa_auth
+Summary:	NCSA httpd style authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji NCSA httpd dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description ncsa_auth
+This module uses a NCSA httpd style password file for authentication.
+
+%description ncsa_auth -l pl
+Modu³ autentykacji proxy u¿ywaj±cy pliku hase³ jak w NCSA httpd.
+
+%package sasl_auth
+Summary:	SASL authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji SASL dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description sasl_auth
+This is an authentication module for the Squid proxy server to
+authenticate users via SASL.
+
+%description sasl_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy poprzez SASL.
+
+%package winbind_auth
+Summary:	WINBIND authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji WINBIND dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description winbind_auth
+This is an authentication module for the Squid proxy server to
+authenticate users via WINBIND.
+
+%description winbind_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy poprzez WINBIND.
+
+%package getpwname_auth
+Summary:	getpwname authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji getpwname dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description getpwname_auth
+This is an authentication module for the Squid proxy server to
+authenticate users using getpwname.
+
+%description getpwname_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy poprzez getpwname.
+
+%package passwd_auth
+Summary:	passwd authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji passwd dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description passwd_auth
+This is an authentication module for the Squid proxy server to
+authenticate users with separate passwd file.
+
+%description passwd_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy poprzez oddzielny plik passwd.
+
+%package ntlm_auth
+Summary:	NTLM authentication helper for Squid
+Summary(pl):	Wsparcie autentykacji NTLM dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description ntlm_auth
+This is an authentication module for the Squid proxy server to
+authenticate users on NTLM.
+
+%description ntlm_auth -l pl
+Jest to modu³ autentykacji proxy, który pozwala na autentyfikowanie
+u¿ytkowników proxy poprzez NTLM.
+
+%package ip_acl
+Summary:	IP external ACL helper for Squid
+Summary(pl):	Wsparcie kontroli dostêpu przez IP dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description ip_acl
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on IP address.
+
+%description ip_acl -l pl
+Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
+ograniczenie dostêpu u¿ytkowników proxy na podstawie ich adresu IP.
+
+%package ldap_acl
+Summary:	LDAP group external ACL helper for Squid
+Summary(pl):	Wsparcie kontroli dostêpu przez grupy LDAP dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description ldap_acl
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on LDAP group membership.
+
+%description ldap_acl -l pl
+Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
+ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
+przynale¿no¶ci do grup LDAP.
+
+%package unix_acl
+Summary:	UNIX group external ACL helper for Squid
+Summary(pl):	Wsparcie kontroli dostêpu przez grupy UNIX dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description unix_acl
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on UNIX group membership.
+
+%description unix_acl -l pl
+Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
+ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
+przynale¿no¶ci do grup UNIX.
+
+%package wbinfo_acl
+Summary:	NT domain group external ACL helper for Squid
+Summary(pl):	Wsparcie kontroli dostêpu przez grupy w domenie NT dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description wbinfo_acl
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on NT domain group membership using wbinfo.
+
+
+%description wbinfo_acl -l pl
+Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
+ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
+przynale¿no¶ci do grup w domenie NT przy u¿yciu wbinfo.
+
+%package winbind_acl
+Summary:	NT domain group external ACL helper for Squid
+Summary(pl):	Wsparcie kontroli dostêpu przez grupy w domenie NT dla squida
+Group:		Networking/Admin
+Requires:	%{name}
+
+%description winbind_acl
+This is an external ACL module for the Squid proxy server to
+limit acces for users based on NT domain group membership
+based on Samba Winbindd from Samba 2.2.4 or greater.
+
+%description winbind_acl -l pl
+Jest to modu³ kontroli dostêpu (ACL) do proxy, który pozwala na
+ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
+przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd
+z pakietu Samba 2.2.4 lub wy¿szego.
+
 %prep
 %setup -q -a 1 -a 4
 
@@ -349,7 +508,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d \
 	$RPM_BUILD_ROOT/home/services/httpd/cgi-bin \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
-	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/{contrib,auth_modules}} \
+	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/{contrib}} \
 	$RPM_BUILD_ROOT%{_mandir}/{man1,man8} \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
@@ -510,7 +669,6 @@ fi
 %attr(755,root,root) %dir %{_libexecdir}
 %attr(755,root,root) %{_libexecdir}/*.pl
 %attr(755,root,root) %{_libexecdir}/contrib
-%attr(755,root,root) %dir %{_libexecdir}/auth_modules
 
 %attr(770,root,squid) %dir /var/log/archiv/squid
 %attr(770,root,squid) %dir /var/log/squid
@@ -524,28 +682,80 @@ fi
 
 %files ldap_auth
 %defattr(644,root,root,755)
-%doc auth_modules/LDAP/README
-%attr(755,root,root) %{_libexecdir}/auth_modules/%{name}_ldap_auth
+%doc helpers/basic_auth/LDAP/README
+%attr(755,root,root) %{_libexecdir}/%{name}_ldap_auth
 %attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
-%doc auth_modules/PAM/pam_auth.c
+%doc helpers/basic_auth/PAM/pam_auth.c
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
-%attr(755,root,root) %{_libexecdir}/auth_modules/pam_auth
+%attr(755,root,root) %{_libexecdir}/pam_auth
 
 %files smb_auth
 %defattr(644,root,root,755)
-%doc auth_modules/SMB/{README,Changelog,smb_auth.sh}
-%doc auth_modules/multi-domain-NTLM/*
-%attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth
+%doc helpers/basic_auth/SMB/{README,Changelog,smb_auth.sh}
+%doc helpers/basic_auth/multi-domain-NTLM/*
+%attr(755,root,root) %{_libexecdir}/auth_modules/smb_auth*
 
 %files msnt_auth
 %defattr(644,root,root,755)
-%doc auth_modules/MSNT/README*
-%attr(755,root,root) %{_libexecdir}/auth_modules/msnt_auth
+%doc helpers/basic_auth/MSNT/README*
+%attr(755,root,root) %{_libexecdir}/msnt_auth
 
 %files yp_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/auth_modules/yp_auth
+%attr(755,root,root) %{_libexecdir}/yp_auth
+
+%files ncsa_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/ncsa_auth
+
+%files sasl_auth
+%defattr(644,root,root,755)
+%doc helpers/basic_auth/SASL/{README,squid_sasl*}
+%attr(755,root,root) %{_libexecdir}/sasl_auth
+
+%files winbind_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/wb_auth
+
+%files getpwname_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/getpwname_auth
+
+%files passwd_auth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/digest_pw_auth
+
+%files ntlm_auth
+%defattr(644,root,root,755)
+%doc helpers/ntlm_auth/no_check/{README*,no_check.pl}
+%attr(755,root,root) %{_libexecdir}/wb_ntlmauth
+%attr(755,root,root) %{_libexecdir}/ntlm_auth
+
+%files ip_acl
+%defattr(644,root,root,755)
+%doc helpers/external_acl/ip_user/{README,example*}
+%attr(755,root,root) %{_libexecdir}/ip_user_check
+
+%files ldap_acl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/squid_ldap_group
+%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_group.*
+
+%files unix_acl
+%defattr(644,root,root,755)
+%doc helpers/external_acl/unix_group/README
+%attr(755,root,root) %{_libexecdir}squid_unix_group
+%attr(644,root,root) %{_mandir}/man8/%{name}_unix_group.*
+
+%files wbinfo_acl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/wbinfo_group.pl
+
+%files winbind_acl
+%defattr(644,root,root,755)
+%doc helpers/external_acl/winbind_group/readme.txt
+%attr(755,root,root) %{_libexecdir}/wb_group
