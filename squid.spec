@@ -27,7 +27,7 @@ Patch13:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-inv
 Patch14:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-accel_only_access.patch
 Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-html_quoting.patch
 Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/%{name}-2.3.stable4-carp-assertion.patch
-Requires:	rc-scripts >= 0.2.0
+Prereq:		rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
