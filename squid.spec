@@ -573,7 +573,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS doc/*
+%doc RELEASENOTES.html SPONSORS doc/* src/mib.txt
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
