@@ -61,6 +61,7 @@ PreReq:		rc-scripts >= 0.2.0
 PreReq:		setup >= 2.4.6
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
+Requires(pre):  /usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
@@ -528,7 +529,7 @@ rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- inn < 7:2.5.STABLE7-5
+%triggerpostun -- squid < 7:2.5.STABLE7-5
 %addusertogroup stats squid
 
 %pre
