@@ -510,8 +510,6 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %{__autoconf}
 %{__automake}
 %configure \
-	--localstatedir=/var \
-	--sysconfdir=%{_sysconfdir} \
 	--datadir=%{_datadir}/squid \
 	--disable-ipf-transparent \
 	--enable-arp-acl \
@@ -536,6 +534,8 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 	--enable-underscores \
 	--enable-useragent-log \
 	--enable-x-accelerator-vary \
+	--localstatedir=/var \
+	--sysconfdir=%{_sysconfdir} \
 	--with-pthreads 
 
 mv -f squid/* doc
@@ -578,6 +578,12 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
 # These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
+
+# dunno why, but manual is not installed
+mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
+
+# We don't want Makefiles as docs...
+rm -f doc/Makefile*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -693,6 +699,7 @@ fi
 %attr(660,root,squid) %ghost /var/log/squid/*
 
 %attr(770,root,squid) %dir /var/cache/squid
+%{_mandir}/man8/squid.8*
 
 %files cachemgr
 %defattr(644,root,root,755)
