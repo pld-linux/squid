@@ -619,7 +619,8 @@ fi
 				
 %files
 %defattr(644,root,root,755)
-%doc faq CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART TODO
+%doc faq CONTRIBUTORS COPYRIGHT CREDITS README
+%doc ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
 %doc doc/*
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
@@ -695,7 +696,7 @@ fi
 
 %files smb_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/SMB/{README,Changelog,smb_auth.sh}
+%doc helpers/basic_auth/SMB/{README,ChangeLog,smb_auth.sh}
 %doc helpers/basic_auth/multi-domain-NTLM/*
 %attr(755,root,root) %{_libexecdir}/smb_auth*
 
