@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE5
-Release:	3
+Release:	4.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -46,6 +46,7 @@ Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-diges
 Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-turkish_ERR_DNS_FAIL.patch
 Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-vary_negatively.patch
 Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-range_offset_limit.patch
+Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE5-proxy_abuse.patch
 
 # Other patches:
 Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
@@ -55,8 +56,6 @@ Patch140:	%{name}-domainmatch.patch
 Patch150:	%{name}-libnsl_fixes.patch
 Patch170:	%{name}-ac_fix.patch
 Patch180:	%{name}-crash-on-ENOSPC.patch
-Patch190:	%{name}-newssl.patch
-Patch200:	%{name}-sasl.patch
 Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch220:	%{name}-empty-referer.patch
 Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
@@ -64,12 +63,11 @@ Patch231:	%{name}-libntlmssp.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
-BuildRequires:	findutils
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	pam-devel
-BuildRequires:	perl-base
+BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -86,7 +84,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		/home/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -455,6 +453,7 @@ Samba 2.2.4 lub wy¿szego.
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
 
 # Other patches:
 %patch110 -p1
@@ -463,8 +462,6 @@ Samba 2.2.4 lub wy¿szego.
 %patch140 -p1
 %patch170 -p1
 %patch180 -p1
-%patch190 -p1
-%patch200 -p1
 %patch210 -p1
 %patch220 -p1
 %{?with_combined_log:%patch230 -p1}
@@ -489,7 +486,6 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icmp \
-	--enable-linux-netfilter \
 	--enable-ntlm-auth-helpers=yes \
 	--enable-referer-log \
 	--enable-removal-policies="lru heap" \
@@ -551,8 +547,8 @@ mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
 rm -f doc/Makefile*
 
 # We don't like message: rpm found unpackaged files ...
-rm -f     $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
-    $RPM_BUILD_ROOT/etc/squid/squid.conf.orig
+rm -f	 $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
+	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
 %clean
 rm -rf $RPM_BUILD_ROOT
