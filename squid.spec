@@ -3,14 +3,14 @@ Summary(pl):	Uniwersalny proxy-cache
 Name:		squid
 Version:	2.3.STABLE2
 Release:	1
-Copyright:	GPL
+License:	GPL
 Group:		Daemons
 Group(pl):	Serwery
 Source0:	http://www.squid-cache.org/Versions/v2/2.3/%{name}-%{version}-src.tar.gz
 Source1:	%{name}-1.1.19-faq.tar.gz
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
-Source4:	http://cache.is.co.za/squid-docs.tar.gz
+Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
 Source5:	squid.conf
 Source6:	squid.logrotate
 Patch0:		squid-2.0-make.patch
@@ -36,52 +36,46 @@ Requires:	rc-scripts
 Squid is a high-performance proxy caching server for web clients, supporting
 FTP, gopher, and HTTP data objects. Unlike traditional caching software,
 Squid handles all requests in a single, non-blocking, I/O-driven process.
-
 Squid keeps meta data and especially hot objects cached in RAM, caches DNS
 lookups, supports non-blocking DNS lookups, and implements negative caching
 of failed requests. If you are tight on memory, check out the NOVM version
-of this package.
-
-Squid supports SSL, extensive access controls, and full request logging. By
-using the lightweight Internet Cache Protocol, Squid caches can be arranged
-in a hierarchy or mesh for additional bandwidth savings.
-
-Squid consists of a main server program squid, a Domain Name System lookup
-program dnsserver, a program for retrieving FTP data ftpget, and some
+of this package. Squid supports SSL, extensive access controls, and full
+request logging. By using the lightweight Internet Cache Protocol, Squid
+caches can be arranged in a hierarchy or mesh for additional bandwidth
+savings. Squid consists of a main server program squid, a Domain Name System
+lookup program dnsserver, a program for retrieving FTP data ftpget, and some
 management and client tools. When squid starts up, it spawns a configurable
 number of dnsserver processes, each of which can perform a single, blocking
 Domain Name System (DNS) lookup. This reduces the amount of time the cache
-waits for DNS lookups.
-
-Squid is derived from the ARPA-funded Harvest project.
+waits for DNS lookups. Squid is derived from the ARPA-funded Harvest
+project.
 
 %description -l pl
 Squid jest wysoce wydajnym serwerem proxy-cache dla przegl±darek WWW,
-klientów FTP i gopher. Squid przechowuje najczê¶ciej pobierane dane 
-w pamiêci RAM i zapamiêtuje odwo³ania do DNS.
-Squid oferuje wsparcie dla SSL, rozbudowan± kontrolê dostêpu oraz pe³ne
-rejestrowanie pobieranych danych. Dziêki u¿yciu protoko³u ICP (Internet
-Cache Protocol), serwer squid mo¿na ³±czyæ w hierarchiê, zwiêkszaj±c ich
-efektywno¶æ.
-Pakiet squid obejmuje: g³ówny program serwera squid, program
-dostarczaj±cy informacji z DNS dnsserver, program odbieraj±cy dane FTP
-ftpget, oraz pomocnicze programy do zarz±dzania.
-
-Squid wywodzi siê ze sponsorowanego przez ARPA projektu Harvest.
+klientów FTP i gopher. Squid przechowuje najczê¶ciej pobierane dane w
+pamiêci RAM i zapamiêtuje odwo³ania do DNS. Squid oferuje wsparcie dla SSL,
+rozbudowan± kontrolê dostêpu oraz pe³ne rejestrowanie pobieranych danych.
+Dziêki u¿yciu protoko³u ICP (Internet Cache Protocol), serwer squid mo¿na
+³±czyæ w hierarchiê, zwiêkszaj±c ich efektywno¶æ. Pakiet squid obejmuje:
+g³ówny program serwera squid, program dostarczaj±cy informacji z DNS
+dnsserver, program odbieraj±cy dane FTP ftpget, oraz pomocnicze programy do
+zarz±dzania. Squid wywodzi siê ze sponsorowanego przez ARPA projektu
+Harvest.
 
 %package cachemgr
 Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
 Group(pl):	Sieciowe/Administracja
+Require:	%{name} = %{version}
 
 %description cachemgr
 Cachemgr.cgi is a CGI script that allows administrator to chceck various
 informations about Squid via WWW.
 
 %description -l pl cachemgr
-Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi zapoznaæ
-siê z informacjami o pracy Squid'a poprzez WWW.
+Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi zapoznaæ siê
+z informacjami o pracy Squid'a poprzez WWW.
 
 %prep
 %setup -q -a 1 -a 4
