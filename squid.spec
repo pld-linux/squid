@@ -492,8 +492,6 @@ z pakietu Samba 2.2.4 lub wy¿szego.
 %patch170 -p1
 %patch180 -p1
 %patch190 -p1
-%patch200 -p1
-%patch210 -p1
 
 %build
 %{__aclocal}
