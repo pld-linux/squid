@@ -1,0 +1,108 @@
+diff -Nur squid-2.1.PATCH2/scripts/AnnounceCache.pl squid-2.1.PATCH2.orig/scripts/AnnounceCache.pl
+--- squid-2.1.PATCH2/scripts/AnnounceCache.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.1.PATCH2.orig/scripts/AnnounceCache.pl	Thu Dec 17 16:57:37 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ $|=1;
+ 
+diff -Nur squid-2.1.PATCH2/scripts/access-log-matrix.pl squid-2.1.PATCH2.orig/scripts/access-log-matrix.pl
+--- squid-2.1.PATCH2/scripts/access-log-matrix.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.1.PATCH2.orig/scripts/access-log-matrix.pl	Thu Dec 17 16:57:51 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # access-log-matrix.pl
+ # 
+diff -Nur squid-2.1.PATCH2/scripts/cache-compare.pl squid-2.1.PATCH2.orig/scripts/cache-compare.pl
+--- squid-2.1.PATCH2/scripts/cache-compare.pl	Tue Sep 17 18:32:27 1996
++++ squid-2.1.PATCH2.orig/scripts/cache-compare.pl	Thu Dec 17 16:57:59 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # cache-compare.pl
+ #
+diff -Nur squid-2.1.PATCH2/scripts/cachetrace.pl squid-2.1.PATCH2.orig/scripts/cachetrace.pl
+--- squid-2.1.PATCH2/scripts/cachetrace.pl	Tue Mar  4 06:16:23 1997
++++ squid-2.1.PATCH2.orig/scripts/cachetrace.pl	Thu Dec 17 16:58:05 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ require 'sys/socket.ph';
+ 
+diff -Nur squid-2.1.PATCH2/scripts/check_cache.pl squid-2.1.PATCH2.orig/scripts/check_cache.pl
+--- squid-2.1.PATCH2/scripts/check_cache.pl	Tue Feb  4 00:42:21 1997
++++ squid-2.1.PATCH2.orig/scripts/check_cache.pl	Thu Dec 17 16:58:13 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # check_cache.pl 
+ #
+diff -Nur squid-2.1.PATCH2/scripts/fileno-to-pathname.pl squid-2.1.PATCH2.orig/scripts/fileno-to-pathname.pl
+--- squid-2.1.PATCH2/scripts/fileno-to-pathname.pl	Wed Jul 16 22:31:55 1997
++++ squid-2.1.PATCH2.orig/scripts/fileno-to-pathname.pl	Thu Dec 17 16:58:21 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # $Id$
+ # Convert hexadecimal cache file numbers (from swap log) into full pathnames.  
+diff -Nur squid-2.1.PATCH2/scripts/flag_truncs.pl squid-2.1.PATCH2.orig/scripts/flag_truncs.pl
+--- squid-2.1.PATCH2/scripts/flag_truncs.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.1.PATCH2.orig/scripts/flag_truncs.pl	Thu Dec 17 16:58:28 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # flag_truncs.pl - martin hamilton <m.t.hamilton@lut.ac.uk>
+ #
+diff -Nur squid-2.1.PATCH2/scripts/icp-test.pl squid-2.1.PATCH2.orig/scripts/icp-test.pl
+--- squid-2.1.PATCH2/scripts/icp-test.pl	Thu Aug 13 18:52:25 1998
++++ squid-2.1.PATCH2.orig/scripts/icp-test.pl	Thu Dec 17 16:58:34 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # icp-test.pl 
+ #
+diff -Nur squid-2.1.PATCH2/scripts/icpserver.pl squid-2.1.PATCH2.orig/scripts/icpserver.pl
+--- squid-2.1.PATCH2/scripts/icpserver.pl	Thu Feb 22 07:23:57 1996
++++ squid-2.1.PATCH2.orig/scripts/icpserver.pl	Thu Dec 17 16:58:39 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # parse and answer ICP type 1 requests via unicast/multicast UDP
+ # cf. <URL:http://excalibur.usc.edu/icpdoc/icp.html>
+diff -Nur squid-2.1.PATCH2/scripts/tcp-banger.pl squid-2.1.PATCH2.orig/scripts/tcp-banger.pl
+--- squid-2.1.PATCH2/scripts/tcp-banger.pl	Thu Apr  4 03:57:54 1996
++++ squid-2.1.PATCH2.orig/scripts/tcp-banger.pl	Thu Dec 17 16:58:46 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # tcp-banger.pl	
+ #
+diff -Nur squid-2.1.PATCH2/scripts/udp-banger.pl squid-2.1.PATCH2.orig/scripts/udp-banger.pl
+--- squid-2.1.PATCH2/scripts/udp-banger.pl	Fri Nov 20 23:50:42 1998
++++ squid-2.1.PATCH2.orig/scripts/udp-banger.pl	Thu Dec 17 16:58:53 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # udp-banger.pl 
+ #
+diff -Nur squid-2.1.PATCH2/scripts/upgrade-1.0-store.pl squid-2.1.PATCH2.orig/scripts/upgrade-1.0-store.pl
+--- squid-2.1.PATCH2/scripts/upgrade-1.0-store.pl	Fri Oct 11 21:56:06 1996
++++ squid-2.1.PATCH2.orig/scripts/upgrade-1.0-store.pl	Thu Dec 17 16:59:00 1998
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/perl
++#!/usr/bin/perl
+ 
+ # $Id$
+ 

@@ -1,0 +1,66 @@
+#!/bin/bash
+# squid		This shell script takes care of starting and stopping
+#		Squid Internet Object Cache
+#
+# chkconfig: - 90 25
+# description: Squid - Internet Object Cache. Internet object caching is \
+# 	a way to store requested Internet objects (i.e., data available \
+# 	via the HTTP, FTP, and gopher protocols) on a system closer to the \
+#	requesting site than to the source. Web browsers can then use the \
+#	local Squid cache as a proxy HTTP server, reducing access time as \
+#	well as bandwidth consumption.
+# pidfile: /var/run/squid.pid
+# config: /etc/squid/squid.conf
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && exit 0
+
+# check if the squid conf file is present
+[ -f /etc/squid/squid.conf ] || exit 0
+
+# define the cache_swap location
+CACHE_SWAP=/var/spool/squid
+
+# Try to define nice-level for running squid
+NICE="nice -n 5"
+
+# default squid options
+# -D disables initial dns checks. If you most likely will not to have an
+#    internet connection when you start squid, uncomment this
+#SQUID_OPTS="-D"
+
+case "$1" in
+start)
+    show Starting squid
+    busy
+    if [ ! -d $CACHE_SWAP/00 ]; then
+    squid -z -F &>/dev/null
+    fi
+    $NICE squid $SQUID_OPTS &
+    touch /var/lock/subsys/squid
+    deltext;ok
+    ;;
+stop)
+    show Stopping squid
+    killproc squid  
+    rm -f /var/lock/subsys/squid
+    ;;
+restart)
+    $0 stop
+    $0 start
+    ;;
+status)
+    status squid
+    ;;
+*)
+    echo "Usage: $0 {start|stop|status|restart}"
+    exit 1
+esac
+
+exit 0
