@@ -54,7 +54,7 @@ fi
 # Sanity check
 [ -f /etc/squid/squid.conf ] || exit 0
 
-
+RETVAL=0
 # See how we were called.
 case "$1" in
   start)
@@ -66,7 +66,6 @@ case "$1" in
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
 		msg_already_running Squid
-		exit 1
 	fi
 	;;
   stop)
@@ -74,16 +73,15 @@ case "$1" in
 		# Stop daemons.
 		msg_stopping Squid
 		killproc squid
-		RETVAL=$?
 		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
 		msg_not_running Squid
-		exit 1
 	fi
 	;;
   restart)
 	$0 stop && nls -n "Waiting %s seconds..." "$DELAY_IN_RESTART" && sleep $DELAY_IN_RESTART && nls "done."
 	$0 start
+	exit $?
 	;;
   reload|force-reload)
 	if [ -f /var/lock/subsys/squid ]; then
@@ -91,10 +89,11 @@ case "$1" in
 		busy
 		squid -k reconfigure
 		RETVAL=$?
-		[ $RETVAL -eq 0 ] ok || fail
+		[ $RETVAL -ne 0 ] && RETVAL=7
+		[ $RETVAL -eq 0 ] && ok || fail
 	else
 		msg_not_running Squid
-		exit 1
+		exit 7
 	fi
   	;;
   status)
@@ -107,7 +106,7 @@ case "$1" in
 	;;
   *)
 	msg_usage "$0 {start|stop|init|restart|reload|force-reload|status}"
-	exit 1
+	exit 3
 esac
 
 exit $RETVAL
