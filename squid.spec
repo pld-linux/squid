@@ -10,13 +10,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE8
+Version:	2.5.STABLE9
 Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	687db8c5f0fec3798dbc77f94340b185
+# Source0-md5:	5a34a303dcab8851c7ab20e24af69b61
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -29,6 +29,9 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-setcookie.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-ftp_EPLF.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE9-ftp_base_href.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -420,6 +423,9 @@ Samba 2.2.4 lub wy¿szego.
 %prep
 %setup -q -a1 -a4
 # Bug fixes from Squid home page:
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
