@@ -1,0 +1,21 @@
+Index: squid/src/pinger.c
+diff -c squid/src/pinger.c:1.46 squid/src/pinger.c:1.46.2.1
+*** squid/src/pinger.c:1.46	Thu Jan 11 17:37:20 2001
+--- squid/src/pinger.c	Mon Dec 22 17:55:57 2003
+***************
+*** 170,176 ****
+      echo = (icmpEchoData *) (icmp + 1);
+      echo->opcode = (unsigned char) opcode;
+      echo->tv = current_time;
+!     icmp_pktsize += sizeof(icmpEchoData) - MAX_PAYLOAD;
+      if (payload) {
+  	if (len > MAX_PAYLOAD)
+  	    len = MAX_PAYLOAD;
+--- 170,176 ----
+      echo = (icmpEchoData *) (icmp + 1);
+      echo->opcode = (unsigned char) opcode;
+      echo->tv = current_time;
+!     icmp_pktsize += sizeof(struct timeval) + sizeof(char);
+      if (payload) {
+  	if (len > MAX_PAYLOAD)
+  	    len = MAX_PAYLOAD;

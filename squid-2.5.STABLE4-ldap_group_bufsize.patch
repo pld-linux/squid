@@ -1,0 +1,21 @@
+Index: squid/helpers/external_acl/ldap_group/squid_ldap_group.c
+diff -c squid/helpers/external_acl/ldap_group/squid_ldap_group.c:1.2.2.14 squid/helpers/external_acl/ldap_group/squid_ldap_group.c:1.2.2.15
+*** squid/helpers/external_acl/ldap_group/squid_ldap_group.c:1.2.2.14	Mon Jan  5 05:00:17 2004
+--- squid/helpers/external_acl/ldap_group/squid_ldap_group.c	Thu Jan  8 12:50:15 2004
+***************
+*** 210,216 ****
+  int
+  main(int argc, char **argv)
+  {
+!     char buf[256];
+      char *user, *group, *extension_dn = NULL;
+      char *ldapServer = NULL;
+      LDAP *ld = NULL;
+--- 210,216 ----
+  int
+  main(int argc, char **argv)
+  {
+!     char buf[8192];
+      char *user, *group, *extension_dn = NULL;
+      char *ldapServer = NULL;
+      LDAP *ld = NULL;

@@ -1,0 +1,42 @@
+Index: squid/helpers/basic_auth/LDAP/squid_ldap_auth.c
+diff -c squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.6 squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.7
+*** squid/helpers/basic_auth/LDAP/squid_ldap_auth.c:1.21.2.6	Sat May 10 14:17:18 2003
+--- squid/helpers/basic_auth/LDAP/squid_ldap_auth.c	Mon Jan  5 05:00:16 2004
+***************
+*** 445,451 ****
+                  exit(1);
+  	    }
+  
+! 	    if ( use_tls && ( version == LDAP_VERSION3 ) && ( ldap_start_tls_s( ld, NULL, NULL ) == LDAP_SUCCESS )) {
+                  fprintf( stderr, "Could not Activate TLS connection\n");
+                  exit(1);
+  	    }
+--- 445,451 ----
+                  exit(1);
+  	    }
+  
+! 	    if ( use_tls && ( version == LDAP_VERSION3 ) && ( ldap_start_tls_s( ld, NULL, NULL ) != LDAP_SUCCESS )) {
+                  fprintf( stderr, "Could not Activate TLS connection\n");
+                  exit(1);
+  	    }
+Index: squid/helpers/external_acl/ldap_group/squid_ldap_group.c
+diff -c squid/helpers/external_acl/ldap_group/squid_ldap_group.c:1.2.2.13 squid/helpers/external_acl/ldap_group/squid_ldap_group.c:1.2.2.14
+*** squid/helpers/external_acl/ldap_group/squid_ldap_group.c:1.2.2.13	Fri Nov 21 10:13:58 2003
+--- squid/helpers/external_acl/ldap_group/squid_ldap_group.c	Mon Jan  5 05:00:17 2004
+***************
+*** 491,497 ****
+  		    ld = NULL;
+  		    break;
+  		}
+! 		if (use_tls && (version == LDAP_VERSION3) && (ldap_start_tls_s(ld, NULL, NULL) == LDAP_SUCCESS)) {
+  		    fprintf(stderr, "Could not Activate TLS connection\n");
+  		    ldap_unbind(ld);
+  		    ld = NULL;
+--- 491,497 ----
+  		    ld = NULL;
+  		    break;
+  		}
+! 		if (use_tls && (version == LDAP_VERSION3) && (ldap_start_tls_s(ld, NULL, NULL) != LDAP_SUCCESS)) {
+  		    fprintf(stderr, "Could not Activate TLS connection\n");
+  		    ldap_unbind(ld);
+  		    ld = NULL;
