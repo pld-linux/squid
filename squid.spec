@@ -1,8 +1,8 @@
 Summary:	SQUID Internet Object Cache
 Summary(pl):	Uniwersalny proxy-cache server
 Name:		squid
-Version:	2.4.STABLE2
-Release:	6
+Version:	2.4.STABLE3
+Release:	1
 Epoch:		6
 License:	GPL
 Group:		Networking/Daemons
@@ -15,13 +15,6 @@ Source3:	%{name}.sysconfig
 Source4:	http://cache.is.co.za/%{name}-docs.tar.gz
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
-Patch0:		%{name}-2.4.STABLE2-aufs_fd_leak.patch
-Patch1:		%{name}-2.4.STABLE2-CONNECT_miss_access_core.patch
-Patch2:		%{name}-ftp-bugfix.patch
-Patch3:		%{name}-2.4.STABLE2-ldap_auth_password_spaces.patch
-Patch4:		%{name}-2.4.STABLE2-snmpwalk_coredump.patch
-Patch5:		%{name}-2.4.STABLE2-statHistDump_prototype.patch
-Patch6:		%{name}-2.4.STABLE2-swap_meta.patch
 Patch10:	%{name}-perl.patch
 Patch11:	%{name}-linux.patch
 Patch12:	%{name}-fhs.patch
@@ -125,13 +118,6 @@ Samba.
 %setup -q -a 1 -a 4
 
 # Bug fixes from Squid home page.
-%patch0 -p1 
-%patch1 -p0 
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 # Other patches:
 %patch10 -p1 
