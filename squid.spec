@@ -95,7 +95,7 @@ CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 	--enable-err-language=English.Polish \
 	--enable-htcp \
 	--enable-carp \
-	--sbindir=/usr/sbin
+	--sbindir=%{_sbindir}
 
 mv -f squid/* doc
 make 
@@ -114,7 +114,7 @@ make install \
 	localstatedir=$RPM_BUILD_ROOT/var
 
 mv $RPM_BUILD_ROOT%{_bindir}/cachemgr.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin
-mv $RPM_BUILD_ROOT%{_bindir}/squid $RPM_BUILD_ROOT/usr/sbin/
+mv $RPM_BUILD_ROOT%{_bindir}/squid $RPM_BUILD_ROOT%{_sbindir}/
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/crontab.d/squid
@@ -157,7 +157,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc contrib/user-agents.pl*
 
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) /usr/sbin/*
+%attr(755,root,root) %{_sbindir}/*
 
 %dir /etc/squid
 
