@@ -27,9 +27,9 @@ Patch15:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-netdb
 Patch16:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-redirected_username_logging.patch
 Patch17:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-snmp-problems.patch
 Patch18:	http://www.squid-cache.org/Versions/v2/2.3/bugs/squid-2.3.stable2-getpwnam_return_value.patch
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Requires:	rc-scripts >= 0.2.0
 Prereq:		/sbin/chkconfig
-Requires:	rc-scripts
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
