@@ -1,0 +1,3 @@
+- fixed %pre (changed to apache-like), added %postun
+- added Requires(post)
+- release 6
