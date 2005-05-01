@@ -1,0 +1,2 @@
+- changing %attr(4750,root,squid) for %{_bindir}/pinger,
+  for what was r for others?
