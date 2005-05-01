@@ -64,7 +64,7 @@ BuildRequires:	openldap-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.166
+BuildRequires:	rpmbuild(macros) >= 1.202
 BuildRequires:	unzip
 PreReq:		rc-scripts >= 0.2.0
 PreReq:		setup >= 2.4.6
@@ -552,24 +552,10 @@ rm -rf $RPM_BUILD_ROOT
 %addusertogroup stats squid
 
 %pre
-if [ -n "`/usr/bin/getgid squid`" ]; then
-	if [ "`/usr/bin/getgid squid`" != "91" ]; then
-		echo "Error: group squid doesn't have gid=91. Correct this before installing squid." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/groupadd -g 91 squid 1>&2
-fi
-if [ -n "`/bin/id -u squid 2>/dev/null`" ]; then
-	if [ "`/bin/id -u squid`" != "91" ]; then
-		echo "Error: user squid doesn't have uid=91. Correct this before installing squid." 1>&2
-		exit 1
-	fi
-else
-	/usr/sbin/useradd -o -u 91 -s /bin/false -g squid \
-		-c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2
-	%addusertogroup stats squid
-fi
+%groupadd -g 91 squid
+%useradd -o -u 91 -s /bin/false -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid
+%addusertogroup stats squid
+
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
 %post
