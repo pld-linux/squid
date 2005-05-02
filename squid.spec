@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE9
-Release:	3
+Release:	3.5
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -535,15 +535,22 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 # These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
+# cp, to have re-entrant install
+rm -rf docs
+cp -a doc docs
 # dunno why, but manual is not installed
-mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
-
+mv docs/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
 # We don't want Makefiles as docs...
-rm -f doc/Makefile*
+rm -f docs/Makefile*
 
 # We don't like message: rpm found unpackaged files ...
 rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
+
+> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
+> $RPM_BUILD_ROOT/var/cache/squid/swap.state
+> $RPM_BUILD_ROOT/var/cache/squid/swap.state.clean
+> $RPM_BUILD_ROOT/var/cache/squid/swap.state.last-clean
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -565,6 +572,7 @@ fi
 
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
+	/etc/rc.d/init.d/squid init >&2
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
 else
 	if [ -f /var/lock/subsys/squid ]; then
@@ -578,6 +586,9 @@ if [ "$1" = "0" ]; then
 		/etc/rc.d/init.d/squid stop >&2
 	fi
 	/sbin/chkconfig --del squid
+
+	# nuke squid cache if uninstalling
+	rm -rf /var/cache/squid/??
 fi
 
 %postun
@@ -589,7 +600,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
-%doc doc/* src/mib.txt FAQ*.html book-full.html
+%doc docs/* src/mib.txt FAQ*.html book-full.html
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
@@ -650,6 +661,10 @@ fi
 %attr(660,root,squid) %ghost /var/log/squid/*
 
 %attr(770,root,squid) %dir /var/cache/squid
+%ghost /var/cache/squid/netdb_state
+%ghost /var/cache/squid/swap.state
+%ghost /var/cache/squid/swap.state.clean
+%ghost /var/cache/squid/swap.state.last-clean
 %{_mandir}/man8/squid.8*
 
 %files cachemgr
