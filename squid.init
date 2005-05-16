@@ -61,6 +61,7 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/squid ]; then
 		msg_starting Squid
+		ulimit -n 8192
 		daemon $SERVICE_RUN_NICE_LEVEL squid $SQUID_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
