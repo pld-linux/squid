@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE10
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -541,7 +541,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
-	echo visible_hostname `/bin/hostname -f` >> /etc/squid/squid.conf
+	hostname=`/bin/hostname -f 2>/dev/null` || hostname='localhost'
+	echo visible_hostname $hostname >> /etc/squid/squid.conf
 fi
 
 if [ "$1" = "1" ]; then
