@@ -86,6 +86,8 @@ case "$1" in
 		if [ ! $PID -eq 0 ]; then
 			show "Waiting for Squid to stop"
 			busy
+			# FIXME: DEADLOOP!
+			# redirect_program could stay lingering around and this loop is never breaken
 			while ps -U squid -o user | grep -q ^squid
 			do
 				sleep 1
