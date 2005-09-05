@@ -1,0 +1,15 @@
+Index: squid/src/ssl.c
+diff -c squid/src/ssl.c:1.118.2.11 squid/src/ssl.c:1.118.2.12
+*** squid/src/ssl.c:1.118.2.11	Sun Apr 17 18:54:30 2005
+--- squid/src/ssl.c	Thu Sep  1 14:24:27 2005
+***************
+*** 106,111 ****
+--- 106,113 ----
+      sslState->client.fd = -1;
+      if (sslState->server.fd == -1)
+  	sslStateFree(sslState);
++     else if (!sslState->connected)
++ 	comm_close(sslState->server.fd);
+  }
+  
+  static void

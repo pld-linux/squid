@@ -1,0 +1,561 @@
+Index: squid/src/cache_manager.c
+diff -c squid/src/cache_manager.c:1.26 squid/src/cache_manager.c:1.26.2.1
+*** squid/src/cache_manager.c:1.26	Fri Feb 23 13:59:50 2001
+--- squid/src/cache_manager.c	Thu Sep  1 16:14:45 2005
+***************
+*** 201,206 ****
+--- 201,207 ----
+      if ((mgr = cachemgrParseUrl(storeUrl(entry))) == NULL) {
+  	err = errorCon(ERR_INVALID_URL, HTTP_NOT_FOUND);
+  	err->url = xstrdup(storeUrl(entry));
++ 	err->request = requestLink(request);
+  	errorAppendEntry(entry, err);
+  	entry->expires = squid_curtime;
+  	return;
+Index: squid/src/forward.c
+diff -c squid/src/forward.c:1.82.2.15 squid/src/forward.c:1.82.2.16
+*** squid/src/forward.c:1.82.2.15	Fri Mar 25 19:50:53 2005
+--- squid/src/forward.c	Thu Sep  1 16:14:45 2005
+***************
+*** 236,242 ****
+  	    request->host);
+  	err = errorCon(ERR_DNS_FAIL, HTTP_SERVICE_UNAVAILABLE);
+  	err->dnsserver_msg = xstrdup(dns_error_message);
+- 	err->request = requestLink(request);
+  	fwdFail(fwdState, err);
+  	comm_close(server_fd);
+      } else if (status != COMM_OK) {
+--- 236,241 ----
+***************
+*** 250,256 ****
+  	    err->host = xstrdup(request->host);
+  	    err->port = request->port;
+  	}
+- 	err->request = requestLink(request);
+  	fwdFail(fwdState, err);
+  	if (fs->peer)
+  	    peerConnectFailed(fs->peer);
+--- 249,254 ----
+***************
+*** 282,288 ****
+      assert(fd == fwdState->server_fd);
+      if (entry->mem_obj->inmem_hi == 0) {
+  	err = errorCon(ERR_CONNECT_FAIL, HTTP_GATEWAY_TIMEOUT);
+- 	err->request = requestLink(fwdState->request);
+  	err->xerrno = ETIMEDOUT;
+  	fwdFail(fwdState, err);
+  	/*
+--- 280,285 ----
+***************
+*** 420,426 ****
+  	debug(50, 4) ("fwdConnectStart: %s\n", xstrerror());
+  	err = errorCon(ERR_SOCKET_FAILURE, HTTP_INTERNAL_SERVER_ERROR);
+  	err->xerrno = errno;
+- 	err->request = requestLink(fwdState->request);
+  	fwdFail(fwdState, err);
+  	fwdStateFree(fwdState);
+  	return;
+--- 417,422 ----
+***************
+*** 466,472 ****
+      ErrorState *err;
+      debug(17, 3) ("fwdStartFail: %s\n", storeUrl(fwdState->entry));
+      err = errorCon(ERR_CANNOT_FORWARD, HTTP_SERVICE_UNAVAILABLE);
+-     err->request = requestLink(fwdState->request);
+      err->xerrno = errno;
+      fwdFail(fwdState, err);
+      fwdStateFree(fwdState);
+--- 462,467 ----
+***************
+*** 525,531 ****
+  	    debug(17, 1) ("fwdDispatch: Cannot retrieve '%s'\n",
+  		storeUrl(entry));
+  	    err = errorCon(ERR_UNSUP_REQ, HTTP_BAD_REQUEST);
+- 	    err->request = requestLink(request);
+  	    fwdFail(fwdState, err);
+  	    /*
+  	     * Force a persistent connection to be closed because
+--- 520,525 ----
+***************
+*** 710,716 ****
+  void
+  fwdFail(FwdState * fwdState, ErrorState * errorState)
+  {
+-     assert(EBIT_TEST(fwdState->entry->flags, ENTRY_FWD_HDR_WAIT));
+      debug(17, 3) ("fwdFail: %s \"%s\"\n\t%s\n",
+  	err_type_str[errorState->type],
+  	httpStatusString(errorState->http_status),
+--- 704,709 ----
+***************
+*** 718,723 ****
+--- 711,718 ----
+      if (fwdState->err)
+  	errorStateFree(fwdState->err);
+      fwdState->err = errorState;
++     if (!errorState->request)
++ 	errorState->request = requestLink(fwdState->request);
+  }
+  
+  /*
+Index: squid/src/ftp.c
+diff -c squid/src/ftp.c:1.316.2.28 squid/src/ftp.c:1.316.2.29
+*** squid/src/ftp.c:1.316.2.28	Wed Jun 22 04:42:34 2005
+--- squid/src/ftp.c	Thu Sep  1 16:14:45 2005
+***************
+*** 2491,2497 ****
+      if (err == NULL)
+  	err = errorCon(ERR_FTP_FAILURE, HTTP_BAD_GATEWAY);
+      err->xerrno = errno;
+-     err->request = requestLink(ftpState->request);
+      err->ftp.server_msg = ftpState->ctrl.message;
+      ftpState->ctrl.message = NULL;
+      if (ftpState->old_request)
+--- 2491,2496 ----
+Index: squid/src/gopher.c
+diff -c squid/src/gopher.c:1.162.2.8 squid/src/gopher.c:1.162.2.9
+*** squid/src/gopher.c:1.162.2.8	Tue Jan 11 23:04:01 2005
+--- squid/src/gopher.c	Thu Sep  1 16:14:45 2005
+***************
+*** 603,614 ****
+      GopherStateData *gopherState = data;
+      StoreEntry *entry = gopherState->entry;
+      debug(10, 4) ("gopherTimeout: FD %d: '%s'\n", fd, storeUrl(entry));
+!     if (entry->store_status == STORE_PENDING) {
+! 	if (entry->mem_obj->inmem_hi == 0) {
+! 	    fwdFail(gopherState->fwdState,
+! 		errorCon(ERR_READ_TIMEOUT, HTTP_GATEWAY_TIMEOUT));
+! 	}
+!     }
+      comm_close(fd);
+  }
+  
+--- 603,610 ----
+      GopherStateData *gopherState = data;
+      StoreEntry *entry = gopherState->entry;
+      debug(10, 4) ("gopherTimeout: FD %d: '%s'\n", fd, storeUrl(entry));
+!     fwdFail(gopherState->fwdState,
+! 	errorCon(ERR_READ_TIMEOUT, HTTP_GATEWAY_TIMEOUT));
+      comm_close(fd);
+  }
+  
+***************
+*** 660,681 ****
+  	debug(50, 1) ("gopherReadReply: error reading: %s\n", xstrerror());
+  	if (ignoreErrno(errno)) {
+  	    commSetSelect(fd, COMM_SELECT_READ, gopherReadReply, data, 0);
+! 	} else if (entry->mem_obj->inmem_hi == 0) {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_INTERNAL_SERVER_ERROR);
+  	    err->xerrno = errno;
+! 	    err->url = xstrdup(storeUrl(entry));
+! 	    errorAppendEntry(entry, err);
+! 	    comm_close(fd);
+! 	} else {
+  	    comm_close(fd);
+  	}
+      } else if (len == 0 && entry->mem_obj->inmem_hi == 0) {
+! 	ErrorState *err;
+! 	err = errorCon(ERR_ZERO_SIZE_OBJECT, HTTP_SERVICE_UNAVAILABLE);
+! 	err->xerrno = errno;
+! 	err->url = xstrdup(gopherState->request);
+! 	errorAppendEntry(entry, err);
+  	comm_close(fd);
+      } else if (len == 0) {
+  	/* Connection closed; retrieval done. */
+--- 656,670 ----
+  	debug(50, 1) ("gopherReadReply: error reading: %s\n", xstrerror());
+  	if (ignoreErrno(errno)) {
+  	    commSetSelect(fd, COMM_SELECT_READ, gopherReadReply, data, 0);
+! 	} else {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_INTERNAL_SERVER_ERROR);
+  	    err->xerrno = errno;
+! 	    fwdFail(gopherState->fwdState, err);
+  	    comm_close(fd);
+  	}
+      } else if (len == 0 && entry->mem_obj->inmem_hi == 0) {
+! 	fwdFail(gopherState->fwdState, errorCon(ERR_ZERO_SIZE_OBJECT, HTTP_SERVICE_UNAVAILABLE));
+  	comm_close(fd);
+      } else if (len == 0) {
+  	/* Connection closed; retrieval done. */
+***************
+*** 717,728 ****
+      }
+      if (errflag) {
+  	ErrorState *err;
+! 	err = errorCon(ERR_CONNECT_FAIL, HTTP_SERVICE_UNAVAILABLE);
+  	err->xerrno = errno;
+  	err->host = xstrdup(gopherState->req->host);
+  	err->port = gopherState->req->port;
+  	err->url = xstrdup(storeUrl(entry));
+! 	errorAppendEntry(entry, err);
+  	comm_close(fd);
+  	if (buf)
+  	    memFree(buf, MEM_4K_BUF);	/* Allocated by gopherSendRequest. */
+--- 706,717 ----
+      }
+      if (errflag) {
+  	ErrorState *err;
+! 	err = errorCon(ERR_WRITE_ERROR, HTTP_BAD_GATEWAY);
+  	err->xerrno = errno;
+  	err->host = xstrdup(gopherState->req->host);
+  	err->port = gopherState->req->port;
+  	err->url = xstrdup(storeUrl(entry));
+! 	fwdFail(gopherState->fwdState, err);
+  	comm_close(fd);
+  	if (buf)
+  	    memFree(buf, MEM_4K_BUF);	/* Allocated by gopherSendRequest. */
+***************
+*** 815,830 ****
+      /* Parse url. */
+      gopher_request_parse(fwdState->request,
+  	&gopherState->type_id, gopherState->request);
+- #if OLD_PARSE_ERROR_CODE
+-     if (...) {
+- 	ErrorState *err;
+- 	err = errorCon(ERR_INVALID_URL, HTTP_BAD_REQUEST);
+- 	err->url = xstrdup(storeUrl(entry));
+- 	errorAppendEntry(entry, err);
+- 	gopherStateFree(-1, gopherState);
+- 	return;
+-     }
+- #endif
+      comm_add_close_handler(fd, gopherStateFree, gopherState);
+      if (((gopherState->type_id == GOPHER_INDEX) || (gopherState->type_id == GOPHER_CSO))
+  	&& (strchr(gopherState->request, '?') == NULL)) {
+--- 804,809 ----
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.30 squid/src/http.c:1.384.2.31
+*** squid/src/http.c:1.384.2.30	Fri Mar 25 19:50:53 2005
+--- squid/src/http.c	Thu Sep  1 16:14:45 2005
+***************
+*** 99,108 ****
+      StoreEntry *entry = httpState->entry;
+      debug(11, 4) ("httpTimeout: FD %d: '%s'\n", fd, storeUrl(entry));
+      if (entry->store_status == STORE_PENDING) {
+! 	if (entry->mem_obj->inmem_hi == 0) {
+! 	    fwdFail(httpState->fwd,
+! 		errorCon(ERR_READ_TIMEOUT, HTTP_GATEWAY_TIMEOUT));
+! 	}
+      }
+      comm_close(fd);
+  }
+--- 99,106 ----
+      StoreEntry *entry = httpState->entry;
+      debug(11, 4) ("httpTimeout: FD %d: '%s'\n", fd, storeUrl(entry));
+      if (entry->store_status == STORE_PENDING) {
+! 	fwdFail(httpState->fwd,
+! 	    errorCon(ERR_READ_TIMEOUT, HTTP_GATEWAY_TIMEOUT));
+      }
+      comm_close(fd);
+  }
+***************
+*** 616,637 ****
+  	    fd, xstrerror());
+  	if (ignoreErrno(errno)) {
+  	    commSetSelect(fd, COMM_SELECT_READ, httpReadReply, httpState, 0);
+! 	} else if (entry->mem_obj->inmem_hi == 0) {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_BAD_GATEWAY);
+- 	    err->request = requestLink((request_t *) request);
+  	    err->xerrno = errno;
+  	    fwdFail(httpState->fwd, err);
+  	    comm_close(fd);
+- 	} else {
+- 	    comm_close(fd);
+  	}
+      } else if (len == 0 && entry->mem_obj->inmem_hi == 0) {
+! 	ErrorState *err;
+! 	err = errorCon(ERR_ZERO_SIZE_OBJECT, HTTP_BAD_GATEWAY);
+! 	err->xerrno = errno;
+! 	err->request = requestLink((request_t *) request);
+! 	fwdFail(httpState->fwd, err);
+  	httpState->eof = 1;
+  	comm_close(fd);
+      } else if (len == 0) {
+--- 614,628 ----
+  	    fd, xstrerror());
+  	if (ignoreErrno(errno)) {
+  	    commSetSelect(fd, COMM_SELECT_READ, httpReadReply, httpState, 0);
+! 	} else {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_BAD_GATEWAY);
+  	    err->xerrno = errno;
+  	    fwdFail(httpState->fwd, err);
+  	    comm_close(fd);
+  	}
+      } else if (len == 0 && entry->mem_obj->inmem_hi == 0) {
+! 	fwdFail(httpState->fwd, errorCon(ERR_ZERO_SIZE_OBJECT, HTTP_BAD_GATEWAY));
+  	httpState->eof = 1;
+  	comm_close(fd);
+      } else if (len == 0) {
+***************
+*** 646,663 ****
+  	     */
+  	    httpProcessReplyHeader(httpState, buf, len);
+  	if (entry->mem_obj->reply->sline.status == HTTP_HEADER_TOO_LARGE) {
+- 	    ErrorState *err;
+  	    storeEntryReset(entry);
+! 	    err = errorCon(ERR_TOO_BIG, HTTP_BAD_GATEWAY);
+! 	    err->request = requestLink((request_t *) request);
+! 	    fwdFail(httpState->fwd, err);
+  	    httpState->fwd->flags.dont_retry = 1;
+  	} else if (entry->mem_obj->reply->sline.status == HTTP_INVALID_HEADER && !(entry->mem_obj->reply->sline.version.major == 0 && entry->mem_obj->reply->sline.version.minor == 9)) {
+- 	    ErrorState *err;
+  	    storeEntryReset(entry);
+! 	    err = errorCon(ERR_INVALID_RESP, HTTP_BAD_GATEWAY);
+! 	    err->request = requestLink((request_t *) request);
+! 	    fwdFail(httpState->fwd, err);
+  	    httpState->fwd->flags.dont_retry = 1;
+  	} else {
+  	    fwdComplete(httpState->fwd);
+--- 637,648 ----
+  	     */
+  	    httpProcessReplyHeader(httpState, buf, len);
+  	if (entry->mem_obj->reply->sline.status == HTTP_HEADER_TOO_LARGE) {
+  	    storeEntryReset(entry);
+! 	    fwdFail(httpState->fwd, errorCon(ERR_TOO_BIG, HTTP_BAD_GATEWAY));
+  	    httpState->fwd->flags.dont_retry = 1;
+  	} else if (entry->mem_obj->reply->sline.status == HTTP_INVALID_HEADER && !(entry->mem_obj->reply->sline.version.major == 0 && entry->mem_obj->reply->sline.version.minor == 9)) {
+  	    storeEntryReset(entry);
+! 	    fwdFail(httpState->fwd, errorCon(ERR_INVALID_RESP, HTTP_BAD_GATEWAY));
+  	    httpState->fwd->flags.dont_retry = 1;
+  	} else {
+  	    fwdComplete(httpState->fwd);
+***************
+*** 670,691 ****
+  	    if (httpState->reply_hdr_state == 2) {
+  		http_status s = entry->mem_obj->reply->sline.status;
+  		if (s == HTTP_HEADER_TOO_LARGE) {
+- 		    ErrorState *err;
+  		    debug(11, 1) ("WARNING: %s:%d: HTTP header too large\n", __FILE__, __LINE__);
+  		    storeEntryReset(entry);
+! 		    err = errorCon(ERR_TOO_BIG, HTTP_BAD_GATEWAY);
+! 		    err->request = requestLink((request_t *) request);
+! 		    fwdFail(httpState->fwd, err);
+  		    httpState->fwd->flags.dont_retry = 1;
+  		    comm_close(fd);
+  		    return;
+  		}
+  		if (s == HTTP_INVALID_HEADER && !(entry->mem_obj->reply->sline.version.major == 0 && entry->mem_obj->reply->sline.version.minor == 9)) {
+- 		    ErrorState *err;
+  		    storeEntryReset(entry);
+! 		    err = errorCon(ERR_INVALID_RESP, HTTP_BAD_GATEWAY);
+! 		    err->request = requestLink((request_t *) request);
+! 		    fwdFail(httpState->fwd, err);
+  		    httpState->fwd->flags.dont_retry = 1;
+  		    comm_close(fd);
+  		    return;
+--- 655,670 ----
+  	    if (httpState->reply_hdr_state == 2) {
+  		http_status s = entry->mem_obj->reply->sline.status;
+  		if (s == HTTP_HEADER_TOO_LARGE) {
+  		    debug(11, 1) ("WARNING: %s:%d: HTTP header too large\n", __FILE__, __LINE__);
+  		    storeEntryReset(entry);
+! 		    fwdFail(httpState->fwd, errorCon(ERR_TOO_BIG, HTTP_BAD_GATEWAY));
+  		    httpState->fwd->flags.dont_retry = 1;
+  		    comm_close(fd);
+  		    return;
+  		}
+  		if (s == HTTP_INVALID_HEADER && !(entry->mem_obj->reply->sline.version.major == 0 && entry->mem_obj->reply->sline.version.minor == 9)) {
+  		    storeEntryReset(entry);
+! 		    fwdFail(httpState->fwd, errorCon(ERR_INVALID_RESP, HTTP_BAD_GATEWAY));
+  		    httpState->fwd->flags.dont_retry = 1;
+  		    comm_close(fd);
+  		    return;
+***************
+*** 804,810 ****
+  {
+      HttpStateData *httpState = data;
+      StoreEntry *entry = httpState->entry;
+-     ErrorState *err;
+      debug(11, 5) ("httpSendComplete: FD %d: size %d: errflag %d.\n",
+  	fd, (int) size, errflag);
+  #if URL_CHECKSUM_DEBUG
+--- 783,788 ----
+***************
+*** 818,829 ****
+      if (errflag == COMM_ERR_CLOSING)
+  	return;
+      if (errflag) {
+! 	if (entry->mem_obj->inmem_hi == 0) {
+! 	    err = errorCon(ERR_WRITE_ERROR, HTTP_BAD_GATEWAY);
+! 	    err->xerrno = errno;
+! 	    err->request = requestLink(httpState->orig_request);
+! 	    errorAppendEntry(entry, err);
+! 	}
+  	comm_close(fd);
+  	return;
+      } else {
+--- 796,805 ----
+      if (errflag == COMM_ERR_CLOSING)
+  	return;
+      if (errflag) {
+! 	ErrorState *err;
+! 	err = errorCon(ERR_WRITE_ERROR, HTTP_BAD_GATEWAY);
+! 	err->xerrno = errno;
+! 	fwdFail(httpState->fwd, err);
+  	comm_close(fd);
+  	return;
+      } else {
+***************
+*** 1264,1270 ****
+  {
+      HttpStateData *httpState = data;
+      StoreEntry *entry = httpState->entry;
+-     ErrorState *err;
+      debug(11, 5) ("httpSendRequestEntry: FD %d: size %d: errflag %d.\n",
+  	fd, (int) size, errflag);
+      if (size > 0) {
+--- 1240,1245 ----
+***************
+*** 1275,1286 ****
+      if (errflag == COMM_ERR_CLOSING)
+  	return;
+      if (errflag) {
+! 	if (entry->mem_obj->inmem_hi == 0) {
+! 	    err = errorCon(ERR_WRITE_ERROR, HTTP_BAD_GATEWAY);
+! 	    err->xerrno = errno;
+! 	    err->request = requestLink(httpState->orig_request);
+! 	    errorAppendEntry(entry, err);
+! 	}
+  	comm_close(fd);
+  	return;
+      }
+--- 1250,1259 ----
+      if (errflag == COMM_ERR_CLOSING)
+  	return;
+      if (errflag) {
+! 	ErrorState *err;
+! 	err = errorCon(ERR_WRITE_ERROR, HTTP_BAD_GATEWAY);
+! 	err->xerrno = errno;
+! 	fwdFail(httpState->fwd, err);
+  	comm_close(fd);
+  	return;
+      }
+Index: squid/src/urn.c
+diff -c squid/src/urn.c:1.68.2.3 squid/src/urn.c:1.68.2.4
+*** squid/src/urn.c:1.68.2.3	Sun Sep  1 06:38:04 2002
+--- squid/src/urn.c	Thu Sep  1 16:14:45 2005
+***************
+*** 132,137 ****
+--- 132,138 ----
+  	debug(52, 3) ("urnStart: Bad uri-res URL %s\n", urlres);
+  	err = errorCon(ERR_URN_RESOLVE, HTTP_NOT_FOUND);
+  	err->url = xstrdup(urlres);
++ 	err->request = requestLink(r);
+  	errorAppendEntry(e, err);
+  	return;
+      }
+Index: squid/src/wais.c
+diff -c squid/src/wais.c:1.138 squid/src/wais.c:1.138.2.1
+*** squid/src/wais.c:1.138	Wed Oct 24 02:19:09 2001
+--- squid/src/wais.c	Thu Sep  1 16:14:45 2005
+***************
+*** 70,79 ****
+      StoreEntry *entry = waisState->entry;
+      debug(24, 4) ("waisTimeout: FD %d: '%s'\n", fd, storeUrl(entry));
+      if (entry->store_status == STORE_PENDING) {
+! 	if (entry->mem_obj->inmem_hi == 0) {
+! 	    fwdFail(waisState->fwd,
+! 		errorCon(ERR_READ_TIMEOUT, HTTP_GATEWAY_TIMEOUT));
+! 	}
+      }
+      comm_close(fd);
+  }
+--- 70,77 ----
+      StoreEntry *entry = waisState->entry;
+      debug(24, 4) ("waisTimeout: FD %d: '%s'\n", fd, storeUrl(entry));
+      if (entry->store_status == STORE_PENDING) {
+! 	fwdFail(waisState->fwd,
+! 	    errorCon(ERR_READ_TIMEOUT, HTTP_GATEWAY_TIMEOUT));
+      }
+      comm_close(fd);
+  }
+***************
+*** 130,149 ****
+  		waisReadReply, waisState, 0);
+  	} else {
+  	    ErrorState *err;
+- 	    EBIT_CLR(entry->flags, ENTRY_CACHABLE);
+- 	    storeReleaseRequest(entry);
+  	    err = errorCon(ERR_READ_ERROR, HTTP_INTERNAL_SERVER_ERROR);
+  	    err->xerrno = errno;
+! 	    err->request = requestLink(waisState->request);
+! 	    errorAppendEntry(entry, err);
+  	    comm_close(fd);
+  	}
+      } else if (len == 0 && entry->mem_obj->inmem_hi == 0) {
+! 	ErrorState *err;
+! 	err = errorCon(ERR_ZERO_SIZE_OBJECT, HTTP_SERVICE_UNAVAILABLE);
+! 	err->xerrno = errno;
+! 	err->request = requestLink(waisState->request);
+! 	errorAppendEntry(entry, err);
+  	comm_close(fd);
+      } else if (len == 0) {
+  	/* Connection closed; retrieval done. */
+--- 128,140 ----
+  		waisReadReply, waisState, 0);
+  	} else {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_INTERNAL_SERVER_ERROR);
+  	    err->xerrno = errno;
+! 	    fwdFail(waisState->fwd, err);
+  	    comm_close(fd);
+  	}
+      } else if (len == 0 && entry->mem_obj->inmem_hi == 0) {
+! 	fwdFail(waisState->fwd, errorCon(ERR_ZERO_SIZE_OBJECT, HTTP_SERVICE_UNAVAILABLE));
+  	comm_close(fd);
+      } else if (len == 0) {
+  	/* Connection closed; retrieval done. */
+***************
+*** 179,186 ****
+  	ErrorState *err;
+  	err = errorCon(ERR_WRITE_ERROR, HTTP_SERVICE_UNAVAILABLE);
+  	err->xerrno = errno;
+! 	err->request = requestLink(waisState->request);
+! 	errorAppendEntry(entry, err);
+  	comm_close(fd);
+      } else {
+  	/* Schedule read reply. */
+--- 170,176 ----
+  	ErrorState *err;
+  	err = errorCon(ERR_WRITE_ERROR, HTTP_SERVICE_UNAVAILABLE);
+  	err->xerrno = errno;
+! 	fwdFail(waisState->fwd, err);
+  	comm_close(fd);
+      } else {
+  	/* Schedule read reply. */
+Index: squid/src/whois.c
+diff -c squid/src/whois.c:1.16 squid/src/whois.c:1.16.2.1
+*** squid/src/whois.c:1.16	Fri Apr 13 18:03:24 2001
+--- squid/src/whois.c	Thu Sep  1 16:14:45 2005
+***************
+*** 109,122 ****
+  	    fd, xstrerror());
+  	if (ignoreErrno(errno)) {
+  	    commSetSelect(fd, COMM_SELECT_READ, whoisReadReply, p, Config.Timeout.read);
+! 	} else if (mem->inmem_hi == 0) {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_INTERNAL_SERVER_ERROR);
+  	    err->xerrno = errno;
+  	    fwdFail(p->fwd, err);
+  	    comm_close(fd);
+- 	} else {
+- 	    comm_close(fd);
+  	}
+      } else {
+  	fwdComplete(p->fwd);
+--- 109,120 ----
+  	    fd, xstrerror());
+  	if (ignoreErrno(errno)) {
+  	    commSetSelect(fd, COMM_SELECT_READ, whoisReadReply, p, Config.Timeout.read);
+! 	} else {
+  	    ErrorState *err;
+  	    err = errorCon(ERR_READ_ERROR, HTTP_INTERNAL_SERVER_ERROR);
+  	    err->xerrno = errno;
+  	    fwdFail(p->fwd, err);
+  	    comm_close(fd);
+  	}
+      } else {
+  	fwdComplete(p->fwd);

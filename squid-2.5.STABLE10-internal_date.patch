@@ -1,0 +1,221 @@
+Index: squid/include/Array.h
+diff -c squid/include/Array.h:1.6 squid/include/Array.h:1.6.2.1
+*** squid/include/Array.h:1.6	Mon Oct  8 10:18:31 2001
+--- squid/include/Array.h	Thu Jun  9 01:51:46 2005
+***************
+*** 48,53 ****
+--- 48,54 ----
+  extern void arrayClean(Array * s);
+  extern void arrayDestroy(Array * s);
+  extern void arrayAppend(Array * s, void *obj);
++ extern void arrayInsert(Array * s, void *obj, int position);
+  extern void arrayPreAppend(Array * s, int app_count);
+  
+  
+Index: squid/lib/Array.c
+diff -c squid/lib/Array.c:1.7 squid/lib/Array.c:1.7.2.1
+*** squid/lib/Array.c:1.7	Wed Feb  7 11:56:50 2001
+--- squid/lib/Array.c	Thu Jun  9 01:51:46 2005
+***************
+*** 95,100 ****
+--- 95,113 ----
+      a->items[a->count++] = obj;
+  }
+  
++ void arrayInsert(Array *a, void *obj, int position)
++ {
++     assert(a);
++     if (a->count >= a->capacity)
++ 	arrayGrow(a, a->count + 1);
++     if (position > a->count)
++ 	position = a->count;
++     if (position < a->count)
++ 	memmove(&a->items[position + 1], &a->items[position], (a->count - position) * sizeof(void *));
++     a->items[position] = obj;
++     a->count++;
++ }
++ 
+  /* if you are going to append a known and large number of items, call this first */
+  void
+  arrayPreAppend(Array * a, int app_count)
+Index: squid/src/HttpHeader.c
+diff -c squid/src/HttpHeader.c:1.74.2.29 squid/src/HttpHeader.c:1.74.2.30
+*** squid/src/HttpHeader.c:1.74.2.29	Wed May 25 16:57:33 2005
+--- squid/src/HttpHeader.c	Thu Jun  9 01:51:46 2005
+***************
+*** 680,685 ****
+--- 680,705 ----
+      hdr->len += strLen(e->name) + 2 + strLen(e->value) + 2;
+  }
+  
++ /* inserts an entry at the given position; 
++  * does not call httpHeaderEntryClone() so one should not reuse "*e"
++  */
++ void
++ httpHeaderInsertEntry(HttpHeader * hdr, HttpHeaderEntry * e, int pos)
++ {
++     assert(hdr && e);
++     assert_eid(e->id);
++ 
++     debug(55, 7) ("%p adding entry: %d at %d\n",
++ 	hdr, e->id, hdr->entries.count);
++     if (CBIT_TEST(hdr->mask, e->id))
++ 	Headers[e->id].stat.repCount++;
++     else
++ 	CBIT_SET(hdr->mask, e->id);
++     arrayInsert(&hdr->entries, e, pos);
++     /* increment header length, allow for ": " and crlf */
++     hdr->len += strLen(e->name) + 2 + strLen(e->value) + 2;
++ }
++ 
+  /* return a list of entries with the same id separated by ',' and ws */
+  String
+  httpHeaderGetList(const HttpHeader * hdr, http_hdr_type id)
+***************
+*** 850,855 ****
+--- 870,884 ----
+  }
+  
+  void
++ httpHeaderInsertTime(HttpHeader * hdr, int pos, http_hdr_type id, time_t htime)
++ {
++     assert_eid(id);
++     assert(Headers[id].type == ftDate_1123);	/* must be of an appropriate type */
++     assert(htime >= 0);
++     httpHeaderInsertEntry(hdr, httpHeaderEntryCreate(id, NULL, mkrfc1123(htime)), pos);
++ }
++ 
++ void
+  httpHeaderPutStr(HttpHeader * hdr, http_hdr_type id, const char *str)
+  {
+      assert_eid(id);
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.94 squid/src/cf.data.pre:1.245.2.95
+*** squid/src/cf.data.pre:1.245.2.94	Tue May 10 17:08:40 2005
+--- squid/src/cf.data.pre	Thu Jun  9 01:51:46 2005
+***************
+*** 3241,3246 ****
+--- 3241,3260 ----
+  	@DEFAULT_ICON_DIR@
+  DOC_END
+  
++ NAME: global_internal_static
++ TYPE: onoff
++ LOC: Config.onoff.global_internal_static
++ DEFAULT: on
++ DOC_START
++ 	This directive controls is Squid should intercept all requests for
++ 	/squid-internal-static/ no matter which host the URL is requesting
++ 	(default on setting), or if nothing special should be done for
++ 	such URLs (off setting). The purpose of this directive is to make
++ 	icons etc work better in complex cache hierarchies where it may
++ 	not always be possible for all corners in the cache mesh to reach
++ 	the server generating a directory listing.
++ DOC_END
++ 
+  NAME: short_icon_urls
+  TYPE: onoff
+  LOC: Config.icons.use_short_names
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.76 squid/src/client_side.c:1.561.2.77
+*** squid/src/client_side.c:1.561.2.76	Wed Apr 20 15:46:06 2005
+--- squid/src/client_side.c	Thu Jun  9 01:51:47 2005
+***************
+*** 1404,1410 ****
+  	    (void) 0;
+  	else if (http->entry->timestamp < 0)
+  	    (void) 0;
+! 	else if (http->entry->timestamp < squid_curtime)
+  	    httpHeaderPutInt(hdr, HDR_AGE,
+  		squid_curtime - http->entry->timestamp);
+      }
+--- 1404,1413 ----
+  	    (void) 0;
+  	else if (http->entry->timestamp < 0)
+  	    (void) 0;
+! 	if (EBIT_TEST(http->entry->flags, ENTRY_SPECIAL)) {
+! 	    httpHeaderDelById(hdr, HDR_DATE);
+! 	    httpHeaderInsertTime(hdr, 0, HDR_DATE, squid_curtime);
+! 	} else if (http->entry->timestamp < squid_curtime)
+  	    httpHeaderPutInt(hdr, HDR_AGE,
+  		squid_curtime - http->entry->timestamp);
+      }
+***************
+*** 2719,2729 ****
+  	*t = '\0';
+  #endif
+  
+!     /* handle internal objects */
+!     if (internalCheck(url)) {
+  	/* prepend our name & port */
+  	http->uri = xstrdup(internalLocalUri(NULL, url));
+- 	http->flags.internal = 1;
+  	http->flags.accel = 1;
+      }
+      /* see if we running in Config2.Accel.on, if so got to convert it to URL */
+--- 2722,2731 ----
+  	*t = '\0';
+  #endif
+  
+!     /* handle direct internal objects */
+!     if (!Config2.Accel.on && internalCheck(url)) {
+  	/* prepend our name & port */
+  	http->uri = xstrdup(internalLocalUri(NULL, url));
+  	http->flags.accel = 1;
+      }
+      /* see if we running in Config2.Accel.on, if so got to convert it to URL */
+***************
+*** 3099,3105 ****
+  		    if (internalHostnameIs(request->host) &&
+  			request->port == ntohs(Config.Sockaddr.http->s.sin_port)) {
+  			http->flags.internal = 1;
+! 		    } else if (internalStaticCheck(strBuf(request->urlpath))) {
+  			xstrncpy(request->host, internalHostname(), SQUIDHOSTNAMELEN);
+  			request->port = ntohs(Config.Sockaddr.http->s.sin_port);
+  			http->flags.internal = 1;
+--- 3101,3107 ----
+  		    if (internalHostnameIs(request->host) &&
+  			request->port == ntohs(Config.Sockaddr.http->s.sin_port)) {
+  			http->flags.internal = 1;
+! 		    } else if (Config.onoff.global_internal_static && internalStaticCheck(strBuf(request->urlpath))) {
+  			xstrncpy(request->host, internalHostname(), SQUIDHOSTNAMELEN);
+  			request->port = ntohs(Config.Sockaddr.http->s.sin_port);
+  			http->flags.internal = 1;
+Index: squid/src/protos.h
+diff -c squid/src/protos.h:1.420.2.35 squid/src/protos.h:1.420.2.36
+*** squid/src/protos.h:1.420.2.35	Wed May 18 09:28:32 2005
+--- squid/src/protos.h	Thu Jun  9 01:51:47 2005
+***************
+*** 424,429 ****
+--- 424,430 ----
+  extern void httpHeaderPutInt(HttpHeader * hdr, http_hdr_type type, int number);
+  extern void httpHeaderPutSize(HttpHeader * hdr, http_hdr_type type, squid_off_t number);
+  extern void httpHeaderPutTime(HttpHeader * hdr, http_hdr_type type, time_t htime);
++ extern void httpHeaderInsertTime(HttpHeader * hdr, int pos, http_hdr_type type, time_t htime);
+  extern void httpHeaderPutStr(HttpHeader * hdr, http_hdr_type type, const char *str);
+  extern void httpHeaderPutAuth(HttpHeader * hdr, const char *auth_scheme, const char *realm);
+  extern void httpHeaderPutCc(HttpHeader * hdr, const HttpHdrCc * cc);
+***************
+*** 453,458 ****
+--- 454,460 ----
+  extern HttpHeaderEntry *httpHeaderGetEntry(const HttpHeader * hdr, HttpHeaderPos * pos);
+  extern HttpHeaderEntry *httpHeaderFindEntry(const HttpHeader * hdr, http_hdr_type id);
+  extern void httpHeaderAddEntry(HttpHeader * hdr, HttpHeaderEntry * e);
++ extern void httpHeaderInsertEntry(HttpHeader * hdr, HttpHeaderEntry * e, int pos);
+  extern HttpHeaderEntry *httpHeaderEntryClone(const HttpHeaderEntry * e);
+  extern void httpHeaderEntryPackInto(const HttpHeaderEntry * e, Packer * p);
+  /* store report about current header usage and other stats */
+Index: squid/src/structs.h
+diff -c squid/src/structs.h:1.408.2.43 squid/src/structs.h:1.408.2.44
+*** squid/src/structs.h:1.408.2.43	Wed May  4 12:03:47 2005
+--- squid/src/structs.h	Thu Jun  9 01:51:47 2005
+***************
+*** 609,614 ****
+--- 609,615 ----
+  	int relaxed_header_parser;
+  	int accel_uses_host_header;
+  	int accel_no_pmtu_disc;
++ 	int global_internal_static;
+      } onoff;
+      acl *aclList;
+      struct {

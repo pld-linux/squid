@@ -1,0 +1,63 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.96 squid/src/cf.data.pre:1.245.2.97
+*** squid/src/cf.data.pre:1.245.2.96	Sun Aug 14 10:28:07 2005
+--- squid/src/cf.data.pre	Sat Sep  3 03:14:43 2005
+***************
+*** 2444,2449 ****
+--- 2444,2461 ----
+  DOC_END
+  
+  
++ NAME: mail_from
++ TYPE: string
++ DEFAULT: none
++ LOC: Config.EmailFrom
++ DOC_START
++ 	From: email-address for mail sent when the cache dies.
++ 	The default is to use 'appname@unique_hostname'.
++ 	Default appname value is "squid", can be changed into 
++ 	src/globals.h before building squid.
++ DOC_END
++ 
++ 
+  NAME: mail_program
+  TYPE: eol
+  DEFAULT: mail
+Index: squid/src/structs.h
+diff -c squid/src/structs.h:1.408.2.47 squid/src/structs.h:1.408.2.48
+*** squid/src/structs.h:1.408.2.47	Thu Sep  1 16:22:23 2005
+--- squid/src/structs.h	Sat Sep  3 03:14:43 2005
+***************
+*** 480,485 ****
+--- 480,486 ----
+  	int rotateNumber;
+      } Log;
+      char *adminEmail;
++     char *EmailFrom;
+      char *EmailProgram;
+      char *effectiveUser;
+      char *effectiveGroup;
+Index: squid/src/tools.c
+diff -c squid/src/tools.c:1.213.2.17 squid/src/tools.c:1.213.2.18
+*** squid/src/tools.c:1.213.2.17	Sun Aug 14 10:28:07 2005
+--- squid/src/tools.c	Sat Sep  3 03:14:43 2005
+***************
+*** 106,112 ****
+      if ((fp = fopen(filename, "w")) == NULL)
+  	return;
+  #endif
+!     fprintf(fp, "From: %s\n", appname);
+      fprintf(fp, "To: %s\n", Config.adminEmail);
+      fprintf(fp, "Subject: %s\n", dead_msg());
+      fclose(fp);
+--- 106,115 ----
+      if ((fp = fopen(filename, "w")) == NULL)
+  	return;
+  #endif
+!     if (Config.EmailFrom)
+! 	fprintf(fp, "From: %s\n", Config.EmailFrom);
+!     else
+! 	fprintf(fp, "From: %s@%s\n", appname, uniqueHostname());
+      fprintf(fp, "To: %s\n", Config.adminEmail);
+      fprintf(fp, "Subject: %s\n", dead_msg());
+      fclose(fp);

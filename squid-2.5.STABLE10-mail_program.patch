@@ -1,0 +1,61 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.95 squid/src/cf.data.pre:1.245.2.96
+*** squid/src/cf.data.pre:1.245.2.95	Thu Jun  9 01:51:46 2005
+--- squid/src/cf.data.pre	Sun Aug 14 10:28:07 2005
+***************
+*** 2444,2449 ****
+--- 2444,2462 ----
+  DOC_END
+  
+  
++ NAME: mail_program
++ TYPE: eol
++ DEFAULT: mail
++ LOC: Config.EmailProgram
++ DOC_START
++ 	Email program used to send mail if the cache dies.
++ 	The default is "mail". The specified program must complain
++ 	with the standard Unix mail syntax:
++ 	mail_program recipient < mailfile
++ 	Optional command line options can be specified.
++ DOC_END
++ 
++ 
+  NAME: cache_effective_user
+  TYPE: string
+  DEFAULT: nobody
+Index: squid/src/structs.h
+diff -c squid/src/structs.h:1.408.2.44 squid/src/structs.h:1.408.2.45
+*** squid/src/structs.h:1.408.2.44	Thu Jun  9 01:51:47 2005
+--- squid/src/structs.h	Sun Aug 14 10:28:07 2005
+***************
+*** 480,485 ****
+--- 480,486 ----
+  	int rotateNumber;
+      } Log;
+      char *adminEmail;
++     char *EmailProgram;
+      char *effectiveUser;
+      char *effectiveGroup;
+      struct {
+Index: squid/src/tools.c
+diff -c squid/src/tools.c:1.213.2.16 squid/src/tools.c:1.213.2.17
+*** squid/src/tools.c:1.213.2.16	Mon Jun 13 16:26:22 2005
+--- squid/src/tools.c	Sun Aug 14 10:28:07 2005
+***************
+*** 110,116 ****
+      fprintf(fp, "To: %s\n", Config.adminEmail);
+      fprintf(fp, "Subject: %s\n", dead_msg());
+      fclose(fp);
+!     snprintf(command, 256, "mail %s < %s", Config.adminEmail, filename);
+      system(command);		/* XXX should avoid system(3) */
+      unlink(filename);
+  }
+--- 110,116 ----
+      fprintf(fp, "To: %s\n", Config.adminEmail);
+      fprintf(fp, "Subject: %s\n", dead_msg());
+      fclose(fp);
+!     snprintf(command, 256, "%s %s < %s", Config.EmailProgram, Config.adminEmail, filename);
+      system(command);		/* XXX should avoid system(3) */
+      unlink(filename);
+  }

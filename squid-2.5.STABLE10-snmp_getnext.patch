@@ -1,0 +1,25 @@
+Index: squid/src/snmp_core.c
+diff -c squid/src/snmp_core.c:1.51.2.5 squid/src/snmp_core.c:1.51.2.6
+*** squid/src/snmp_core.c:1.51.2.5	Wed May  4 12:03:47 2005
+--- squid/src/snmp_core.c	Sun Jun 19 15:01:21 2005
+***************
+*** 660,666 ****
+      if (Current[count] == mibTreeEntry->name[count]) {
+  	count++;
+  	while ((mibTreeEntry) && (count < CurrentLen) && (!mibTreeEntry->parsefunction)) {
+! 	    mibTreeEntry = snmpTreeEntry(Current[count], count, mibTreeEntry);
+  	    count++;
+  	}
+  	debug(49, 5) ("snmpTreeNext: Recursed down to requested object\n");
+--- 660,670 ----
+      if (Current[count] == mibTreeEntry->name[count]) {
+  	count++;
+  	while ((mibTreeEntry) && (count < CurrentLen) && (!mibTreeEntry->parsefunction)) {
+! 	    mib_tree_entry *nextmibTreeEntry = snmpTreeEntry(Current[count], count, mibTreeEntry);
+! 	    if (!nextmibTreeEntry)
+! 		break;
+! 	    else
+! 		mibTreeEntry = nextmibTreeEntry;
+  	    count++;
+  	}
+  	debug(49, 5) ("snmpTreeNext: Recursed down to requested object\n");
