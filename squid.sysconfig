@@ -8,6 +8,5 @@ SERVICE_RUN_NICE_LEVEL="+5"
 #    internet connection when you start squid, uncomment this
 #SQUID_OPTS="-D"
 
-# delay in seconds between stop and start phase, some systems need long delay
-DELAY_IN_RESTART=30
-
+# maximum time (in seconds) to wait for squid to stop
+SQUID_SHUTDOWN_TIMEOUT="60"
