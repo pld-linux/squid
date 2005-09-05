@@ -1,0 +1,5 @@
+- added 28 patches for version 2.5.STABLE10 from squids site
+- removed TODO, security issue is fixed by sslConnectTimeout.patch
+- include greek error messages in package
+- include config and manpage for cachemgr.cgi in package
+- release 4
