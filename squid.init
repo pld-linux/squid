@@ -61,7 +61,6 @@ case "$1" in
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/squid ]; then
 		msg_starting Squid
-		ulimit -n 8192
 		daemon $SERVICE_RUN_NICE_LEVEL squid $SQUID_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
@@ -74,7 +73,7 @@ case "$1" in
 		# Stop daemons.
 		msg_stopping Squid
 		if [ -f /var/run/squid.pid ]; then
-			PID=$(filter_chroot `cat /var/run/squid.pid`)
+			PID="`cat /var/run/squid.pid`"
 			if [ -z "$PID" ]; then
 				PID=0
 			fi
