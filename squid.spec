@@ -1,3 +1,5 @@
+# TODO
+# - check http://security.gentoo.org/glsa/glsa-200509-06.xml
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
