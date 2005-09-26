@@ -12,13 +12,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE10
-Release:	4
+Version:	2.5.STABLE11
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	e6db8bdfc783b3baed7de803c9a39e55
+# Source0-md5:	5e7f13ad95b64b60ddd6cdc2ab800d67
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -31,34 +31,6 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-content_length.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-spanish.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-internal_date.patch
-Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-chroot-2.patch
-Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-transparent-2.patch
-Patch6:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-redirect_flags.patch
-Patch7:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-cache_dir_change.patch
-Patch8:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-snmp_getnext.patch
-Patch9:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-ftp_title-2.patch
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-ftp_basehref.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-wbinfo_groups.patch
-Patch12:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-64bit_cleanup.patch
-Patch13:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-wb_ntlm_auth_silent.patch
-Patch14:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-buildenv.patch
-Patch15:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-mail_program.patch
-Patch16:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-arp_ipfilter-2.patch
-Patch17:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-sslConnectTimeout.patch
-Patch18:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-statHistAssert.patch
-Patch19:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-chroot_dir.patch
-Patch20:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-errmsg.patch
-Patch21:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-FORTIFY_SOURCE.patch
-Patch22:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-ftp_250.patch
-Patch23:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-Greek.patch
-Patch24:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-STORE_PENDING.patch
-Patch25:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-ldap_auth-U.patch
-Patch26:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-cacheClientTable.patch
-Patch27:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-Solaris_IPFilter.patch
-Patch28:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE10-mail_from.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -451,34 +423,6 @@ Samba 2.2.4 lub wy¿szego.
 %prep
 %setup -q -a1 -a4
 # Bug fixes from Squid home page:
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
