@@ -59,6 +59,7 @@ PreReq:		rc-scripts >= 0.2.0
 PreReq:		setup >= 2.4.6
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
