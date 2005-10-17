@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE11
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -31,6 +31,12 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-delaypools_truncated.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-tcp_outgoing_xxx.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-ldap_auth.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11.accel_single_host_pconn.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-CACHE_HTTP_PORT.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-CNAME.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -423,6 +429,12 @@ Samba 2.2.4 lub wy¿szego.
 %prep
 %setup -q -a1 -a4
 # Bug fixes from Squid home page:
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
