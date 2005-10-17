@@ -1,0 +1,26 @@
+Index: squid/src/delay_pools.c
+diff -c squid/src/delay_pools.c:1.19.2.9 squid/src/delay_pools.c:1.19.2.10
+*** squid/src/delay_pools.c:1.19.2.9	Sat Sep 10 19:49:53 2005
+--- squid/src/delay_pools.c	Tue Sep 27 16:25:30 2005
+***************
+*** 676,683 ****
+  	    d = sc->delay_id;
+  	}
+      }
+!     if (jmax >= 0 && jmax < (int) *read_sz)
+  	*read_sz = (size_t) jmax;
+      return d;
+  }
+  
+--- 676,686 ----
+  	    d = sc->delay_id;
+  	}
+      }
+!     if (jmax >= 0 && jmax < (int) *read_sz) {
+! 	if (jmax == 0)
+! 	    jmax = 1;
+  	*read_sz = (size_t) jmax;
++     }
+      return d;
+  }
+  
