@@ -1,19 +1,17 @@
-# TODO
-# - check http://security.gentoo.org/glsa/glsa-200509-06.xml
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
-Summary(es):	proxy/cache para WWW/FTP/gopher
-Summary(pl):	Uniwersalny serwer proxy-cache
+Summary(es):	proxy/cache para www/ftp/gopher
+Summary(pl):	Uniwersalny proxy-cache server
 Summary(pt_BR):	Cache Squid de objetos Internet
 Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE11
-Release:	2
+Release:	1.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -31,35 +29,34 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-delaypools_truncated.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-tcp_outgoing_xxx.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-ldap_auth.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11.accel_single_host_pconn.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-CACHE_HTTP_PORT.patch
+Patch5:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE11-CNAME.patch
 # Other patches:
-Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
-Patch101:	%{name}-fhs.patch
-Patch102:	%{name}-location.patch
-Patch103:	%{name}-domainmatch.patch
-Patch104:	%{name}-libnsl_fixes.patch
-Patch105:	%{name}-ac_fix.patch
-Patch106:	%{name}-crash-on-ENOSPC.patch
-Patch107:	%{name}-newssl.patch
-Patch108:	%{name}-nolibs.patch
-Patch109:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
-Patch110:	%{name}-empty-referer.patch
-Patch111:	%{name}-align.patch
-Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch110:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
+Patch120:	%{name}-fhs.patch
+Patch130:	%{name}-location.patch
+Patch140:	%{name}-domainmatch.patch
+Patch150:	%{name}-libnsl_fixes.patch
+Patch170:	%{name}-ac_fix.patch
+Patch180:	%{name}-crash-on-ENOSPC.patch
+Patch210:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
+Patch220:	%{name}-empty-referer.patch
+Patch230:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	cyrus-sasl-devel >= 2.1.0
+BuildRequires:	cyrus-sasl-devel >= 1.5.27
 BuildRequires:	openldap-devel
-BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	pam-devel
-BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.202
-BuildRequires:	unzip
+BuildRequires:	perl
 PreReq:		rc-scripts >= 0.2.0
-PreReq:		setup >= 2.4.6
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
-Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
@@ -69,13 +66,11 @@ Requires(post):	grep
 Requires(post):	/bin/hostname
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
-Provides:	group(squid)
-Provides:	user(squid)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		/home/httpd/cgi-bin
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -423,20 +418,22 @@ Samba 2.2.4 lub wy¿szego.
 %prep
 %setup -q -a1 -a4
 # Bug fixes from Squid home page:
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 # Other patches:
-%patch100 -p1
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
-%patch107 -p1
-%patch108 -p1
-%patch109 -p1
 %patch110 -p1
-%patch111 -p1
-%{?with_combined_log:%patch112 -p1}
+%patch120 -p1
+%patch130 -p1
+%patch140 -p1
+%patch170 -p1
+%patch180 -p1
+%patch210 -p1
+%patch220 -p1
+%{?with_combined_log:%patch230 -p1}
 
 %build
 %{__aclocal}
@@ -457,7 +454,6 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icmp \
-	--enable-linux-netfilter \
 	--enable-ntlm-auth-helpers=yes \
 	--enable-referer-log \
 	--enable-removal-policies="lru heap" \
@@ -511,45 +507,46 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 # These two files start squid. They are replaced by /etc/rc.d/init.d script.
 rm -f $RPM_BUILD_ROOT%{_bindir}/R*
 
-# cp, to have re-entrant install
-rm -rf docs
-cp -a doc docs
 # dunno why, but manual is not installed
-mv docs/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
+mv doc/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
+
 # We don't want Makefiles as docs...
-rm -f docs/Makefile*
+rm -f doc/Makefile*
 
 # We don't like message: rpm found unpackaged files ...
 rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
-> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
-> $RPM_BUILD_ROOT/var/cache/squid/swap.state
-> $RPM_BUILD_ROOT/var/cache/squid/swap.state.clean
-> $RPM_BUILD_ROOT/var/cache/squid/swap.state.last-clean
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- squid < 7:2.5.STABLE7-5
-%addusertogroup stats squid
-
 %pre
-%groupadd -g 91 squid
-%useradd -o -u 91 -s /bin/false -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid
-%addusertogroup stats squid
-
+if [ -n "`getgid squid`" ]; then
+	if [ "`getgid squid`" != "91" ]; then
+		echo "Error: group squid doesn't have gid=91. Correct this before installing squid." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/groupadd -g 91 -r -f squid 1>&2 || :
+fi
+if [ -n "`id -u squid 2>/dev/null`" ]; then
+	if [ "`id -u squid`" != "91" ]; then
+		echo "Error: user squid doesn't have uid=91. Correct this before installing squid." 1>&2
+		exit 1
+	fi
+else
+	/usr/sbin/useradd -M -o -r -u 91 -s /bin/false \
+		-g squid -c "SQUID http caching daemon" -d /var/cache/squid squid 1>&2 || :
+fi
 [ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
 
 %post
 if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
-	hostname=`/bin/hostname -f 2>/dev/null` || hostname='localhost'
-	echo visible_hostname $hostname >> /etc/squid/squid.conf
+	echo visible_hostname `/bin/hostname -f` >> /etc/squid/squid.conf
 fi
 
 if [ "$1" = "1" ]; then
 	/sbin/chkconfig --add squid
-	/etc/rc.d/init.d/squid init >&2
 	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
 else
 	if [ -f /var/lock/subsys/squid ]; then
@@ -563,21 +560,18 @@ if [ "$1" = "0" ]; then
 		/etc/rc.d/init.d/squid stop >&2
 	fi
 	/sbin/chkconfig --del squid
-
-	# nuke squid cache if uninstalling
-	rm -rf /var/cache/squid/??
 fi
 
 %postun
 if [ "$1" = "0" ]; then
-	%userremove squid
-	%groupremove squid
+	/usr/sbin/userdel squid
+	/usr/sbin/groupdel squid
 fi
 
 %files
 %defattr(644,root,root,755)
 %doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
-%doc docs/* src/mib.txt FAQ*.html book-full.html
+%doc doc/* src/mib.txt FAQ*.html book-full.html
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
@@ -589,7 +583,7 @@ fi
 %attr(755,root,root) %dir %{_sysconfdir}
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
+%attr(640,root,root) %config(noreplace) /etc/logrotate.d/squid
 %attr(640,root,squid) %config(noreplace) /etc/sysconfig/squid
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
@@ -639,10 +633,6 @@ fi
 %attr(660,root,squid) %ghost /var/log/squid/*
 
 %attr(770,root,squid) %dir /var/cache/squid
-%ghost /var/cache/squid/netdb_state
-%ghost /var/cache/squid/swap.state
-%ghost /var/cache/squid/swap.state.clean
-%ghost /var/cache/squid/swap.state.last-clean
 %{_mandir}/man8/squid.8*
 
 %files cachemgr
@@ -655,7 +645,7 @@ fi
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/LDAP/README
 %attr(755,root,root) %{_libexecdir}/%{name}_ldap_auth
-%{_mandir}/man8/%{name}_ldap_auth.*
+%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
@@ -716,13 +706,13 @@ fi
 %files ldap_acl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/squid_ldap_group
-%{_mandir}/man8/%{name}_ldap_group.*
+%attr(644,root,root) %{_mandir}/man8/%{name}_ldap_group.*
 
 %files unix_acl
 %defattr(644,root,root,755)
 %doc helpers/external_acl/unix_group/README
 %attr(755,root,root) %{_libexecdir}/squid_unix_group
-%{_mandir}/man8/%{name}_unix_group.*
+%attr(644,root,root) %{_mandir}/man8/%{name}_unix_group.*
 
 %files wbinfo_acl
 %defattr(644,root,root,755)
