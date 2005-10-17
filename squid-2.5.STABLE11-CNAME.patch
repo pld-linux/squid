@@ -1,0 +1,104 @@
+Index: squid/include/rfc1035.h
+diff -c squid/include/rfc1035.h:1.6.2.2 squid/include/rfc1035.h:1.6.2.3
+*** squid/include/rfc1035.h:1.6.2.2	Tue May 10 05:48:20 2005
+--- squid/include/rfc1035.h	Wed Sep 28 15:47:58 2005
+***************
+*** 100,105 ****
+--- 100,106 ----
+  extern const char *rfc1035_error_message;
+  
+  #define RFC1035_TYPE_A 1
++ #define RFC1035_TYPE_CNAME 5
+  #define RFC1035_TYPE_PTR 12
+  #define RFC1035_CLASS_IN 1
+  
+Index: squid/src/fqdncache.c
+diff -c squid/src/fqdncache.c:1.149.2.7 squid/src/fqdncache.c:1.149.2.8
+*** squid/src/fqdncache.c:1.149.2.7	Mon Feb 21 09:59:45 2005
+--- squid/src/fqdncache.c	Wed Sep 28 15:47:58 2005
+***************
+*** 299,317 ****
+      debug(35, 3) ("fqdncacheParse: %d answers for '%s'\n", nr, name);
+      assert(answers);
+      for (k = 0; k < nr; k++) {
+- 	if (answers[k].type != RFC1035_TYPE_PTR)
+- 	    continue;
+  	if (answers[k].class != RFC1035_CLASS_IN)
+  	    continue;
+! 	if (!answers[k].rdata[0]) {
+! 	    debug(35, 2) ("fqdncacheParse: blank PTR record for '%s'\n", name);
+! 	    continue;
+! 	}
+! 	if (strchr(answers[k].rdata, ' ')) {
+! 	    debug(35, 2) ("fqdncacheParse: invalid PTR record '%s' for '%s'\n", answers[k].rdata, name);
+  	    continue;
+- 	}
+- 	f->names[f->name_count++] = xstrdup(answers[k].rdata);
+  	if (ttl == 0 || answers[k].ttl < ttl)
+  	    ttl = answers[k].ttl;
+  	if (f->name_count >= FQDN_MAX_NAMES)
+--- 299,318 ----
+      debug(35, 3) ("fqdncacheParse: %d answers for '%s'\n", nr, name);
+      assert(answers);
+      for (k = 0; k < nr; k++) {
+  	if (answers[k].class != RFC1035_CLASS_IN)
+  	    continue;
+! 	if (answers[k].type == RFC1035_TYPE_PTR) {
+! 	    if (!answers[k].rdata[0]) {
+! 		debug(35, 2) ("fqdncacheParse: blank PTR record for '%s'\n", name);
+! 		continue;
+! 	    }
+! 	    if (strchr(answers[k].rdata, ' ')) {
+! 		debug(35, 2) ("fqdncacheParse: invalid PTR record '%s' for '%s'\n", answers[k].rdata, name);
+! 		continue;
+! 	    }
+! 	    f->names[f->name_count++] = xstrdup(answers[k].rdata);
+! 	} else if (answers[k].type != RFC1035_TYPE_CNAME)
+  	    continue;
+  	if (ttl == 0 || answers[k].ttl < ttl)
+  	    ttl = answers[k].ttl;
+  	if (f->name_count >= FQDN_MAX_NAMES)
+Index: squid/src/ipcache.c
+diff -c squid/src/ipcache.c:1.236.2.6 squid/src/ipcache.c:1.236.2.7
+*** squid/src/ipcache.c:1.236.2.6	Sat Feb 12 22:53:56 2005
+--- squid/src/ipcache.c	Wed Sep 28 15:47:58 2005
+***************
+*** 353,370 ****
+      i->addrs.in_addrs = xcalloc(na, sizeof(struct in_addr));
+      i->addrs.bad_mask = xcalloc(na, sizeof(unsigned char));
+      for (j = 0, k = 0; k < nr; k++) {
+- 	if (answers[k].type != RFC1035_TYPE_A)
+- 	    continue;
+  	if (answers[k].class != RFC1035_CLASS_IN)
+  	    continue;
+! 	if (answers[k].rdlength != 4)
+  	    continue;
+  	if (ttl == 0 || ttl > answers[k].ttl)
+  	    ttl = answers[k].ttl;
+- 	xmemcpy(&i->addrs.in_addrs[j++], answers[k].rdata, 4);
+- 	debug(14, 3) ("ipcacheParse: #%d %s\n",
+- 	    j - 1,
+- 	    inet_ntoa(i->addrs.in_addrs[j - 1]));
+      }
+      i->addrs.count = (unsigned char) na;
+      if (ttl == 0 || ttl > Config.positiveDnsTtl)
+--- 353,371 ----
+      i->addrs.in_addrs = xcalloc(na, sizeof(struct in_addr));
+      i->addrs.bad_mask = xcalloc(na, sizeof(unsigned char));
+      for (j = 0, k = 0; k < nr; k++) {
+  	if (answers[k].class != RFC1035_CLASS_IN)
+  	    continue;
+! 	if (answers[k].type == RFC1035_TYPE_A) {
+! 	    if (answers[k].rdlength != 4)
+! 		continue;
+! 	    xmemcpy(&i->addrs.in_addrs[j++], answers[k].rdata, 4);
+! 	    debug(14, 3) ("ipcacheParse: #%d %s\n",
+! 		j - 1,
+! 		inet_ntoa(i->addrs.in_addrs[j - 1]));
+! 	} else if (answers[k].type != RFC1035_TYPE_CNAME)
+  	    continue;
+  	if (ttl == 0 || ttl > answers[k].ttl)
+  	    ttl = answers[k].ttl;
+      }
+      i->addrs.count = (unsigned char) na;
+      if (ttl == 0 || ttl > Config.positiveDnsTtl)

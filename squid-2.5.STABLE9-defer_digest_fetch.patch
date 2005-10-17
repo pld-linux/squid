@@ -1,0 +1,28 @@
+Index: squid/src/neighbors.c
+diff -c squid/src/neighbors.c:1.299.2.5 squid/src/neighbors.c:1.299.2.6
+*** squid/src/neighbors.c:1.299.2.5	Sun Feb 20 19:55:04 2005
+--- squid/src/neighbors.c	Wed Mar  9 07:34:24 2005
+***************
+*** 589,594 ****
+--- 589,597 ----
+      if (!p->digest) {
+  	debug(15, 5) ("peerDigestLookup: gone!\n");
+  	return LOOKUP_NONE;
++     } else if (!peerHTTPOkay(p, request)) {
++ 	debug(15, 5) ("peerDigestLookup: !peerHTTPOkay\n");
++ 	return LOOKUP_NONE;
+      } else if (!p->digest->flags.needed) {
+  	debug(15, 5) ("peerDigestLookup: note need\n");
+  	peerDigestNeeded(p->digest);
+***************
+*** 597,605 ****
+  	debug(15, 5) ("peerDigestLookup: !ready && %srequested\n",
+  	    p->digest->flags.requested ? "" : "!");
+  	return LOOKUP_NONE;
+-     } else if (!peerHTTPOkay(p, request)) {
+- 	debug(15, 5) ("peerDigestLookup: !peerHTTPOkay\n");
+- 	return LOOKUP_NONE;
+      }
+      debug(15, 5) ("peerDigestLookup: OK to lookup peer %s\n", p->host);
+      assert(p->digest->cd);
+--- 600,605 ----

@@ -1,0 +1,21 @@
+Index: squid/src/wccp.c
+diff -c squid/src/wccp.c:1.19.2.6 squid/src/wccp.c:1.19.2.7
+*** squid/src/wccp.c:1.19.2.6	Tue Jan 11 23:07:12 2005
+--- squid/src/wccp.c	Fri Jan 28 15:50:19 2005
+***************
+*** 225,231 ****
+  
+      len = recvfrom(sock,
+  	(void *) &wccp_i_see_you,
+! 	WCCP_RESPONSE_SIZE,
+  	0,
+  	(struct sockaddr *) &from,
+  	&from_len);
+--- 225,231 ----
+  
+      len = recvfrom(sock,
+  	(void *) &wccp_i_see_you,
+! 	sizeof(wccp_i_see_you),
+  	0,
+  	(struct sockaddr *) &from,
+  	&from_len);

@@ -1,0 +1,84 @@
+Index: squid/configure.in
+diff -c squid/configure.in:1.251.2.53 squid/configure.in:1.251.2.54
+*** squid/configure.in:1.251.2.53	Sat Mar  6 08:14:05 2004
+--- squid/configure.in	Mon Apr  5 11:19:46 2004
+***************
+*** 65,71 ****
+  	CACHE_ICP_PORT="3130"
+  fi
+  
+! dnl Subsitutions
+  AC_DEFINE_UNQUOTED(CACHE_HTTP_PORT, $CACHE_HTTP_PORT)
+  AC_DEFINE_UNQUOTED(CACHE_ICP_PORT, $CACHE_ICP_PORT)
+  
+--- 65,71 ----
+  	CACHE_ICP_PORT="3130"
+  fi
+  
+! dnl Substitutions
+  AC_DEFINE_UNQUOTED(CACHE_HTTP_PORT, $CACHE_HTTP_PORT)
+  AC_DEFINE_UNQUOTED(CACHE_ICP_PORT, $CACHE_ICP_PORT)
+  
+***************
+*** 371,380 ****
+  AC_SUBST(STORE_MODULES)
+  AC_SUBST(STORE_MODULE_SUBDIRS)
+  
+! dnl --enable-heap-replacement compability option
+  AC_ARG_ENABLE(heap-replacement,
+  [  --enable-heap-replacement
+!                           Backwards compability option. Please use the
+  			  new --enable-removal-policies directive instead.],
+  [ if test "$enableval" = "yes" ; then
+      echo "--enable-heap-replacement is obsolete. please use the new"
+--- 371,380 ----
+  AC_SUBST(STORE_MODULES)
+  AC_SUBST(STORE_MODULE_SUBDIRS)
+  
+! dnl --enable-heap-replacement compatibility option
+  AC_ARG_ENABLE(heap-replacement,
+  [  --enable-heap-replacement
+!                           Backwards compatibility option. Please use the
+  			  new --enable-removal-policies directive instead.],
+  [ if test "$enableval" = "yes" ; then
+      echo "--enable-heap-replacement is obsolete. please use the new"
+***************
+*** 870,876 ****
+  BASIC_AUTH_HELPERS=""
+  AC_ARG_ENABLE(auth-modules,
+  [  --enable-auth-modules=\"list of helpers\"
+!                           Backwards compability alias for
+                            --enable-basic-auth-helpers],
+  [ echo "--enable-auth-modules is obsolete. Please use the new"
+    echo "option --enable-basic-auth-helpers"
+--- 870,876 ----
+  BASIC_AUTH_HELPERS=""
+  AC_ARG_ENABLE(auth-modules,
+  [  --enable-auth-modules=\"list of helpers\"
+!                           Backwards compatibility alias for
+                            --enable-basic-auth-helpers],
+  [ echo "--enable-auth-modules is obsolete. Please use the new"
+    echo "option --enable-basic-auth-helpers"
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.62 squid/src/cf.data.pre:1.245.2.63
+*** squid/src/cf.data.pre:1.245.2.62	Sat Apr  3 06:51:17 2004
+--- squid/src/cf.data.pre	Mon Apr  5 11:24:59 2004
+***************
+*** 2548,2555 ****
+  DOC_START
+  	If you are running Squid as an accelerator and have a single backend
+  	server then set this to on. This causes Squid to forward the request
+! 	to this server irregardles of what any redirectors or Host headers
+! 	says.
+  
+  	Leave this at off if you have multiple backend servers, and use a
+  	redirector (or host table or private DNS) to map the requests to the
+--- 2548,2555 ----
+  DOC_START
+  	If you are running Squid as an accelerator and have a single backend
+  	server then set this to on. This causes Squid to forward the request
+! 	to this server, regardles of what any redirectors or Host headers
+! 	say.
+  
+  	Leave this at off if you have multiple backend servers, and use a
+  	redirector (or host table or private DNS) to map the requests to the

@@ -1,0 +1,21 @@
+Index: squid/src/client_db.c
+diff -c squid/src/client_db.c:1.53.2.5 squid/src/client_db.c:1.53.2.6
+*** squid/src/client_db.c:1.53.2.5	Fri Mar 25 19:50:52 2005
+--- squid/src/client_db.c	Thu Sep  1 16:54:41 2005
+***************
+*** 328,334 ****
+  snmp_meshCtblFn(variable_list * Var, snint * ErrP)
+  {
+      variable_list *Answer = NULL;
+!     static char key[15];
+      ClientInfo *c = NULL;
+      int aggr = 0;
+      log_type l;
+--- 328,334 ----
+  snmp_meshCtblFn(variable_list * Var, snint * ErrP)
+  {
+      variable_list *Answer = NULL;
+!     static char key[16];
+      ClientInfo *c = NULL;
+      int aggr = 0;
+      log_type l;

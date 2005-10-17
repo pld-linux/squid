@@ -1,0 +1,24 @@
+Index: squid/src/http.c
+diff -c squid/src/http.c:1.384.2.32 squid/src/http.c:1.384.2.33
+*** squid/src/http.c:1.384.2.32	Sat Sep 10 19:49:54 2005
+--- squid/src/http.c	Wed Sep 28 14:48:19 2005
+***************
+*** 738,744 ****
+  #endif
+  		    comm_remove_close_handler(fd, httpStateFree, httpState);
+  		    fwdUnregister(fd, httpState->fwd);
+! 		    pconnPush(fd, request->host, request->port);
+  		    fwdComplete(httpState->fwd);
+  		    httpState->fd = -1;
+  		    httpStateFree(fd, httpState);
+--- 738,747 ----
+  #endif
+  		    comm_remove_close_handler(fd, httpStateFree, httpState);
+  		    fwdUnregister(fd, httpState->fwd);
+! 		    if (request->flags.accelerated && Config.Accel.single_host && Config.Accel.host)
+! 			pconnPush(fd, Config.Accel.host, Config.Accel.port);
+! 		    else
+! 			pconnPush(fd, request->host, request->port);
+  		    fwdComplete(httpState->fwd);
+  		    httpState->fd = -1;
+  		    httpStateFree(fd, httpState);

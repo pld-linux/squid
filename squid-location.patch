@@ -1,0 +1,39 @@
+diff -urN squid-2.5.STABLE4.org/QUICKSTART squid-2.5.STABLE4/QUICKSTART
+--- squid-2.5.STABLE4.org/QUICKSTART	2003-10-26 14:34:44.000000000 +0100
++++ squid-2.5.STABLE4/QUICKSTART	2003-10-26 14:35:42.000000000 +0100
+@@ -12,10 +12,9 @@
+ INSTALL in the same directory), you have to configure the squid.conf
+ file. This is the list of the values you *need* to change, because no
+ sensible defaults could be defined. Do not touch the other variables
+-for now.  We assume you have installed Squid in the default location:
+-/usr/local/squid
++for now.
+ 
+-Uncomment and edit the following lines in /usr/local/squid/etc/squid.conf:
++Uncomment and edit the following lines in /etc/squid/squid.conf:
+ 
+ ==============================================================================
+ 
+@@ -26,7 +25,7 @@
+     always ask permission before adding a parent cache. See also the
+     never_direct/always_direct directives.
+ 
+-cache_dir /usr/local/squid/var/cache 100 16 256
++cache_dir /var/cache/squid 100 16 256
+ 
+     Add here (first number, here 100) the amount of hard disk space 
+     (in megabytes) to devote to caching.
+@@ -69,10 +68,10 @@
+ After editing squid.conf to your liking, run Squid from the command
+ line TWICE:
+ 
+-    % /usr/local/squid/sbin/squid -z
+-    % /usr/local/squid/sbin/squid 
++    % /usr/sbin/squid -z
++    % /usr/sbin/squid 
+ 
+-Check in the cache.log (/usr/local/squid/var/logs/cache.log) that
++Check in the cache.log (/var/log/squid/cache.log) that
+ everything is all right.
+ 
+ Once Squid created all its files (it can take several minutes on some

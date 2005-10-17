@@ -1,0 +1,272 @@
+Index: squid/src/acl.c
+diff -c squid/src/acl.c:1.270.2.34 squid/src/acl.c:1.270.2.35
+*** squid/src/acl.c:1.270.2.34	Sun Feb 20 12:07:45 2005
+--- squid/src/acl.c	Fri Mar  4 09:22:16 2005
+***************
+*** 361,367 ****
+      case 4:			/* a dotted quad */
+  	if (!safe_inet_addr(asc, addr)) {
+  	    debug(28, 0) ("decode_addr: unsafe IP address: '%s'\n", asc);
+! 	    fatal("decode_addr: unsafe IP address");
+  	}
+  	break;
+      case 1:			/* a significant bits value for a mask */
+--- 361,367 ----
+      case 4:			/* a dotted quad */
+  	if (!safe_inet_addr(asc, addr)) {
+  	    debug(28, 0) ("decode_addr: unsafe IP address: '%s'\n", asc);
+! 	    self_destruct();
+  	}
+  	break;
+      case 1:			/* a significant bits value for a mask */
+***************
+*** 557,565 ****
+  	} else {
+  	    /* assume its time-of-day spec */
+  	    if (sscanf(t, "%d:%d-%d:%d", &h1, &m1, &h2, &m2) < 4) {
+! 		fatalf("aclParseTimeSpec: ERROR: Bad time range in"
+  		    "%s line %d: %s\n",
+  		    cfg_filename, config_lineno, config_input_line);
+  	    }
+  	    q = memAllocate(MEM_ACL_TIME_DATA);
+  	    q->start = h1 * 60 + m1;
+--- 557,566 ----
+  	} else {
+  	    /* assume its time-of-day spec */
+  	    if (sscanf(t, "%d:%d-%d:%d", &h1, &m1, &h2, &m2) < 4) {
+! 		debug(28, 0) ("aclParseTimeSpec: ERROR: Bad time range in"
+  		    "%s line %d: %s\n",
+  		    cfg_filename, config_lineno, config_input_line);
++ 		self_destruct();
+  	    }
+  	    q = memAllocate(MEM_ACL_TIME_DATA);
+  	    q->start = h1 * 60 + m1;
+***************
+*** 567,575 ****
+  	    q->weekbits = weekbits;
+  	    weekbits = 0;
+  	    if (q->start > q->stop) {
+! 		fatalf("aclParseTimeSpec: ERROR: Reversed time range in"
+  		    "%s line %d: %s\n",
+  		    cfg_filename, config_lineno, config_input_line);
+  	    }
+  	    if (q->weekbits == 0)
+  		q->weekbits = ACL_ALLWEEK;
+--- 568,577 ----
+  	    q->weekbits = weekbits;
+  	    weekbits = 0;
+  	    if (q->start > q->stop) {
+! 		debug(28, 0) ("aclParseTimeSpec: ERROR: Reversed time range in"
+  		    "%s line %d: %s\n",
+  		    cfg_filename, config_lineno, config_input_line);
++ 		self_destruct();
+  	    }
+  	    if (q->weekbits == 0)
+  		q->weekbits = ACL_ALLWEEK;
+***************
+*** 787,809 ****
+  
+      /* snarf the ACL name */
+      if ((t = strtok(NULL, w_space)) == NULL) {
+- 	debug(28, 0) ("%s line %d: %s\n",
+- 	    cfg_filename, config_lineno, config_input_line);
+  	debug(28, 0) ("aclParseAclLine: missing ACL name.\n");
+! 	return;
+      }
+      xstrncpy(aclname, t, ACL_NAME_SZ);
+      /* snarf the ACL type */
+      if ((t = strtok(NULL, w_space)) == NULL) {
+- 	debug(28, 0) ("%s line %d: %s\n",
+- 	    cfg_filename, config_lineno, config_input_line);
+  	debug(28, 0) ("aclParseAclLine: missing ACL type.\n");
+  	return;
+      }
+      if ((acltype = aclStrToType(t)) == ACL_NONE) {
+- 	debug(28, 0) ("%s line %d: %s\n",
+- 	    cfg_filename, config_lineno, config_input_line);
+  	debug(28, 0) ("aclParseAclLine: Invalid ACL type '%s'\n", t);
+  	return;
+      }
+      if ((A = aclFindByName(aclname)) == NULL) {
+--- 789,807 ----
+  
+      /* snarf the ACL name */
+      if ((t = strtok(NULL, w_space)) == NULL) {
+  	debug(28, 0) ("aclParseAclLine: missing ACL name.\n");
+! 	self_destruct();
+      }
+      xstrncpy(aclname, t, ACL_NAME_SZ);
+      /* snarf the ACL type */
+      if ((t = strtok(NULL, w_space)) == NULL) {
+  	debug(28, 0) ("aclParseAclLine: missing ACL type.\n");
++ 	self_destruct();
+  	return;
+      }
+      if ((acltype = aclStrToType(t)) == ACL_NONE) {
+  	debug(28, 0) ("aclParseAclLine: Invalid ACL type '%s'\n", t);
++ 	self_destruct();
+  	return;
+      }
+      if ((A = aclFindByName(aclname)) == NULL) {
+***************
+*** 815,821 ****
+  	new_acl = 1;
+      } else {
+  	if (acltype != A->type) {
+! 	    debug(28, 0) ("aclParseAclLine: ACL '%s' already exists with different type, skipping.\n", A->name);
+  	    return;
+  	}
+  	debug(28, 3) ("aclParseAclLine: Appending to '%s'\n", aclname);
+--- 813,820 ----
+  	new_acl = 1;
+      } else {
+  	if (acltype != A->type) {
+! 	    debug(28, 0) ("aclParseAclLine: ACL '%s' already exists with different type.\n", A->name);
+! 	    self_destruct();
+  	    return;
+  	}
+  	debug(28, 3) ("aclParseAclLine: Appending to '%s'\n", aclname);
+***************
+*** 887,908 ****
+  	break;
+      case ACL_PROXY_AUTH:
+  	if (authenticateSchemeCount() == 0) {
+! 	    fatalf("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes were compiled.\n", A->cfgline);
+  	} else if (authenticateActiveSchemeCount() == 0) {
+! 	    fatalf("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes are fully configured.\n", A->cfgline);
+  	} else {
+  	    aclParseUserList(&A->data);
+  	}
+  	break;
+      case ACL_PROXY_AUTH_REGEX:
+  	if (authenticateSchemeCount() == 0) {
+! 	    fatalf("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes were compiled.\n", A->cfgline);
+  	} else if (authenticateActiveSchemeCount() == 0) {
+! 	    fatalf("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes are fully configured.\n", A->cfgline);
+  	} else {
+  	    aclParseRegexList(&A->data);
+  	}
+--- 886,911 ----
+  	break;
+      case ACL_PROXY_AUTH:
+  	if (authenticateSchemeCount() == 0) {
+! 	    debug(28, 0) ("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes were compiled.\n", A->cfgline);
++ 	    self_destruct();
+  	} else if (authenticateActiveSchemeCount() == 0) {
+! 	    debug(28, 0) ("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes are fully configured.\n", A->cfgline);
++ 	    self_destruct();
+  	} else {
+  	    aclParseUserList(&A->data);
+  	}
+  	break;
+      case ACL_PROXY_AUTH_REGEX:
+  	if (authenticateSchemeCount() == 0) {
+! 	    debug(28, 0) ("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes were compiled.\n", A->cfgline);
++ 	    self_destruct();
+  	} else if (authenticateActiveSchemeCount() == 0) {
+! 	    debug(28, 0) ("Invalid Proxy Auth ACL '%s' "
+  		"because no authentication schemes are fully configured.\n", A->cfgline);
++ 	    self_destruct();
+  	} else {
+  	    aclParseRegexList(&A->data);
+  	}
+***************
+*** 1091,1099 ****
+  	debug(28, 3) ("aclParseAccessLine: looking for ACL name '%s'\n", t);
+  	a = aclFindByName(t);
+  	if (a == NULL) {
+! 	    debug(28, 0) ("%s line %d: %s\n",
+! 		cfg_filename, config_lineno, config_input_line);
+! 	    debug(28, 0) ("aclParseAccessLine: ACL name '%s' not found.\n", t);
+  	    memFree(L, MEM_ACL_LIST);
+  	    continue;
+  	}
+--- 1094,1101 ----
+  	debug(28, 3) ("aclParseAccessLine: looking for ACL name '%s'\n", t);
+  	a = aclFindByName(t);
+  	if (a == NULL) {
+! 	    debug(28, 0) ("ACL name '%s' not defined!\n", t);
+! 	    self_destruct();
+  	    memFree(L, MEM_ACL_LIST);
+  	    continue;
+  	}
+***************
+*** 1329,1335 ****
+      debug(28, 5) ("aclParseUserMaxIP: Max IP address's %d\n", (int) (*acldata)->max);
+      return;
+    error:
+!     fatal("aclParseUserMaxIP: Malformed ACL %d\n");
+  }
+  
+  void
+--- 1331,1337 ----
+      debug(28, 5) ("aclParseUserMaxIP: Max IP address's %d\n", (int) (*acldata)->max);
+      return;
+    error:
+!     self_destruct();
+  }
+  
+  void
+Index: squid/src/cache_cf.c
+diff -c squid/src/cache_cf.c:1.396.2.20 squid/src/cache_cf.c:1.396.2.21
+*** squid/src/cache_cf.c:1.396.2.20	Sun Feb 20 19:55:04 2005
+--- squid/src/cache_cf.c	Fri Mar  4 09:22:16 2005
+***************
+*** 110,115 ****
+--- 110,116 ----
+  void
+  self_destruct(void)
+  {
++     shutting_down = 1;
+      fatalf("Bungled %s line %d: %s",
+  	cfg_filename, config_lineno, config_input_line);
+  }
+Index: squid/src/tools.c
+diff -c squid/src/tools.c:1.213.2.11 squid/src/tools.c:1.213.2.12
+*** squid/src/tools.c:1.213.2.11	Sun Feb 13 14:19:44 2005
+--- squid/src/tools.c	Fri Mar  4 09:22:16 2005
+***************
+*** 341,348 ****
+      fprintf(debug_log, "Squid Cache (Version %s): Terminated abnormally.\n",
+  	version_string);
+      fflush(debug_log);
+!     PrintRusage();
+!     dumpMallocStats();
+  }
+  
+  /* fatal */
+--- 341,350 ----
+      fprintf(debug_log, "Squid Cache (Version %s): Terminated abnormally.\n",
+  	version_string);
+      fflush(debug_log);
+!     if (!shutting_down) {
+! 	PrintRusage();
+! 	dumpMallocStats();
+!     }
+  }
+  
+  /* fatal */
+***************
+*** 357,363 ****
+  	storeDirWriteCleanLogs(0);
+      fatal_common(message);
+      if (shutting_down)
+! 	exit(0);
+      else
+  	abort();
+  }
+--- 359,365 ----
+  	storeDirWriteCleanLogs(0);
+      fatal_common(message);
+      if (shutting_down)
+! 	exit(1);
+      else
+  	abort();
+  }

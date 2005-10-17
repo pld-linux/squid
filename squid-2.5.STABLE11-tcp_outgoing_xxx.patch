@@ -1,0 +1,32 @@
+Index: squid/src/cf.data.pre
+diff -c squid/src/cf.data.pre:1.245.2.99 squid/src/cf.data.pre:1.245.2.100
+*** squid/src/cf.data.pre:1.245.2.99	Tue Sep 13 07:44:35 2005
+--- squid/src/cf.data.pre	Wed Sep 28 06:29:45 2005
+***************
+*** 2359,2364 ****
+--- 2359,2369 ----
+  
+  	Processing proceeds in the order specified, and stops at first fully
+  	matching line.
++ 
++ 	Note: The use of this directive using client dependent ACLs is
++ 	incompatible with the use of server side persistent connetions. To
++ 	ensure correct results it is best to set server_persisten_connections
++ 	to off when using this directive in such configurations.
+  DOC_END
+  
+  NAME: tcp_outgoing_address
+***************
+*** 2385,2390 ****
+--- 2390,2400 ----
+  
+  	Processing proceeds in the order specified, and stops at first fully
+  	matching line.
++ 
++ 	Note: The use of this directive using client dependent ACLs is
++ 	incompatible with the use of server side persistent connetions. To
++ 	ensure correct results it is best to set server_persisten_connections
++ 	to off when using this directive in such configurations.
+  DOC_END
+  
+  NAME: reply_header_max_size

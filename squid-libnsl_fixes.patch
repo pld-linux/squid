@@ -1,0 +1,32 @@
+--- squid-2.4.STABLE2/configure.in~	Fri Oct 12 18:34:14 2001
++++ squid-2.4.STABLE2/configure.in	Fri Oct 12 19:17:42 2001
+@@ -16,6 +16,7 @@
+ AC_CANONICAL_HOST
+ 
+ CRYPTLIB=''
++NSLLIB=''
+ REGEXLIB=''	# -lregex
+ LIBREGEX=''	# libregex.a
+ 
+@@ -1006,8 +1007,10 @@
+  fi
+ 
+ dnl Check for needed libraries
+-AC_CHECK_LIB(nsl, main)
+-AC_CHECK_LIB(socket, main)
++AC_CHECK_FUNC(gethostbyname, [], AC_CHECK_LIB(nsl, gethostbyname)) 
++AC_CHECK_LIB(nsl, yp_match, NSLLIB="-lnsl")
++AC_SUBST(NSLLIB)
++AC_SEARCH_LIBS(socket, socket)
+ 
+ if test "x$ac_cv_enabled_dlmalloc" = "xyes" ; then
+   echo "skipping libmalloc check (--enable-dlmalloc specified)"
+--- squid-2.5.STABLE7/helpers/basic_auth/YP/Makefile.am.orig	2002-08-12 03:13:45.000000000 +0200
++++ squid-2.5.STABLE7/helpers/basic_auth/YP/Makefile.am	2004-10-23 16:34:34.132980809 +0200
+@@ -7,5 +7,5 @@
+ 
+ libexec_PROGRAMS = yp_auth
+ yp_auth_SOURCES	= yp_auth.c nis_support.h nis_support.c
+-LDADD	= -L$(top_builddir)/lib -lmiscutil $(CRYPTLIB) $(XTRA_LIBS)
++LDADD	= -L$(top_builddir)/lib -lmiscutil $(CRYPTLIB) $(NSLLIB) $(XTRA_LIBS)
+ INCLUDES	= -I$(top_srcdir)/include

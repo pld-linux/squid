@@ -1,0 +1,40 @@
+Index: squid/src/HttpHeader.c
+diff -c squid/src/HttpHeader.c:1.74.2.25 squid/src/HttpHeader.c:1.74.2.26
+*** squid/src/HttpHeader.c:1.74.2.25	Sun Feb 20 03:32:41 2005
+--- squid/src/HttpHeader.c	Wed Mar  9 07:37:50 2005
+***************
+*** 474,486 ****
+  		return httpHeaderReset(hdr);
+  	}
+  	if (e->id == HDR_CONTENT_LENGTH && (e2 = httpHeaderFindEntry(hdr, e->id)) != NULL) {
+! 	    if (!Config.onoff.relaxed_header_parser || strCmp(e->value, strBuf(e2->value)) != 0) {
+  		debug(55, 1) ("WARNING: found two conflicting content-length headers in {%s}\n", getStringPrefix(header_start, header_end));
+  		httpHeaderEntryDestroy(e);
+  		return httpHeaderReset(hdr);
+  	    } else {
+  		debug(55, Config.onoff.relaxed_header_parser <= 0 ? 1 : 2)
+  		    ("NOTICE: found double content-length header\n");
+  	    }
+  	}
+  	if (e->id == HDR_OTHER && stringHasWhitespace(strBuf(e->name))) {
+--- 474,493 ----
+  		return httpHeaderReset(hdr);
+  	}
+  	if (e->id == HDR_CONTENT_LENGTH && (e2 = httpHeaderFindEntry(hdr, e->id)) != NULL) {
+! 	    if (strCmp(e->value, strBuf(e2->value)) != 0) {
+  		debug(55, 1) ("WARNING: found two conflicting content-length headers in {%s}\n", getStringPrefix(header_start, header_end));
+  		httpHeaderEntryDestroy(e);
+  		return httpHeaderReset(hdr);
+  	    } else {
+  		debug(55, Config.onoff.relaxed_header_parser <= 0 ? 1 : 2)
+  		    ("NOTICE: found double content-length header\n");
++ 		if (Config.onoff.relaxed_header_parser) {
++ 		    httpHeaderEntryDestroy(e);
++ 		    continue;
++ 		} else {
++ 		    httpHeaderEntryDestroy(e);
++ 		    return httpHeaderReset(hdr);
++ 		}
+  	    }
+  	}
+  	if (e->id == HDR_OTHER && stringHasWhitespace(strBuf(e->name))) {

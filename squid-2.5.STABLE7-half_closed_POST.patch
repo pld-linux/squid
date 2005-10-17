@@ -1,0 +1,28 @@
+Index: squid/src/client_side.c
+diff -c squid/src/client_side.c:1.561.2.60 squid/src/client_side.c:1.561.2.61
+*** squid/src/client_side.c:1.561.2.60	Tue Oct  5 16:34:42 2004
+--- squid/src/client_side.c	Thu Oct 14 16:41:48 2004
+***************
+*** 2882,2891 ****
+  }
+  
+  static int
+! clientReadDefer(int fdnotused, void *data)
+  {
+      ConnStateData *conn = data;
+!     if (conn->body.size_left)
+  	return conn->in.offset >= conn->in.size - 1;
+      else
+  	return conn->defer.until > squid_curtime;
+--- 2882,2892 ----
+  }
+  
+  static int
+! clientReadDefer(int fd, void *data)
+  {
++     fde *F = &fd_table[fd];
+      ConnStateData *conn = data;
+!     if (conn->body.size_left && !F->flags.socket_eof)
+  	return conn->in.offset >= conn->in.size - 1;
+      else
+  	return conn->defer.until > squid_curtime;

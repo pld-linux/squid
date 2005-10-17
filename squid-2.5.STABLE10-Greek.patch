@@ -1,0 +1,987 @@
+Index: squid/errors/Makefile.am
+diff -c squid/errors/Makefile.am:1.5.2.7 squid/errors/Makefile.am:1.5.2.8
+*** squid/errors/Makefile.am:1.5.2.7	Mon Dec  1 03:12:28 2003
+--- squid/errors/Makefile.am	Thu Sep  1 16:37:29 2005
+***************
+*** 22,27 ****
+--- 22,28 ----
+  		Finnish \
+  		French \
+  		German \
++ 		Greek \
+  		Hebrew \
+  		Hungarian \
+  		Italian \
+Index: squid/errors/Makefile.in
+diff -c squid/errors/Makefile.in:1.15.2.17 squid/errors/Makefile.in:1.15.2.18
+*** squid/errors/Makefile.in:1.15.2.17	Fri Mar 18 17:55:41 2005
+--- squid/errors/Makefile.in	Thu Sep  1 16:37:29 2005
+***************
+*** 135,140 ****
+--- 135,141 ----
+  		Finnish \
+  		French \
+  		German \
++ 		Greek \
+  		Hebrew \
+  		Hungarian \
+  		Italian \
+Index: squid/errors/Greek/ERR_ACCESS_DENIED
+diff -c /dev/null squid/errors/Greek/ERR_ACCESS_DENIED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_ACCESS_DENIED	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,25 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Απαγορεύεται η Πρόσβαση.
++ </STRONG>
++ <P>
++ Οι ρυθμίσεις του μηχανισμού πρόσβασης αποτρέπουν την 
++ ολοκλήρωση της αιτήσεως σας. Επικοινωνήστε με τον παροχέα 
++ υπηρεσιών, αν νομίζετε ότι αυτό δεν πρέπει να συμβαίνει.
++ </UL>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
++ 
+Index: squid/errors/Greek/ERR_CACHE_ACCESS_DENIED
+diff -c /dev/null squid/errors/Greek/ERR_CACHE_ACCESS_DENIED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_CACHE_ACCESS_DENIED	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,34 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Απαγορεύεται η Πρόσβαση στο Μεσολαβητή</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD>
++ <BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Η Πρόσβαση στο Μεσολαβητή Απαγορεύεται</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Απαγορεύεται η Πρόσβαση στο Μεσολαβητή.
++ </STRONG>
++ </UL>
++ </P>
++ 
++ <P>Λυπάμαι αλλά δεν σας επιτρέπεται η πρόσβαση στη σελίδα:
++ <PRE>    %U</PRE>
++ από αυτόν τον μεσολαβητή, μέχρι να πιστοποιήσετε τον εαυτό σας.
++ </P>
++ 
++ <P>
++ Θα πρέπει να χρησιμοποιείτε φυλλομετρητή Netscape έκδοσής τουλάχιστον 2.0, τον
++ Microsoft Internet Explorer 3.0 ή οποιονδήποτε φυλλομετρητή συμβατό με HTTP/1.1.
++ Επικοινωνήστε με τον <A HREF="mailto:%w">διαχειριστή του μεσολαβητή σας</a>
++ αν αντιμετωπίζετε δυσκολία να πιστοποιήσετε τον λογαριασμό σας ή να
++ <A HREF="http://%h/cgi-bin/chpasswd.cgi">αλλάξτε</a> τον κωδικό σας.
++ </P>
+Index: squid/errors/Greek/ERR_CACHE_MGR_ACCESS_DENIED
+diff -c /dev/null squid/errors/Greek/ERR_CACHE_MGR_ACCESS_DENIED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_CACHE_MGR_ACCESS_DENIED	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,34 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Απαγορεύεται η Πρόσβαση στη Διαχείριση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD>
++ <BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Απαγορεύεται η Πρόσβαση στη Διαχείριση του Μεσολαβητή </H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Απαγορεύεται η Πρόσβαση στη Διαχείριση του Μεσολαβητή.
++ </STRONG>
++ </UL>
++ </P>
++ 
++ <P>Λυπάμαι αλλά δεν σας επιτρέπεται ή πρόσβαση στο:
++ <PRE>    %U</PRE>
++ μέχρι να πιστοποιήσετε τον λογαριασμό σας.
++ </P>
++ 
++ <P> Θα πρέπει να χρησιμοποιείτε φυλλομετρητή Netscape έκδοσης τουλάχιστον 2.0, τον
++ Microsoft Internet Explorer 3.0 ή οποιονδήποτε φυλλομετρητή συμβατό με HTTP/1.1.
++ Επικοινωνήστε με τον <A HREF="mailto:%w">διαχειριστή του μεσολαβητή σας</a>
++ αν αντιμετωπίζετε δυσκολία να πιστοποιήσετε τον λογαριασμό σας ή
++ αν <em>είστε</em> ο διαχειριστής, διαβάστε την τεκμηρίωση του Squid
++ σχετικά με τη διαχείριση του και κοιτάξτε τα ημερολόγια του προγράμματος
++ για πιο λεπτομερείς αναφορές σφάλματος.</P>
+Index: squid/errors/Greek/ERR_CANNOT_FORWARD
+diff -c /dev/null squid/errors/Greek/ERR_CANNOT_FORWARD:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_CANNOT_FORWARD	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,29 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Αδύνατη η προώθηση της αιτήσεως σας αυτή τη στιγμή.
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το αίτημα σας δεν ήταν δυνατό να προωθηθεί στον αρχικό εξυπηρετητή
++ αλλά και ούτε σε κάποιο γονικό μεσολαβητή. Η πιο πιθανές αιτίες είναι: 
++ <UL>
++ <LI>Ο διαχειριστής του μεσολαβητή δεν επιτρέπει να γίνονται απ ευθείας 
++     συνδέσεις στους αρχικούς εξυπηρετητές, και
++ <LI>Όλοι οι διαθέσιμοι γονικοί μεσολαβητές, δεν είναι διαθέσιμοι.
++ </UL>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_CONNECT_FAIL
+diff -c /dev/null squid/errors/Greek/ERR_CONNECT_FAIL:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_CONNECT_FAIL	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,27 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Αποτυχία σύνδεσης 
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το σύστημα ενημέρωσε ότι:
++ <PRE><I>    %E</I></PRE>
++ 
++ <P>
++ Ο απομακρυσμένος υπολογιστής (ή δίκτυο) μάλλον δεν λειτουργεί. Δοκιμάστε αργότερα.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_DNS_FAIL
+diff -c /dev/null squid/errors/Greek/ERR_DNS_FAIL:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_DNS_FAIL	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,30 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <BLOCKQUOTE>
++ Δεν ήταν δυνατόν να εξακριβωθεί η διεύθυνση IP για το όνομα
++ <I>%H</I>
++ </BLOCKQUOTE>
++ 
++ <P>
++ Ο εξυπηρετητής ονομάτων ενημέρωσε ότι:
++ <BLOCKQUOTE>
++ %z
++ </BLOCKQUOTE>
++ 
++ <P>
++ Αυτό σημαίνει ότι:
++ <PRE>
++  Ο μεσολαβητής δεν μπόρεσε να εξακριβώσει την διεύθυνση που πληκτρολογήσατε. 
++  Ελέγξτε αν η διεύθυνση είναι σωστή. 
++ </PRE>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FORWARDING_DENIED
+diff -c /dev/null squid/errors/Greek/ERR_FORWARDING_DENIED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FORWARDING_DENIED	Thu Sep  1 16:37:29 2005
+***************
+*** 0 ****
+--- 1,25 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Απαγορεύεται η προώθηση.
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Ο μεσολαβητής δεν θα προωθήσει το αίτημα σας γιατί προσπαθεί να 
++ επιβάλει μια συγγενική σχέση. Ίσως ο πελάτης στο %i είναι ένας μεσολαβητής
++ ο οποίος δεν είναι σωστά ρυθμισμένος.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FTP_DISABLED
+diff -c /dev/null squid/errors/Greek/ERR_FTP_DISABLED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_DISABLED	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,23 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Το πρωτόκολλο FTP είναι απενεργοποιημένο
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Αυτός ο μεσολαβητής δεν υποστηρίζει FTP.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FTP_FAILURE
+diff -c /dev/null squid/errors/Greek/ERR_FTP_FAILURE:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_FAILURE	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,19 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση
++ Προέκυψε σφάλμα στο πρωτόκολλο FTP:
++ <A HREF="%U">%U</A>
++ <P>
++ Το Squid έστειλε τη ακόλουθη εντολή FTP:
++ <blockquote><strong><pre>%f</pre></strong></blockquote>
++ και έλαβε την ακόλουθη απάντηση
++ <blockquote><strong><pre>%F</pre></strong></blockquote>
++ <blockquote><strong><pre>%g</pre></strong></blockquote>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FTP_FORBIDDEN
+diff -c /dev/null squid/errors/Greek/ERR_FTP_FORBIDDEN:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_FORBIDDEN	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,19 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση
++ Προέκυψε σφάλμα εξακρίβωσης FTP:
++ <A HREF="%U">%U</A>
++ <P>
++ Το Squid έστειλε τη ακόλουθη εντολή FTP:
++ <blockquote><strong><pre>%f</pre></strong></blockquote>
++ και έλαβε την ακόλουθη απάντηση
++ <blockquote><strong><pre>%F</pre></strong></blockquote>
++ <blockquote><strong><pre>%g</pre></strong></blockquote>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FTP_NOT_FOUND
+diff -c /dev/null squid/errors/Greek/ERR_FTP_NOT_FOUND:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_NOT_FOUND	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,22 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Η ακόλουθη διεύθυνση δεν βρέθηκε:
++ <A HREF="%U">%U</A>
++ <P>
++ Το Squid έστειλε τη ακόλουθη εντολή FTP:
++ <blockquote><strong><pre>%f</pre></strong></blockquote>
++ και έλαβε την ακόλουθη απάντηση
++ <blockquote><strong><pre>%F</pre></strong></blockquote>
++ <blockquote><strong><pre>%g</pre></strong></blockquote>
++ <P>
++ Αυτό μπορεί να συμβαίνει από μια διεύθυνση FTP με απόλυτή διαδρομή (το οποίο
++ δεν είναι σύμφωνο με το RFC 1738).  Αν αυτή είναι η αιτία, το αρχείο θα το
++ βρείτε στο <A HREF="%B">%B</A>.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FTP_PUT_CREATED
+diff -c /dev/null squid/errors/Greek/ERR_FTP_PUT_CREATED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_PUT_CREATED	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,8 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>Η εντολή FTP PUT ήταν επιτυχής: Το αρχείο δημιουργήθηκε</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>Η λειτουργία ολοκληρώθηκε με επιτυχία</H1>
++ <H2>Το αρχείο δημιουργήθηκε</H2>
++ <HR noshade size="1px">
+Index: squid/errors/Greek/ERR_FTP_PUT_ERROR
+diff -c /dev/null squid/errors/Greek/ERR_FTP_PUT_ERROR:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_PUT_ERROR	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,26 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Η μεταφόρτωση FTP απέτυχε</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Η εντολή FTP PUT/upload απέτυχε</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατα τη διάρκεια μεταφόρτωσης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Το Squid έστειλε τη ακόλουθη εντολή FTP:
++ <PRE><STRONG>
++         %f
++ </STRONG></PRE>
++ και έλαβε την ακόλουθη απάντηση
++ <PRE><STRONG>
++         %F
++ </STRONG></PRE>
++ <P>
++ Αυτό σημαίνει ότι:
++ <PRE>
++ Ελέγξτε τη διαδρομή, τα δικαιώματα, τον ελεύθερο χώρο και ξαναδοκιμάστε.
++ </PRE>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_FTP_PUT_MODIFIED
+diff -c /dev/null squid/errors/Greek/ERR_FTP_PUT_MODIFIED:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_PUT_MODIFIED	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,8 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>Η εντολή FTP PUT ήταν επιτυχής Το αρχείο ανανεώθηκε</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>Η λειτουργία ολοκληρώθηκε με επιτυχία</H1>
++ <H2>Το αρχείο ανανεώθηκε</H2>
++ <HR noshade size="1px">
+Index: squid/errors/Greek/ERR_FTP_UNAVAILABLE
+diff -c /dev/null squid/errors/Greek/ERR_FTP_UNAVAILABLE:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_FTP_UNAVAILABLE	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,18 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Ο εξυπηρετητής FTP ήταν πολύ απασχολημένος κατά την ανάκτηση του:
++ <A HREF="%U">%U</A>
++ <P>
++ Το Squid έστειλε τη ακόλουθη εντολή FTP:
++ <blockquote><strong><pre>%f</pre></strong></blockquote>
++ και έλαβε την ακόλουθη απάντηση
++ <blockquote><strong><pre>%F</pre></strong></blockquote>
++ <blockquote><strong><pre>%g</pre></strong></blockquote>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_INVALID_REQ
+diff -c /dev/null squid/errors/Greek/ERR_INVALID_REQ:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_INVALID_REQ	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,33 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά τη προσπάθεια επεξεργασίας της αίτησης:
++ <PRE>
++ %R
++ </PRE>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Άκυρη Αίτηση
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Κάποιο σημείο της αίτησης HTTP είναι άκυρο.  Πιθανά προβλήματα:
++ <UL>
++ <LI>Ελλιπής ή άγνωστη μέθοδος αίτησης
++ <LI>Ελλιπής Διεύθυνση (URL)
++ <LI>Ελλιπές αναγνωριστικό HTTP (HTTP/1.0)
++ <LI>Η αίτηση είναι υπερμεγέθης
++ <LI>Έλειπες Περιεχόμενο- Μήκος για τις αιτήσεις POST ή PUT
++ <LI>Άκυροι χαρακτήρες στο όνομα υπολογιστή, οι υπογεγραμμένες δεν επιτρέπονται
++ </UL>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_INVALID_RESP
+diff -c /dev/null squid/errors/Greek/ERR_INVALID_RESP:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_INVALID_RESP	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,29 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
++ <TITLE>ERROR: The requested URL could not be retrieved</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ERROR</H1>
++ <H2>The requested URL could not be retrieved</H2>
++ <HR noshade size="1px">
++ <P>
++ While trying to process the request:
++ <PRE>
++ %R
++ </PRE>
++ <P>
++ The following error was encountered:
++ <UL>
++ <LI>
++ <STRONG>
++ Invalid Response
++ </STRONG>
++ </UL>
++ 
++ <P>
++ The HTTP Response message received from the contacted server
++ could not be understood or was otherwise malformed. Please contact
++ the site operator. Your cache administrator may be able to provide
++ you with more details about the exact nature of the problem if needed.
++ 
++ <P>Your cache administrator is <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_INVALID_URL
+diff -c /dev/null squid/errors/Greek/ERR_INVALID_URL:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_INVALID_URL	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,30 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Λανθασμένη Διεύθυνση
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Υπάρχει πρόβλημα με την αιτούμενη διεύθυνση. Πιθανές αιτίες:
++ Some aspect of the requested URL is incorrect.  Possible problems:
++ <UL>
++ <LI>Ελλιπές ή λανθασμένο πρωτόκολλο πρόσβασης (θα πρέπει να είναι `http://'' ή παρόμοιο)
++ <LI>Ελλιπές όνομα υπολογιστή
++ <LI>Λανθασμένοι χαρακτήρες διαφυγής στη διεύθυνση
++ <LI>Λανθασμένοι χαρακτήρες στο όνομα υπολογιστή ' οι υπογραμμίσεις δεν επιτρέπονται
++ </UL>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_LIFETIME_EXP
+diff -c /dev/null squid/errors/Greek/ERR_LIFETIME_EXP:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_LIFETIME_EXP	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,24 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά την προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Έληξε ο Χρόνος Σύνδεσής
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το Squid τερμάτισε την αίτηση επειδή ξεπέρασε τον μέγιστο χρόνο
++ σύνδεσης.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_NO_RELAY
+diff -c /dev/null squid/errors/Greek/ERR_NO_RELAY:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_NO_RELAY	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,23 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Δεν υπάρχει Wais Relay
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Δεν έχει καθοριστεί υπολογιστής WAIS Relay για αυτό το μεσολαβητή!  Παραπονεθείτε στον Διαχειριστή.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_ONLY_IF_CACHED_MISS
+diff -c /dev/null squid/errors/Greek/ERR_ONLY_IF_CACHED_MISS:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_ONLY_IF_CACHED_MISS	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,28 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Δεν βρέθηκε έγκυρο αντίγραφο στην μνήμη και έχει καθοριστεί η επιλογή
++ <code>only-if-cached</code>.
++ </STRONG>
++ </UL>
++ 
++ <P>
++ 
++ Ζητήσατε μια σελίδα με ενεργοποιημένη την επιλογή <code>only-if-cached</code>.
++ Δεν βρέθηκε αντίγραφο στη μνήμη, <em>ή</em> ήταν απαραίτητη η επαναφόρτωσή
++ του που απαγορεύεται από την επιλογή <code>only-if-cached</code>.
++ 
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_READ_ERROR
+diff -c /dev/null squid/errors/Greek/ERR_READ_ERROR:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_READ_ERROR	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,28 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Σφάλμα Ανάγνωσης
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το σύστημα επέστρεψε:
++ <PRE><I>    %E</I></PRE>
++ 
++ <P>
++ Προέκυψε σφάλμα κατά την ανάγνωση δεδομένων από το δίκτυο.  Παρακαλώ 
++ ξαναδοκιμάστε το αίτημα σας.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_READ_TIMEOUT
+diff -c /dev/null squid/errors/Greek/ERR_READ_TIMEOUT:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_READ_TIMEOUT	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,28 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <UL>
++ <LI>
++ <STRONG>
++ Τέλος Χρόνου Ανάγνωσης
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το σύστημα επέστρεψε:
++ <PRE><I>    %E</I></PRE>
++ 
++ <P>
++ Προέκυψε χρονικό όριο κατά την ανάγνωση δεδομένων από το δίκτυο.  Το δίκτυο
++ ή ο εξυπηρετητής δεν λειτουργεί ή υπολειτουργεί.  Παρακαλώ ξαναδοκιμάστε.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_SHUTTING_DOWN
+diff -c /dev/null squid/errors/Greek/ERR_SHUTTING_DOWN:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_SHUTTING_DOWN	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,17 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <P>
++ Το σύστημα είναι σε διαδικασία τερματισμού και δεν μπορεί να εξυπηρετήσει
++ το αίτημα σας αυτή τη στιγμή. Παρακαλώ δοκιμάστε ξανά σε λίγο.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_SOCKET_FAILURE
+diff -c /dev/null squid/errors/Greek/ERR_SOCKET_FAILURE:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_SOCKET_FAILURE	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,28 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Σφάλμα Σύνδεσης
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το σύστημα επέστρεψε:
++ <PRE><I>    %E</I></PRE>
++ 
++ <P>
++ Το Squid δεν μπορεί να δημιουργήσει σύνδεση TCP, υποθετικά λόγω φόρτου.
++ Παρακαλώ ξαναδοκιμάστε.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_TOO_BIG
+diff -c /dev/null squid/errors/Greek/ERR_TOO_BIG:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_TOO_BIG	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,27 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Το αίτημα ή η απάντηση είναι υπερμεγέθη
++ </STRONG>
++ <P>
++ Αν κάνετε μια αίτηση POST ή PUT, τότε το σώμα (αυτό που προσπαθείτε
++ να ανεβάσετε) είναι πολύ μεγάλο. Αν κάνετε μια αίτηση GET, τότε
++ το σώμα (αυτό που προσπαθείτε να κατεβάσετε) είναι πολύ μεγάλο.
++ Τα όρια αυτά καθορίζονται από τον Παροχέα Υπηρεσιών Διαδικτύου που
++ λειτουργεί αυτή την υπηρεσία. Παρακαλώ επικοινωνήστε μαζί τους αν
++ νομίζετε οτι αυτό είναι λάθος.
++ </UL>
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>.
+Index: squid/errors/Greek/ERR_UNSUP_REQ
+diff -c /dev/null squid/errors/Greek/ERR_UNSUP_REQ:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_UNSUP_REQ	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,24 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Μη υποστηριζόμενη μέθοδος αίτησης και πρωτόκολλο
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το Squid δεν υποστηρίζει όλες τις μεθόδους αιτήσεων για όλα τα πρωτόκολλα
++ πρόσβασης. Για παράδειγμα, το POST για Gopher δεν υποστηρίζεται.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_URN_RESOLVE
+diff -c /dev/null squid/errors/Greek/ERR_URN_RESOLVE:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_URN_RESOLVE	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,23 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Δεν βρέθηκε διεύθυνση για το ζητούμενο όνομα</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Δεν βρέθηκε διεύθυνση για το ζητούμενο όνομα</H2>
++ <HR noshade size="1px">
++ <P>
++ Κατά τη διάρκεια εύρεσης του ονόματος (URN):
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Αδύνατη η εύρεση του ονόματος
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Μεταξύ μας, μην περιμένετε και πολλά από URNs στο %T :)
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_WRITE_ERROR
+diff -c /dev/null squid/errors/Greek/ERR_WRITE_ERROR:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_WRITE_ERROR	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,28 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Σφάλμα Εγγραφής
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το σύστημα επέστρεψε:
++ <PRE><I>    %E</I></PRE>
++ 
++ <P>
++ Προέκυψε σφάλμα κατά την εγγραφή στο δίκτυο.  Παρακαλώ δοκιμάστε ξανά
++ το αίτημα σας.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/ERR_ZERO_SIZE_OBJECT
+diff -c /dev/null squid/errors/Greek/ERR_ZERO_SIZE_OBJECT:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/ERR_ZERO_SIZE_OBJECT	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,23 ----
++ <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
++ <HTML><HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-7">
++ <TITLE>ΣΦΑΛΜΑ: Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</TITLE>
++ <STYLE type="text/css"><!--BODY{background-color:#ffffff;font-family:verdana,sans-serif}PRE{font-family:sans-serif}--></STYLE>
++ </HEAD><BODY>
++ <H1>ΣΦΑΛΜΑ</H1>
++ <H2>Αδύνατη η πρόσβαση στην αιτούμενη διεύθυνση</H2>
++ <HR noshade size="1px">
++ <P>
++ Στη προσπάθεια πρόσβασης στη διεύθυνση:
++ <A HREF="%U">%U</A>
++ <P>
++ Προέκυψε το ακόλουθο σφάλμα:
++ <UL>
++ <LI>
++ <STRONG>
++ Απάντηση Μηδενικού Μεγέθους
++ </STRONG>
++ </UL>
++ 
++ <P>
++ Το Squid δεν έλαβε δεδομένα για αυτό το αίτημα.
++ <P>Ο διαχειριστής του μεσολαβητή σας είναι ο <A HREF="mailto:%w">%w</A>. 
+Index: squid/errors/Greek/README
+diff -c /dev/null squid/errors/Greek/README:1.1.2.1
+*** /dev/null	Thu Sep  1 16:39:57 2005
+--- squid/errors/Greek/README	Thu Sep  1 16:37:30 2005
+***************
+*** 0 ****
+--- 1,2 ----
++ Thank you to George Papamichelakis <george@step.gr>
++ for creating these error pages in Greek!
