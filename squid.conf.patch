@@ -37,3 +37,14 @@
  
  #  TAG: append_domain
  #	Appends local domain name to hostnames without any dots in
+--- squid.conf~	2005-10-20 13:15:15.000000000 +0300
++++ squid.conf	2005-10-20 13:15:16.000000000 +0300
+@@ -1862,7 +1862,7 @@
+ # We strongly recommend the following be uncommented to protect innocent
+ # web applications running on the proxy server who think the only
+ # one who can access services on "localhost" is a local user
+-#http_access deny to_localhost
++http_access deny to_localhost
+ #
+ # INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
+ 
