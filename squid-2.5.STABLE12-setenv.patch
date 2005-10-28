@@ -1,0 +1,29 @@
+Index: squid/src/cache_cf.c
+diff -c squid/src/cache_cf.c:1.396.2.31 squid/src/cache_cf.c:1.396.2.32
+*** squid/src/cache_cf.c:1.396.2.31	Wed Sep 28 15:42:33 2005
+--- squid/src/cache_cf.c	Wed Oct 26 14:25:42 2005
+***************
+*** 440,447 ****
+  		    Config.effectiveUser);
+  	    Config2.effectiveUserID = pwd->pw_uid;
+  	    Config2.effectiveGroupID = pwd->pw_gid;
+! 	    if (pwd->pw_dir && *pwd->pw_dir)
+! 		setenv("HOME", pwd->pw_dir, 1);
+  	}
+      } else {
+  	Config2.effectiveUserID = geteuid();
+--- 440,453 ----
+  		    Config.effectiveUser);
+  	    Config2.effectiveUserID = pwd->pw_uid;
+  	    Config2.effectiveGroupID = pwd->pw_gid;
+! #if HAVE_PUTENV
+! 	    if (pwd->pw_dir && *pwd->pw_dir) {
+! 		int len;
+! 		char *env_str = xcalloc((len = strlen(pwd->pw_dir) + 6), 1);
+! 		snprintf(env_str, len, "HOME=%s", pwd->pw_dir);
+! 		putenv(env_str);
+! 	    }
+! #endif
+  	}
+      } else {
+  	Config2.effectiveUserID = geteuid();
