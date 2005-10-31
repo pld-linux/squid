@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	2.2
+Release:	2.4
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -423,6 +423,14 @@ ograniczenie dostêpu u¿ytkowników proxy na podstawie ich
 przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd z pakietu
 Samba 2.2.4 lub wy¿szego.
 
+%package scripts
+Summary:	perl scripts for Squid
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description scripts
+This package contains perl scripts and contributed programs for Squid.
+
 %prep
 %setup -q -a1 -a4
 # Bug fixes from Squid home page:
@@ -636,8 +644,6 @@ fi
 %lang(tr) %{_datadir}/squid/errors/Turkish
 
 %attr(755,root,root) %dir %{_libexecdir}
-%attr(755,root,root) %{_libexecdir}/*.pl
-%attr(755,root,root) %{_libexecdir}/contrib
 
 %attr(770,root,squid) %dir /var/log/archiv/squid
 %attr(770,root,squid) %dir /var/log/squid
@@ -737,3 +743,8 @@ fi
 %defattr(644,root,root,755)
 %doc helpers/external_acl/winbind_group/readme.txt
 %attr(755,root,root) %{_libexecdir}/wb_group
+
+%files scripts
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/*.pl
+%attr(755,root,root) %{_libexecdir}/contrib
