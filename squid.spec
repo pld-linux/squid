@@ -424,12 +424,16 @@ przynale¿no¶ci do grup w domenie NT oparty na Samba Winbindd z pakietu
 Samba 2.2.4 lub wy¿szego.
 
 %package scripts
-Summary:	perl scripts for Squid
+Summary:	Perl scripts for Squid
+Summary(pl):	Skrypty perlowe dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description scripts
-This package contains perl scripts and contributed programs for Squid.
+This package contains Perl scripts and contributed programs for Squid.
+
+%description scripts -l pl
+Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %prep
 %setup -q -a1 -a4
