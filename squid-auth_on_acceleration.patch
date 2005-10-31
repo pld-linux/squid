@@ -1,0 +1,19 @@
+based on infromation from
+http://www.squid-cache.org/mail-archive/squid-users/200304/0003.html
+
+--- squid-2.5.STABLE12/configure.in~	2005-10-31 17:27:14.000000000 +0200
++++ squid-2.5.STABLE12/configure.in	2005-10-31 17:47:07.000000000 +0200
+@@ -1242,6 +1242,13 @@
+ 	;;
+ esac
+ 
++AC_ARG_WITH(auth-on-acceleration,
++[  --with-auth-on-acceleration      Enable authentication on accelerated request.],
++[ if test "$withval" = yes; then
++	AC_DEFINE([AUTH_ON_ACCELERATION], [1], [Enable authentication on accelerated request.])
++  fi
++])
++
+ dnl Check for programs
+ AC_PROG_CPP
+ AC_PROG_INSTALL
