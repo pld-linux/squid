@@ -31,7 +31,7 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-setenv.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-setenv.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -57,20 +57,20 @@ BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.202
 BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
-PreReq:		rc-scripts >= 0.2.0
-PreReq:		setup >= 2.4.6
+Requires(post):	/bin/hostname
+Requires(post):	fileutils
+Requires(post):	findutils
+Requires(post):	grep
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(post,preun):	/sbin/chkconfig
-Requires(post):	fileutils
-Requires(post):	findutils
-Requires(post):	grep
-Requires(post):	/bin/hostname
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
+Requires:	rc-scripts >= 0.2.0
+Requires:	setup >= 2.4.6
 Provides:	group(squid)
 Provides:	user(squid)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -591,7 +591,7 @@ fi
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
-%attr(640,root,squid) %config(noreplace) /etc/sysconfig/squid
+%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/squid
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
 %attr(640,root,root) %{_sysconfdir}/mime.conf.default
