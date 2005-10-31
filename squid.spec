@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	2
+Release:	2.2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -46,6 +46,7 @@ Patch109:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
 Patch110:	%{name}-empty-referer.patch
 Patch111:	%{name}-align.patch
 Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch113:	%{name}-auth_on_acceleration.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -440,12 +441,14 @@ Samba 2.2.4 lub wy¿szego.
 %patch110 -p1
 %patch111 -p1
 %{?with_combined_log:%patch112 -p1}
+%patch113 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
 %build
 %{__aclocal}
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure \
 	--datadir=%{_datadir}/squid \
@@ -474,6 +477,7 @@ Samba 2.2.4 lub wy¿szego.
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
+	--with-auth-on-acceleration \
 	--with-pthreads
 
 %{__make}
