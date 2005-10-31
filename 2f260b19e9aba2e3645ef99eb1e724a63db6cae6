@@ -1,0 +1,2 @@
+- changed group /etc/sysconfig/squid - it's squid now . Without that
+  squid was crushing while rotating.
