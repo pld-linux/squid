@@ -55,6 +55,7 @@ BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
 PreReq:		rc-scripts >= 0.2.0
 PreReq:		setup >= 2.4.6
@@ -440,6 +441,8 @@ Samba 2.2.4 lub wy¿szego.
 %patch111 -p1
 %{?with_combined_log:%patch112 -p1}
 
+%{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
+
 %build
 %{__aclocal}
 %{__autoconf}
@@ -474,10 +477,6 @@ Samba 2.2.4 lub wy¿szego.
 	--with-pthreads
 
 %{__make}
-
-perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' contrib/*
-perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g' scripts/*
-find helpers/ -type f | xargs perl -pi -e 's#%{_prefix}/.*bin/perl#%{_bindir}/perl#g'
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -541,7 +540,7 @@ rm -rf $RPM_BUILD_ROOT
 %useradd -o -u 91 -s /bin/false -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid
 %addusertogroup stats squid
 
-[ -L %{_datadir}/squid/errors ] && rm -rf %{_datadir}/squid/errors || :
+[ -L %{_datadir}/squid/errors ] && rm -f %{_datadir}/squid/errors || :
 
 %post
 if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
