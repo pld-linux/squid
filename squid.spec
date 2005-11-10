@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	2.4
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
