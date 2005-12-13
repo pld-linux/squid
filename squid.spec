@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	3
+Release:	4
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -181,7 +181,7 @@ Summary:	CGI script for Squid management
 Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	httpd
+Requires:	webserver
 
 %description cachemgr
 Cachemgr.cgi is a CGI script that allows administrator to chceck
