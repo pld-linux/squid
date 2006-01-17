@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	5
+Release:	6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -53,7 +53,7 @@ URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
-BuildRequires:	openldap-devel
+BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
