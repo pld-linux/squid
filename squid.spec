@@ -29,10 +29,10 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
-Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-setenv.patch
-Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-SMB_BadFetch.patch
-Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-wbinfo_group.patch
-Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-asyncio_counters.patch
+Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-setenv.patch
+Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-SMB_BadFetch.patch
+Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-wbinfo_group.patch
+Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-asyncio_counters.patch
 Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-prctl_args.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
