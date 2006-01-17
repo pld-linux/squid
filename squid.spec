@@ -33,6 +33,7 @@ Patch0:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-se
 Patch1:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-SMB_BadFetch.patch
 Patch2:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-wbinfo_group.patch
 Patch3:		http://www.squid-cache.org/Versions/v2/2.5/bugs/%{name}-2.5.STABLE12-asyncio_counters.patch
+Patch4:		http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE12-prctl_args.patch
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -443,6 +444,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 # Other patches:
 %patch100 -p1
 %patch101 -p1
