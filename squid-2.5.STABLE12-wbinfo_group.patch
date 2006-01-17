@@ -1,0 +1,49 @@
+Index: squid/helpers/external_acl/wbinfo_group/wbinfo_group.pl
+diff -c squid/helpers/external_acl/wbinfo_group/wbinfo_group.pl:1.1.2.3 squid/helpers/external_acl/wbinfo_group/wbinfo_group.pl:1.1.2.4
+*** squid/helpers/external_acl/wbinfo_group/wbinfo_group.pl:1.1.2.3	Wed Jun 29 14:34:14 2005
+--- squid/helpers/external_acl/wbinfo_group/wbinfo_group.pl	Sat Dec 24 03:51:42 2005
+***************
+*** 12,22 ****
+  #   Jerry Murdock <jmurdock@itraktech.com>
+  #
+  # Version history:
+! #   2002-07-05 Jerry Murdock <jmurdock@itraktech.com>
+! #		Initial release
+  #
+  #   2005-06-28 Arno Streuli <astreuli@gmail.com>
+  #               Add multi group check
+  
+  
+  # external_acl uses shell style lines in it's protocol
+--- 12,25 ----
+  #   Jerry Murdock <jmurdock@itraktech.com>
+  #
+  # Version history:
+! #   2005-12-24 Guido Serassio <guido.serassio@acmeconsulting.it>
+! #               Fix for wbinfo from Samba 3.0.21
+  #
+  #   2005-06-28 Arno Streuli <astreuli@gmail.com>
+  #               Add multi group check
++ #
++ #   2002-07-05 Jerry Murdock <jmurdock@itraktech.com>
++ #		Initial release
+  
+  
+  # external_acl uses shell style lines in it's protocol
+***************
+*** 35,41 ****
+  #
+  sub check {
+          local($user, $group) = @_;
+!         $groupSID = `wbinfo -n "$group"`;
+          chop  $groupSID;
+          $groupGID = `wbinfo -Y "$groupSID"`;
+          chop $groupGID;
+--- 38,44 ----
+  #
+  sub check {
+          local($user, $group) = @_;
+!         $groupSID = `wbinfo -n "$group" | cut -d" " -f1`;
+          chop  $groupSID;
+          $groupGID = `wbinfo -Y "$groupSID"`;
+          chop $groupGID;
