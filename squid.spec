@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	6
+Release:	7
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -57,7 +57,7 @@ BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
 BuildRequires:	unzip
 Requires(post):	/bin/hostname
@@ -570,22 +570,16 @@ if ! grep -q "^visible_hostname" /etc/squid/squid.conf; then
 	echo visible_hostname $hostname >> /etc/squid/squid.conf
 fi
 
+/sbin/chkconfig --add squid
 if [ "$1" = "1" ]; then
-	/sbin/chkconfig --add squid
 	/etc/rc.d/init.d/squid init >&2
-	echo "Run \"/etc/rc.d/init.d/squid start\" to start squid." >&2
-else
-	if [ -f /var/lock/subsys/squid ]; then
-		/etc/rc.d/init.d/squid restart >&2
-	fi
 fi
+%service squid restart
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/squid ]; then
-		/etc/rc.d/init.d/squid stop >&2
-	fi
 	/sbin/chkconfig --del squid
+	%service squid stop
 
 	# nuke squid cache if uninstalling
 	rm -rf /var/cache/squid/??
