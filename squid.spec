@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	7
+Release:	7.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -496,7 +496,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
 	--with-auth-on-acceleration \
-	--with-pthreads
+	--with-pthreads \
+	--with-maxfd=1048576
 
 %{__make}
 
