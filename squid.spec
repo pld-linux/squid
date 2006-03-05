@@ -11,7 +11,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.5.STABLE12
-Release:	8
+Release:	8.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -49,6 +49,8 @@ Patch110:	%{name}-empty-referer.patch
 Patch111:	%{name}-align.patch
 Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch113:	%{name}-auth_on_acceleration.patch
+Patch114:	%{name}-fd-config.patch
+Patch115:	%{name}-no-u_short.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -460,6 +462,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch111 -p1
 %{?with_combined_log:%patch112 -p1}
 %patch113 -p1
+%patch114 -p1
+%patch115 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -497,7 +501,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--sysconfdir=%{_sysconfdir} \
 	--with-auth-on-acceleration \
 	--with-pthreads \
-	--with-maxfd=524288
+	--enable-fd-config
 
 %{__make}
 
