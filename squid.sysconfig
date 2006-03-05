@@ -3,9 +3,6 @@
 # Try to define nice-level for running squid
 SERVICE_RUN_NICE_LEVEL="+5"
 
-# Set number of open files(descriptors) to something sane
-SERVICE_LIMITS="-n 8192"
-
 # default squid options
 # -D disables initial dns checks. If you most likely will not to have an
 #    internet connection when you start squid, uncomment this
