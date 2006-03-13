@@ -559,9 +559,6 @@ rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%triggerpostun -- squid < 7:2.5.STABLE7-5
-%addusertogroup stats squid
-
 %pre
 %groupadd -g 91 squid
 %useradd -o -u 91 -s /bin/false -g squid -c "SQUID http caching daemon" -d /var/cache/squid squid
@@ -577,7 +574,7 @@ fi
 
 /sbin/chkconfig --add squid
 if [ "$1" = "1" ]; then
-	/etc/rc.d/init.d/squid init >&2
+	/sbin/service squid init >&2
 fi
 %service squid restart
 
@@ -595,6 +592,9 @@ if [ "$1" = "0" ]; then
 	%userremove squid
 	%groupremove squid
 fi
+
+%triggerpostun -- squid < 7:2.5.STABLE7-5
+%addusertogroup stats squid
 
 %files
 %defattr(644,root,root,755)
