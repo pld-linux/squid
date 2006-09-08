@@ -1,0 +1,3 @@
+- set maximum number of used file descriptors to:
+  - 8192 via sysconfig instead of hardcoded init script
+  - something insane at compile time to allow going above 8192 at runtime
