@@ -1,3 +1,5 @@
+# TODO
+# - new lang? /usr/share/squid/errors/Azerbaijani
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
