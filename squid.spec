@@ -1,4 +1,5 @@
 # TODO
+# - use /usr/lib/cgi-bin instead of /home/services
 # - new lang? /usr/share/squid/errors/Azerbaijani
 #
 # Conditional build:
