@@ -13,13 +13,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
-Version:	2.5.STABLE14
-Release:	4
+Version:	2.6.STABLE5
+Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v2/2.5/%{name}-%{version}.tar.bz2
-# Source0-md5:	f413e0b887a5f9b2a75350243ed5564c
+Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
+# Source0-md5:	b9f2e3b2c9e2c44e0fb729bf8f26d945
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -32,8 +32,7 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
-Patch10:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE14-httpReplyDestroy.patch
-Patch11:	http://www.squid-cache.org/Versions/v2/2.5/bugs/squid-2.5.STABLE14-hierarchy_tag.patch
+# lets have fun - there is no patches... yet :)
 # Other patches:
 Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
@@ -442,25 +441,24 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %prep
 %setup -q -a1 -a4
 # Bug fixes from Squid home page:
-%patch10 -p1
-%patch11 -p1
+
 # Other patches:
-%patch100 -p1
+#%patch100 -p1	--needs fix
 %patch101 -p1
 %patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch105 -p1
+#%patch103 -p1	--needs fix
+#%patch104 -p1	--needs fix
+#%patch105 -p1	--needs fix
 %patch106 -p1
 %patch107 -p1
-%patch108 -p1
+#%patch108 -p1	--needs fix
 %patch109 -p1
 %patch110 -p1
 %patch111 -p1
 %{?with_combined_log:%patch112 -p1}
 %patch113 -p1
-%patch114 -p1
-%patch115 -p1
+#%patch114 -p1	--needs fix
+#%patch115 -p1	--needs fix
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
