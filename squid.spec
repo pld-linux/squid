@@ -14,7 +14,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.6.STABLE5
-Release:	0.1
+Release:	0.2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -469,34 +469,37 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__automake}
 %configure \
 	--datadir=%{_datadir}/squid \
-	--disable-ipf-transparent \
-	--enable-arp-acl \
-	--enable-auth=yes \
-	--enable-basic-auth-helpers=yes \
-	--enable-cache-digests \
-	--enable-carp \
-	--enable-delay-pools \
-	--enable-digest-auth-helpers=yes \
-	--enable-err-language=English \
-	--enable-external-acl-helpers=yes \
-	--enable-forw-via-db \
-	--enable-htcp \
-	--enable-icmp \
-	--enable-linux-netfilter \
-	--enable-ntlm-auth-helpers=yes \
-	--enable-referer-log \
-	--enable-removal-policies="lru heap" \
-	--enable-ssl \
-	--enable-snmp \
 	--enable-storeio="aufs,coss,diskd,null,ufs" \
-	--enable-underscores \
+	--enable-removal-policies="heap,lru" \
+	--enable-icmp \
+	--enable-delay-pools \
 	--enable-useragent-log \
+	--enable-referer-log \
+	--enable-kill-parent-hack \
+	--enable-forward-log \
+	--enable-multicast-miss \
+	--enable-snmp \
+	--enable-arp-acl \
+	--enable-htcp \
+	--enable-ssl \
+	--enable-forw-via-db \
+	--enable-cache-digests \
+	--enable-err-language=English \
+	--enable-coss-aio-ops \
+	--enable-linux-netfilter \
+	--enable-large-cache-files \
+	--enable-auth="basic,digest,negotiate,ntlm" \
+	--enable-basic-auth-helpers="LDAP,MSNT,NCSA,PAM,SASL,SMB,YP,getpwnam,multi-domain-NTLM" \
+	--enable-digest-auth-helpers="ldap,password" \
+	--enable-external-acl-helpers="ip_user,ldap_group,session,unix_group,wbinfo_group" \
+	--enable-ntlm-auth-helpers="SMB,fakeauth,no_check" \
+	--enable-ntlm-fail-open \
 	--enable-x-accelerator-vary \
+	--enable-follow-x-forwarded-for	\
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
 	--with-auth-on-acceleration \
-	--with-pthreads \
-	--enable-fd-config
+	--with-pthreads
 
 %{__make}
 
