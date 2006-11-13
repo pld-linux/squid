@@ -14,7 +14,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.6.STABLE5
-Release:	0.3
+Release:	0.4
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -34,7 +34,9 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
 # lets have fun - there is no patches... yet :)
 # Other patches:
-Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
+#Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
+# http://lists.debian.org/debian-user-polish/2006/07/msg00213.html
+Patch100:	%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
 Patch102:	%{name}-location.patch
 Patch103:	%{name}-domainmatch.patch
@@ -436,7 +438,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-#%patch100 -p1	--needs fix
+%patch100 -p1
 %patch101 -p1
 %patch102 -p1
 #%patch103 -p1	--needs fix
