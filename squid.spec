@@ -1,6 +1,5 @@
 # TODO
 # - use /usr/lib/cgi-bin instead of /home/services
-# - new lang? /usr/share/squid/errors/Azerbaijani
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -56,6 +55,7 @@ URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
+BuildRequires:	db-devel
 BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
