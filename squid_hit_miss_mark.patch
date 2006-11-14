@@ -1,26 +1,25 @@
-diff -urN squid-2.6.STABLE5.orig/src/client_side.c squid-2.6.STABLE5/src/client_side.c
 --- squid-2.6.STABLE5.orig/src/client_side.c	2006-09-30 23:10:48.000000000 +0200
-+++ squid-2.6.STABLE5/src/client_side.c	2006-11-13 21:13:45.241328717 +0100
-@@ -2948,6 +2948,9 @@
- 	memBufAppend(&mb, body_buf, body_size);
-     }
-     /* write */
-+    {	int tos=isTcpHit(http->log_type) ? 0 : 8;
-+	setsockopt(fd,SOL_IP,IP_TOS,&tos,4);
-+    }
-     comm_write_mbuf(http->conn->fd, mb, clientWriteComplete, http);
-     /* clean up */
-   aborted:
-@@ -3000,6 +3003,9 @@
++++ squid-2.6.STABLE5/src/client_side.c	2006-11-14 18:26:59.459231147 +0100
+@@ -3000,6 +3000,9 @@
      if (!http->request->range) {
  	/* Avoid copying to MemBuf for non-range requests */
  	http->out.offset += size;
-+    {   int tos=isTcpHit(http->log_type) ? 0 : 8;                                                                                                        
-+	setsockopt(fd,SOL_IP,IP_TOS,&tos,4);                                                                                                             
-+    }
++	{  int tos=isTcpHit(http->log_type) ? 0 : 8;                                                                                                            
++	   setsockopt(fd,SOL_IP,IP_TOS,&tos,4);                                                                                                                 
++	}
  	comm_write(fd, buf, size, clientWriteBodyComplete, http, NULL);
  	/* NULL because clientWriteBodyComplete frees it */
  	return;
+@@ -3034,6 +3037,9 @@
+ 	memBufAppend(&mb, buf, size);
+     }
+     /* write */
++    {  int tos=isTcpHit(http->log_type) ? 0 : 8;
++       setsockopt(fd,SOL_IP,IP_TOS,&tos,4);
++    }
+     comm_write_mbuf(fd, mb, clientWriteComplete, http);
+     /* if we don't do it, who will? */
+     memFree(buf, MEM_CLIENT_SOCK_BUF);
 diff -urN squid-2.6.STABLE5.orig/src/defines.h squid-2.6.STABLE5/src/defines.h
 --- squid-2.6.STABLE5.orig/src/defines.h	2006-08-19 14:40:31.000000000 +0200
 +++ squid-2.6.STABLE5/src/defines.h	2006-11-13 21:15:47.563667677 +0100
