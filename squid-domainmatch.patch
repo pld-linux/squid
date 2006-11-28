@@ -1,12 +1,21 @@
-diff -ru squid-2.3.STABLE4.old/src/acl.c squid-2.3.STABLE4/src/acl.c
---- squid-2.3.STABLE4.old/src/acl.c	Thu Mar  2 12:29:14 2000
-+++ squid-2.3.STABLE4/src/acl.c	Mon Nov  6 22:43:56 2000
-@@ -629,7 +629,7 @@
-     splayNode **Top = curlist;
+diff -urN squid-2.6.STABLE5.orig/src/acl.c squid-2.6.STABLE5/src/acl.c
+--- squid-2.6.STABLE5.orig/src/acl.c	2006-10-16 22:11:41.000000000 +0200
++++ squid-2.6.STABLE5/src/acl.c	2006-11-28 18:10:47.089402554 +0100
+@@ -843,7 +843,7 @@
      while ((t = strtokFile())) {
  	Tolower(t);
--	*Top = splay_insert(xstrdup(t), *Top, aclDomainCompare);
-+	*Top = splay_insert(xstrdup(t), *Top, aclHostDomainCompare);
+ 	t = xstrdup(t);
+-	*Top = splay_insert(t, *Top, aclDomainCompare);
++	*Top = splay_insert(t, *Top, aclHostDomainCompare);
+ 	if (splayLastResult == 0)
+ 	    safe_free(t);
      }
- }
- 
+@@ -869,7 +869,7 @@
+     Top = &(*datap)->values;
+     while ((t = strtokFile())) {
+ 	t = xstrdup(t);
+-	*Top = splay_insert(t, *Top, aclDomainCompare);
++	*Top = splay_insert(t, *Top, aclHostDomainCompare);
+ 	if (splayLastResult == 0)
+ 	    safe_free(t);
+     }
