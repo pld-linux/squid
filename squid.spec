@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.6.STABLE5
-Release:	0.5
+Release:	0.6
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -40,7 +40,6 @@ Patch101:	%{name}-fhs.patch
 Patch102:	%{name}-location.patch
 Patch103:	%{name}-domainmatch.patch
 Patch104:	%{name}-libnsl_fixes.patch
-Patch105:	%{name}-ac_fix.patch
 Patch106:	%{name}-crash-on-ENOSPC.patch
 Patch107:	%{name}-newssl.patch
 Patch108:	%{name}-nolibs.patch
@@ -50,7 +49,6 @@ Patch111:	%{name}-align.patch
 Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch113:	%{name}-auth_on_acceleration.patch
 Patch114:	%{name}-fd-config.patch
-Patch115:	%{name}-no-u_short.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -441,19 +439,17 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch100 -p1
 %patch101 -p1
 %patch102 -p1
-#%patch103 -p1	--needs fix
+%patch103 -p1
 #%patch104 -p1	--needs fix
-#%patch105 -p1	--needs fix
 %patch106 -p1
 %patch107 -p1
 #%patch108 -p1	--needs fix
-#%patch109 -p1
+%patch109 -p1
 %patch110 -p1
 %patch111 -p1
 %{?with_combined_log:%patch112 -p1}
 %patch113 -p1
 %patch114 -p1
-#%patch115 -p1	--needs fix
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -496,7 +492,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--with-auth-on-acceleration \
 	--with-pthreads \
 	--enable-fd-config \
-	--with-maxfd=8192
+	--with-maxfd=32768
 
 %{__make}
 
