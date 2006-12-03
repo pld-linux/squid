@@ -13,7 +13,7 @@ Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·þÎñÆ÷
 Name:		squid
 Version:	2.6.STABLE5
-Release:	0.6
+Release:	0.7
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -42,7 +42,6 @@ Patch103:	%{name}-domainmatch.patch
 Patch104:	%{name}-libnsl_fixes.patch
 Patch106:	%{name}-crash-on-ENOSPC.patch
 Patch107:	%{name}-newssl.patch
-Patch108:	%{name}-nolibs.patch
 Patch109:	%{name}-more_FD-new.patch
 Patch110:	%{name}-empty-referer.patch
 Patch111:	%{name}-align.patch
@@ -440,10 +439,9 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
-#%patch104 -p1	--needs fix
+%patch104 -p1
 %patch106 -p1
 %patch107 -p1
-#%patch108 -p1	--needs fix
 %patch109 -p1
 %patch110 -p1
 %patch111 -p1
