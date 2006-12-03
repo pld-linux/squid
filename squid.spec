@@ -43,7 +43,7 @@ Patch104:	%{name}-libnsl_fixes.patch
 Patch106:	%{name}-crash-on-ENOSPC.patch
 Patch107:	%{name}-newssl.patch
 Patch108:	%{name}-nolibs.patch
-Patch109:	http://piorun.ds.pg.gda.pl/~blues/patches/%{name}-more_FD-new.patch
+Patch109:	%{name}-more_FD-new.patch
 Patch110:	%{name}-empty-referer.patch
 Patch111:	%{name}-align.patch
 Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
