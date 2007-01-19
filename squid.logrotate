@@ -1,4 +1,18 @@
-/var/log/squid/[asc]*.log {
+/var/log/squid/access*.log {
+	olddir /var/log/archiv/squid
+	weekly
+	rotate 4
+#	dateext
+	compress
+	create 660 root squid
+	postrotate
+		# signal Squid to restart logging with the new files
+		/usr/sbin/squid -k rotate
+	endscript
+	sharedscripts
+}
+
+/var/log/squid/[sc]*.log {
 	olddir /var/log/archiv/squid
 	weekly
 	rotate 4
@@ -8,4 +22,5 @@
 		# signal Squid to restart logging with the new files
 		/usr/sbin/squid -k rotate
 	endscript
+	sharedscripts
 }
