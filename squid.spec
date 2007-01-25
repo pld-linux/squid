@@ -1,5 +1,6 @@
 # TODO
 # - use /usr/lib/cgi-bin instead of /home/services
+# - tested fd-config.patch (works in Fedora)
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -12,13 +13,13 @@ Summary(ru):	Squid - ËÜÛ ÏÂßÅËÔÏ× Internet
 Summary(uk):	Squid - ËÅÛ ÏÂ'¤ËÔ¦× Internet
 Summary(zh_CN):	SQUID ¸ßËÙ»º³å´úÀí·şÎñÆ÷
 Name:		squid
-Version:	2.6.STABLE6
+Version:	2.6.STABLE9
 Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
-# Source0-md5:	fef554dd337695d59a17c6e1d8d604a9
+# Source0-md5:	95997d6cb38fdb562ecb790c553f9cfc
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
