@@ -6,12 +6,12 @@
 %bcond_with	combined_log	# enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
-Summary(es):	proxy/cache para WWW/FTP/gopher
-Summary(pl):	Uniwersalny serwer proxy-cache
-Summary(pt_BR):	Cache Squid de objetos Internet
-Summary(ru):	Squid - À‹€ œ¬ﬂ≈À‘œ◊ Internet
-Summary(uk):	Squid - À≈€ œ¬'§À‘¶◊ Internet
-Summary(zh_CN):	SQUID ∏ﬂÀŸª∫≥Â¥˙¿Ì∑˛ŒÒ∆˜
+Summary(es.UTF-8):   proxy/cache para WWW/FTP/gopher
+Summary(pl.UTF-8):   Uniwersalny serwer proxy-cache
+Summary(pt_BR.UTF-8):   Cache Squid de objetos Internet
+Summary(ru.UTF-8):   Squid - –∫—ç—à –æ–±—ä–µ–∫—Ç–æ–≤ Internet
+Summary(uk.UTF-8):   Squid - –∫–µ—à –æ–±'—î–∫—Ç—ñ–≤ Internet
+Summary(zh_CN.UTF-8):   SQUID È´òÈÄüÁºìÂÜ≤‰ª£ÁêÜÊúçÂä°Âô®
 Name:		squid
 Version:	2.6.STABLE9
 Release:	0.1
@@ -102,86 +102,86 @@ perform a single, blocking Domain Name System (DNS) lookup. This
 reduces the amount of time the cache waits for DNS lookups. Squid is
 derived from the ARPA-funded Harvest project.
 
-%description -l es
-Squid es un servidor proxy con cachÈ de alto desempeÒo para clientes
+%description -l es.UTF-8
+Squid es un servidor proxy con cach√© de alto desempe√±o para clientes
 web, soportando FTP, gopher y HTTP. Diferentemente de softwares
-tradicionales de cachÈ squid manipula todas las requisiciones en un
-˙nico proceso sin bloqueos, direccionado a E/S. Mantienen metadatos y
-objetos frecuentemente pedidos en uno cachÈ en memoria RAM. Hace cachÈ
+tradicionales de cach√© squid manipula todas las requisiciones en un
+√∫nico proceso sin bloqueos, direccionado a E/S. Mantienen metadatos y
+objetos frecuentemente pedidos en uno cach√© en memoria RAM. Hace cach√©
 de resoluciones DNS, soporta resoluciones DNS sin bloqueo y implementa
-un cachÈ negativo de requisiciones que fallen. Si tiene poca memoria
-da un vistazo en la versiÛn NOVM de este paquete. TambiÈn soporta SSL,
+un cach√© negativo de requisiciones que fallen. Si tiene poca memoria
+da un vistazo en la versi√≥n NOVM de este paquete. Tambi√©n soporta SSL,
 controles extensivos de acceso y registro (log) completo de las
 requisiciones. Usando el ligero Protocolo de Caches Internet (ICP)
-puede ser usado en una jerarquÌa de servidores para mayor ahorro de la
-banda de comunicaciÛn. Est· compuesto del programa squid (servidor
-principal), del programa dnsserver (para resoluciÛn DNS), del programa
+puede ser usado en una jerarqu√≠a de servidores para mayor ahorro de la
+banda de comunicaci√≥n. Est√° compuesto del programa squid (servidor
+principal), del programa dnsserver (para resoluci√≥n DNS), del programa
 ftpget (para transmisiones ftp) y otras herramientas clientes y para
-administraciÛn. Cuando squid se inicia, dispara un n˙mero configurable
+administraci√≥n. Cuando squid se inicia, dispara un n√∫mero configurable
 de procesos dnsserver, cada uno pudiendo ejecutar solamente una
-resoluciÛn DNS con poder de bloquear. Esto reduce el tiempo que el
-cachÈ espera por resoluciones DNS. Fue derivado del proyecto Harvest,
+resoluci√≥n DNS con poder de bloquear. Esto reduce el tiempo que el
+cach√© espera por resoluciones DNS. Fue derivado del proyecto Harvest,
 financiado por la ARPA.
 
-%description -l pl
-Squid jest wysoce wydajnym serwerem proxy-cache dla przegl±darek WWW,
-klientÛw FTP i gopher. Squid przechowuje najczÍ∂ciej pobierane dane w
-pamiÍci RAM i zapamiÍtuje odwo≥ania do DNS. Squid oferuje wsparcie dla
-SSL, rozbudowan± kontrolÍ dostÍpu oraz pe≥ne rejestrowanie pobieranych
-danych. DziÍki uøyciu protoko≥u ICP (Internet Cache Protocol), serwer
-squid moøna ≥±czyÊ w hierarchiÍ, zwiÍkszaj±c ich efektywno∂Ê. Pakiet
-squid obejmuje: g≥Ûwny program serwera squid, program dostarczaj±cy
-informacji z DNS dnsserver, program odbieraj±cy dane FTP ftpget, oraz
-pomocnicze programy do zarz±dzania. Squid wywodzi siÍ ze
+%description -l pl.UTF-8
+Squid jest wysoce wydajnym serwerem proxy-cache dla przeglƒÖdarek WWW,
+klient√≥w FTP i gopher. Squid przechowuje najczƒô≈õciej pobierane dane w
+pamiƒôci RAM i zapamiƒôtuje odwo≈Çania do DNS. Squid oferuje wsparcie dla
+SSL, rozbudowanƒÖ kontrolƒô dostƒôpu oraz pe≈Çne rejestrowanie pobieranych
+danych. Dziƒôki u≈ºyciu protoko≈Çu ICP (Internet Cache Protocol), serwer
+squid mo≈ºna ≈ÇƒÖczyƒá w hierarchiƒô, zwiƒôkszajƒÖc ich efektywno≈õƒá. Pakiet
+squid obejmuje: g≈Ç√≥wny program serwera squid, program dostarczajƒÖcy
+informacji z DNS dnsserver, program odbierajƒÖcy dane FTP ftpget, oraz
+pomocnicze programy do zarzƒÖdzania. Squid wywodzi siƒô ze
 sponsorowanego przez ARPA projektu Harvest.
 
-%description -l pt_BR
-O Squid È um servidor proxy com cache de alta performance para
+%description -l pt_BR.UTF-8
+O Squid √© um servidor proxy com cache de alta performance para
 clientes web, suportando FTP, gopher e HTTP. Diferentemente de
-softwares tradicionais de cache o squid manipula todas as requisiÁıes
-em um ˙nico processo sem bloqueios, direcionado a E/S.
+softwares tradicionais de cache o squid manipula todas as requisi√ß√µes
+em um √∫nico processo sem bloqueios, direcionado a E/S.
 
-MantÈm meta dados e objetos freq¸entemente pedidos num cache em
-memÛria RAM. Faz cache de resoluÁıes DNS, suporta resoluÁıes DNS sem
-bloqueio e implementa um cache negativo de requisiÁıes que falharem.
-Se vocÍ tem pouca memÛria dÍ uma olhada na vers„o NOVM deste pacote.
+Mant√©m meta dados e objetos freq√ºentemente pedidos num cache em
+mem√≥ria RAM. Faz cache de resolu√ß√µes DNS, suporta resolu√ß√µes DNS sem
+bloqueio e implementa um cache negativo de requisi√ß√µes que falharem.
+Se voc√™ tem pouca mem√≥ria d√™ uma olhada na vers√£o NOVM deste pacote.
 
-TambÈm suporta SSL, controles extensivos de acesso e registro (log)
-completo das requisiÁıes. Usando o leve Protocolo de Caches Internet
+Tamb√©m suporta SSL, controles extensivos de acesso e registro (log)
+completo das requisi√ß√µes. Usando o leve Protocolo de Caches Internet
 (ICP) ele pode ser usado em uma hierarquia de servidores para maior
-economia de banda de comunicaÁ„o.
+economia de banda de comunica√ß√£o.
 
 Ele consiste do programa squid (servidor principal), do programa
-dnsserver (para resoluÁ„o DNS), do programa ftpget (para transmissıes
+dnsserver (para resolu√ß√£o DNS), do programa ftpget (para transmiss√µes
 ftp) e outras ferramentas clientes e para gerenciamento. Quando o
-squid È inicializado ele dispara um n˙mero configur·vel de processos
-dnsserver, cada um podendo executar somente uma resoluÁ„o DNS
-bloqueante. Isto reduz o tempo que o cache espera por resoluÁıes DNS.
+squid √© inicializado ele dispara um n√∫mero configur√°vel de processos
+dnsserver, cada um podendo executar somente uma resolu√ß√£o DNS
+bloqueante. Isto reduz o tempo que o cache espera por resolu√ß√µes DNS.
 
 Foi derivado do projeto Harvest, financiado pela ARPA.
 
-%description -l ru
-Squid - ‹‘œ ◊Ÿ”œÀœ–“œ…⁄◊œƒ…‘≈ÃÿŒŸ  À‹€…“’¿›…  –“œÀ”…-”≈“◊≈“ ƒÃ—
-ÀÃ…≈Œ‘œ◊ web, –œƒƒ≈“÷…◊¡¿›…  œ¬ﬂ≈À‘Ÿ ƒ¡ŒŒŸ» ‘…–¡ FTP, gopher … HTTP. ˜
-œ‘Ã…ﬁ…≈ œ‘ ‘“¡ƒ…√…œŒŒŸ» À‹€…“’¿›…» –“œ«“¡ÕÕ, Squid œ¬“¡¬¡‘Ÿ◊¡≈‘ ◊”≈
-⁄¡–“œ”Ÿ –“… –œÕœ›… œƒŒœ«œ Œ≈¬ÃœÀ…“’¿›≈«œ”—, ’–“¡◊Ã—≈Õœ«œ
-◊◊œƒœÕ-◊Ÿ◊œƒœÕ –“œ√≈””¡.
+%description -l ru.UTF-8
+Squid - —ç—Ç–æ –≤—ã—Å–æ–∫–æ–ø—Ä–æ–∏–∑–≤–æ–¥–∏—Ç–µ–ª—å–Ω—ã–π –∫—ç—à–∏—Ä—É—é—â–∏–π –ø—Ä–æ–∫—Å–∏-—Å–µ—Ä–≤–µ—Ä –¥–ª—è
+–∫–ª–∏–µ–Ω—Ç–æ–≤ web, –ø–æ–¥–¥–µ—Ä–∂–∏–≤–∞—é—â–∏–π –æ–±—ä–µ–∫—Ç—ã –¥–∞–Ω–Ω—ã—Ö —Ç–∏–ø–∞ FTP, gopher –∏ HTTP. –í
+–æ—Ç–ª–∏—á–∏–µ –æ—Ç —Ç—Ä–∞–¥–∏—Ü–∏–æ–Ω–Ω—ã—Ö –∫—ç—à–∏—Ä—É—é—â–∏—Ö –ø—Ä–æ–≥—Ä–∞–º–º, Squid –æ–±—Ä–∞–±–∞—Ç—ã–≤–∞–µ—Ç –≤—Å–µ
+–∑–∞–ø—Ä–æ—Å—ã –ø—Ä–∏ –ø–æ–º–æ—â–∏ –æ–¥–Ω–æ–≥–æ –Ω–µ–±–ª–æ–∫–∏—Ä—É—é—â–µ–≥–æ—Å—è, —É–ø—Ä–∞–≤–ª—è–µ–º–æ–≥–æ
+–≤–≤–æ–¥–æ–º-–≤—ã–≤–æ–¥–æ–º –ø—Ä–æ—Ü–µ—Å—Å–∞.
 
-¸‘œ‘ –¡À≈‘ …Õ≈≈‘ ◊”‘“œ≈ŒŒ’¿ –œƒƒ≈“÷À’ ¬¡⁄Ÿ ƒ¡ŒŒŸ» ”≈‘≈◊Ÿ» ICMP-–“œ¬
+–≠—Ç–æ—Ç –ø–∞–∫–µ—Ç –∏–º–µ–µ—Ç –≤—Å—Ç—Ä–æ–µ–Ω–Ω—É—é –ø–æ–¥–¥–µ—Ä–∂–∫—É –±–∞–∑—ã –¥–∞–Ω–Ω—ã—Ö —Å–µ—Ç–µ–≤—ã—Ö ICMP-–ø—Ä–æ–±
 (Netdb).
 
-%description -l uk
-Squid - √≈ À≈€’¿ﬁ…  –“œÀ”¶-”≈“◊≈“ ƒÃ— web-ÀÃ¶§Œ‘¶◊, ›œ –¶ƒ‘“…Õ’§
-œ¬'§À‘… ƒ¡Œ…» ‘…–’ FTP, gopher ‘¡ HTTP. Ó¡ ◊¶ƒÕ¶Œ’ ◊¶ƒ ‘“¡ƒ…√¶ Œ…»
-À≈€’¿ﬁ…» –“œ«“¡Õ, Squid œ¬“œ¬Ã—§ ◊”¶ ⁄¡–…‘… ⁄¡ ƒœ–œÕœ«œ¿ œƒŒœ«œ
-Œ≈¬ÃœÀ’¿ﬁœ«œ, À≈“œ◊¡Œœ«œ ◊◊œƒœÕ-◊…◊œƒœÕ –“œ√≈”’.
+%description -l uk.UTF-8
+Squid - —Ü–µ –∫–µ—à—É—é—á–∏–π –ø—Ä–æ–∫—Å—ñ-—Å–µ—Ä–≤–µ—Ä –¥–ª—è web-–∫–ª—ñ—î–Ω—Ç—ñ–≤, —â–æ –ø—ñ–¥—Ç—Ä–∏–º—É—î
+–æ–±'—î–∫—Ç–∏ –¥–∞–Ω–∏—Ö —Ç–∏–ø—É FTP, gopher —Ç–∞ HTTP. –ù–∞ –≤—ñ–¥–º—ñ–Ω—É –≤—ñ–¥ —Ç—Ä–∞–¥–∏—Ü—ñ–π–Ω–∏—Ö
+–∫–µ—à—É—é—á–∏—Ö –ø—Ä–æ–≥—Ä–∞–º, Squid –æ–±—Ä–æ–±–ª—è—î –≤—Å—ñ –∑–∞–ø–∏—Ç–∏ –∑–∞ –¥–æ–ø–æ–º–æ–≥–æ—é –æ–¥–Ω–æ–≥–æ
+–Ω–µ–±–ª–æ–∫—É—é—á–æ–≥–æ, –∫–µ—Ä–æ–≤–∞–Ω–æ–≥–æ –≤–≤–æ–¥–æ–º-–≤–∏–≤–æ–¥–æ–º –ø—Ä–æ—Ü–µ—Å—É.
 
-„≈  –¡À≈‘ Õ¡§ ◊¬’ƒœ◊¡Œ’ –¶ƒ‘“…ÕÀ’ ¬¡⁄… ƒ¡Œ…» Õ≈“≈÷≈◊…» ICMP-–“œ¬
+–¶–µ–π –ø–∞–∫–µ—Ç –º–∞—î –≤–±—É–¥–æ–≤–∞–Ω—É –ø—ñ–¥—Ç—Ä–∏–º–∫—É –±–∞–∑–∏ –¥–∞–Ω–∏—Ö –º–µ—Ä–µ–∂–µ–≤–∏—Ö ICMP-–ø—Ä–æ–±
 (Netdb).
 
 %package cachemgr
 Summary:	CGI script for Squid management
-Summary(pl):	Skrypt CGI do zarz±dzania Squidem przez WWW
+Summary(pl.UTF-8):   Skrypt CGI do zarzƒÖdzania Squidem przez WWW
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	webserver
@@ -190,13 +190,13 @@ Requires:	webserver
 Cachemgr.cgi is a CGI script that allows administrator to chceck
 various informations about Squid via WWW.
 
-%description cachemgr -l pl
-Cachemgr.cgi jest skryptem CGI, ktÛry pozwala administratorowi
-zapoznaÊ siÍ z informacjami o pracy Squida poprzez WWW.
+%description cachemgr -l pl.UTF-8
+Cachemgr.cgi jest skryptem CGI, kt√≥ry pozwala administratorowi
+zapoznaƒá siƒô z informacjami o pracy Squida poprzez WWW.
 
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania LDAP dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -204,13 +204,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This Squid helper allows authentication against LDAP directories using
 the "simple authentication" (plain-text).
 
-%description ldap_auth -l pl
-Pakiet ten pozwala na uwierzytelnianie przez LDAP za pomoc± prostego
+%description ldap_auth -l pl.UTF-8
+Pakiet ten pozwala na uwierzytelnianie przez LDAP za pomocƒÖ prostego
 uwierzytelniania (otwartym tekstem).
 
 %package pam_auth
 Summary:	PAM authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania PAM dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania PAM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	pam >= 0.77.3
@@ -220,13 +220,13 @@ This program authenticates users against a PAM configured
 authentication service "squid". This allows you to authenticate Squid
 users to any authentication source for which you have a PAM module.
 
-%description pam_auth -l pl
-Program ten pozwala na uwierzytelnianie uøytkownikÛw squida w dowolnym
-ºrÛdle posiadaj±cym modu≥ PAM.
+%description pam_auth -l pl.UTF-8
+Program ten pozwala na uwierzytelnianie u≈ºytkownik√≥w squida w dowolnym
+≈∫r√≥dle posiadajƒÖcym modu≈Ç PAM.
 
 %package smb_auth
 Summary:	SMB authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania SMB dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania SMB dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -235,14 +235,14 @@ This is a proxy authentication module. With smb_auth you can
 authenticate proxy users against an SMB server like Windows NT or
 Samba.
 
-%description smb_auth -l pl
-To jest modu≥ uwierzytelniania proxy. Przy pomocy smb_auth moøna
-uwierzytelniaÊ uøytkownikÛw proxy na serwerach SMB, jak Windows NT czy
+%description smb_auth -l pl.UTF-8
+To jest modu≈Ç uwierzytelniania proxy. Przy pomocy smb_auth mo≈ºna
+uwierzytelniaƒá u≈ºytkownik√≥w proxy na serwerach SMB, jak Windows NT czy
 Samba.
 
 %package msnt_auth
 Summary:	MSNT domain authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania w domenie MSNT dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania w domenie MSNT dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -250,13 +250,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users on an NT domain.
 
-%description msnt_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy w domenie NT.
+%description msnt_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy w domenie NT.
 
 %package yp_auth
 Summary:	YP authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania YP dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania YP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -264,25 +264,25 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users on YP.
 
-%description yp_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy poprzez YP.
+%description yp_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy poprzez YP.
 
 %package ncsa_auth
 Summary:	NCSA httpd style authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania NCSA httpd dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania NCSA httpd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ncsa_auth
 This module uses a NCSA httpd style password file for authentication.
 
-%description ncsa_auth -l pl
-Modu≥ uwierzytelniania proxy uøywaj±cy pliku hase≥ jak w NCSA httpd.
+%description ncsa_auth -l pl.UTF-8
+Modu≈Ç uwierzytelniania proxy u≈ºywajƒÖcy pliku hase≈Ç jak w NCSA httpd.
 
 %package sasl_auth
 Summary:	SASL authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania SASL dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania SASL dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -290,13 +290,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users via SASL.
 
-%description sasl_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy poprzez SASL.
+%description sasl_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy poprzez SASL.
 
 %package getpwname_auth
 Summary:	getpwname authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania getpwname dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania getpwname dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -304,13 +304,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users using getpwname.
 
-%description getpwname_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy poprzez getpwname.
+%description getpwname_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy poprzez getpwname.
 
 %package passwd_auth
 Summary:	passwd authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania passwd dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania passwd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -318,13 +318,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users with separate passwd file.
 
-%description passwd_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy poprzez oddzielny plik passwd.
+%description passwd_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy poprzez oddzielny plik passwd.
 
 %package ntlm_auth
 Summary:	NTLM authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania NTLM dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania NTLM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -332,13 +332,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users on NTLM.
 
-%description ntlm_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy poprzez NTLM.
+%description ntlm_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy poprzez NTLM.
 
 %package digest_ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl):	Obs≥uga uwierzytelniania LDAP dla squida
+Summary(pl.UTF-8):   Obs≈Çuga uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -346,13 +346,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an authentication module for the Squid proxy server to
 authenticate users on LDAP.
 
-%description digest_ldap_auth -l pl
-Jest to modu≥ uwierzytelniania proxy, ktÛry pozwala na
-uwierzytelnianie uøytkownikÛw proxy poprzez LDAP.
+%description digest_ldap_auth -l pl.UTF-8
+Jest to modu≈Ç uwierzytelniania proxy, kt√≥ry pozwala na
+uwierzytelnianie u≈ºytkownik√≥w proxy poprzez LDAP.
 
 %package ip_acl
 Summary:	IP external ACL helper for Squid
-Summary(pl):	Wsparcie kontroli dostÍpu przez IP dla squida
+Summary(pl.UTF-8):   Wsparcie kontroli dostƒôpu przez IP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -360,13 +360,13 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an external ACL module for the Squid proxy server to limit
 access for users based on IP address.
 
-%description ip_acl -l pl
-Jest to modu≥ kontroli dostÍpu (ACL) do proxy, ktÛry pozwala na
-ograniczenie dostÍpu uøytkownikÛw proxy na podstawie ich adresu IP.
+%description ip_acl -l pl.UTF-8
+Jest to modu≈Ç kontroli dostƒôpu (ACL) do proxy, kt√≥ry pozwala na
+ograniczenie dostƒôpu u≈ºytkownik√≥w proxy na podstawie ich adresu IP.
 
 %package ldap_acl
 Summary:	LDAP group external ACL helper for Squid
-Summary(pl):	Wsparcie kontroli dostÍpu przez grupy LDAP dla squida
+Summary(pl.UTF-8):   Wsparcie kontroli dostƒôpu przez grupy LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -374,14 +374,14 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an external ACL module for the Squid proxy server to limit
 access for users based on LDAP group membership.
 
-%description ldap_acl -l pl
-Jest to modu≥ kontroli dostÍpu (ACL) do proxy, ktÛry pozwala na
-ograniczenie dostÍpu uøytkownikÛw proxy na podstawie ich
-przynaleøno∂ci do grup LDAP.
+%description ldap_acl -l pl.UTF-8
+Jest to modu≈Ç kontroli dostƒôpu (ACL) do proxy, kt√≥ry pozwala na
+ograniczenie dostƒôpu u≈ºytkownik√≥w proxy na podstawie ich
+przynale≈ºno≈õci do grup LDAP.
 
 %package unix_acl
 Summary:	UNIX group external ACL helper for Squid
-Summary(pl):	Wsparcie kontroli dostÍpu przez grupy UNIX dla squida
+Summary(pl.UTF-8):   Wsparcie kontroli dostƒôpu przez grupy UNIX dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -389,14 +389,14 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an external ACL module for the Squid proxy server to limit
 access for users based on UNIX group membership.
 
-%description unix_acl -l pl
-Jest to modu≥ kontroli dostÍpu (ACL) do proxy, ktÛry pozwala na
-ograniczenie dostÍpu uøytkownikÛw proxy na podstawie ich
-przynaleøno∂ci do grup UNIX.
+%description unix_acl -l pl.UTF-8
+Jest to modu≈Ç kontroli dostƒôpu (ACL) do proxy, kt√≥ry pozwala na
+ograniczenie dostƒôpu u≈ºytkownik√≥w proxy na podstawie ich
+przynale≈ºno≈õci do grup UNIX.
 
 %package wbinfo_acl
 Summary:	NT domain group external ACL helper for Squid
-Summary(pl):	Wsparcie kontroli dostÍpu przez grupy w domenie NT dla squida
+Summary(pl.UTF-8):   Wsparcie kontroli dostƒôpu przez grupy w domenie NT dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -404,10 +404,10 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This is an external ACL module for the Squid proxy server to limit
 access for users based on NT domain group membership using wbinfo.
 
-%description wbinfo_acl -l pl
-Jest to modu≥ kontroli dostÍpu (ACL) do proxy, ktÛry pozwala na
-ograniczenie dostÍpu uøytkownikÛw proxy na podstawie ich
-przynaleøno∂ci do grup w domenie NT przy uøyciu wbinfo.
+%description wbinfo_acl -l pl.UTF-8
+Jest to modu≈Ç kontroli dostƒôpu (ACL) do proxy, kt√≥ry pozwala na
+ograniczenie dostƒôpu u≈ºytkownik√≥w proxy na podstawie ich
+przynale≈ºno≈õci do grup w domenie NT przy u≈ºyciu wbinfo.
 
 %package session_acl
 Summary:	Squid session tracking external acl group helper
@@ -421,14 +421,14 @@ timer.
 
 %package scripts
 Summary:	Perl scripts for Squid
-Summary(pl):	Skrypty perlowe dla Squida
+Summary(pl.UTF-8):   Skrypty perlowe dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description scripts
 This package contains Perl scripts and contributed programs for Squid.
 
-%description scripts -l pl
+%description scripts -l pl.UTF-8
 Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %prep
