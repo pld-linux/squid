@@ -6,12 +6,12 @@
 %bcond_with	combined_log	# enables apache-like combined log format
 #
 Summary:	SQUID Internet Object Cache
-Summary(es.UTF-8):   proxy/cache para WWW/FTP/gopher
-Summary(pl.UTF-8):   Uniwersalny serwer proxy-cache
-Summary(pt_BR.UTF-8):   Cache Squid de objetos Internet
-Summary(ru.UTF-8):   Squid - кэш объектов Internet
-Summary(uk.UTF-8):   Squid - кеш об'єктів Internet
-Summary(zh_CN.UTF-8):   SQUID 高速缓冲代理服务器
+Summary(es.UTF-8):	proxy/cache para WWW/FTP/gopher
+Summary(pl.UTF-8):	Uniwersalny serwer proxy-cache
+Summary(pt_BR.UTF-8):	Cache Squid de objetos Internet
+Summary(ru.UTF-8):	Squid - кэш объектов Internet
+Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
+Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.6.STABLE9
 Release:	0.1
@@ -181,7 +181,7 @@ Squid - це кешуючий проксі-сервер для web-клієнт�
 
 %package cachemgr
 Summary:	CGI script for Squid management
-Summary(pl.UTF-8):   Skrypt CGI do zarządzania Squidem przez WWW
+Summary(pl.UTF-8):	Skrypt CGI do zarządzania Squidem przez WWW
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	webserver
@@ -196,7 +196,7 @@ zapoznać się z informacjami o pracy Squida poprzez WWW.
 
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania LDAP dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -210,7 +210,7 @@ uwierzytelniania (otwartym tekstem).
 
 %package pam_auth
 Summary:	PAM authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania PAM dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania PAM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	pam >= 0.77.3
@@ -226,7 +226,7 @@ Program ten pozwala na uwierzytelnianie użytkowników squida w dowolnym
 
 %package smb_auth
 Summary:	SMB authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania SMB dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania SMB dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -242,7 +242,7 @@ Samba.
 
 %package msnt_auth
 Summary:	MSNT domain authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania w domenie MSNT dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania w domenie MSNT dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -256,7 +256,7 @@ uwierzytelnianie użytkowników proxy w domenie NT.
 
 %package yp_auth
 Summary:	YP authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania YP dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania YP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -270,7 +270,7 @@ uwierzytelnianie użytkowników proxy poprzez YP.
 
 %package ncsa_auth
 Summary:	NCSA httpd style authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania NCSA httpd dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania NCSA httpd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -282,7 +282,7 @@ Moduł uwierzytelniania proxy używający pliku haseł jak w NCSA httpd.
 
 %package sasl_auth
 Summary:	SASL authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania SASL dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania SASL dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -296,7 +296,7 @@ uwierzytelnianie użytkowników proxy poprzez SASL.
 
 %package getpwname_auth
 Summary:	getpwname authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania getpwname dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania getpwname dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -310,7 +310,7 @@ uwierzytelnianie użytkowników proxy poprzez getpwname.
 
 %package passwd_auth
 Summary:	passwd authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania passwd dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania passwd dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -324,7 +324,7 @@ uwierzytelnianie użytkowników proxy poprzez oddzielny plik passwd.
 
 %package ntlm_auth
 Summary:	NTLM authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania NTLM dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania NTLM dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -338,7 +338,7 @@ uwierzytelnianie użytkowników proxy poprzez NTLM.
 
 %package digest_ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl.UTF-8):   Obsługa uwierzytelniania LDAP dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -352,7 +352,7 @@ uwierzytelnianie użytkowników proxy poprzez LDAP.
 
 %package ip_acl
 Summary:	IP external ACL helper for Squid
-Summary(pl.UTF-8):   Wsparcie kontroli dostępu przez IP dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez IP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -366,7 +366,7 @@ ograniczenie dostępu użytkowników proxy na podstawie ich adresu IP.
 
 %package ldap_acl
 Summary:	LDAP group external ACL helper for Squid
-Summary(pl.UTF-8):   Wsparcie kontroli dostępu przez grupy LDAP dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy LDAP dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -381,7 +381,7 @@ przynależności do grup LDAP.
 
 %package unix_acl
 Summary:	UNIX group external ACL helper for Squid
-Summary(pl.UTF-8):   Wsparcie kontroli dostępu przez grupy UNIX dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy UNIX dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -396,7 +396,7 @@ przynależności do grup UNIX.
 
 %package wbinfo_acl
 Summary:	NT domain group external ACL helper for Squid
-Summary(pl.UTF-8):   Wsparcie kontroli dostępu przez grupy w domenie NT dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy w domenie NT dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -421,7 +421,7 @@ timer.
 
 %package scripts
 Summary:	Perl scripts for Squid
-Summary(pl.UTF-8):   Skrypty perlowe dla Squida
+Summary(pl.UTF-8):	Skrypty perlowe dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
