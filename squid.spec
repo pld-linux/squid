@@ -436,7 +436,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-%patch100 -p1
+#%patch100 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
