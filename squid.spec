@@ -1,6 +1,7 @@
 # TODO
 # - use /usr/lib/cgi-bin instead of /home/services
 # - tested fd-config.patch (works in Fedora)
+# - tested new hit_miss_mark.patch (ZPH TOS)
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -14,7 +15,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.6.STABLE12
-Release:	0.1
+Release:	0.2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -34,8 +35,7 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
 # lets have fun - there is no patches... yet :)
 # Other patches:
-#Patch100:	http://www.sed.pl/~mrk/qos/%{name}_hit_miss_mark.patch
-# http://lists.debian.org/debian-user-polish/2006/07/msg00213.html
+# http://www.it-academy.bg/zph/
 Patch100:	%{name}_hit_miss_mark.patch
 Patch101:	%{name}-fhs.patch
 Patch102:	%{name}-location.patch
@@ -436,7 +436,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-#%patch100 -p1
+%patch100 -p1
 %patch101 -p1
 %patch102 -p1
 %patch103 -p1
