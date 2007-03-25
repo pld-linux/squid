@@ -13,13 +13,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	2.6.STABLE10
+Version:	2.6.STABLE12
 Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
-# Source0-md5:	8a4b084a4ed345ef92fadf97d583cb10
+# Source0-md5:	a830ccc95cb39cdfa5e5b773add0bb0d
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
