@@ -1,7 +1,7 @@
 # TODO
 # - use /usr/lib/cgi-bin instead of /home/services
-# - tested fd-config.patch (works in Fedora)
-# - tested new hit_miss_mark.patch (ZPH TOS)
+# - test fd-config.patch (works in Fedora)
+# - test new hit_miss_mark.patch (ZPH TOS)
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
