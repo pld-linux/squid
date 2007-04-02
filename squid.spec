@@ -503,7 +503,7 @@ install -d $RPM_BUILD_ROOT%{_cgidir} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/man8 \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
-	$RPM_BUILD_ROOT/var/{cache,log{,/archiv}}/squid
+	$RPM_BUILD_ROOT/var/{cache,log{,/archive}}/squid
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -647,7 +647,7 @@ fi
 
 %attr(755,root,root) %dir %{_libexecdir}
 
-%attr(770,root,squid) %dir /var/log/archiv/squid
+%attr(770,root,squid) %dir /var/log/archive/squid
 %attr(770,root,squid) %dir /var/log/squid
 %attr(660,root,squid) %ghost /var/log/squid/*
 
