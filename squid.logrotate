@@ -1,5 +1,5 @@
 /var/log/squid/access*.log {
-	olddir /var/log/archiv/squid
+	olddir /var/log/archive/squid
 	weekly
 	rotate 4
 #	dateext
@@ -13,7 +13,7 @@
 }
 
 /var/log/squid/[sc]*.log {
-	olddir /var/log/archiv/squid
+	olddir /var/log/archive/squid
 	weekly
 	rotate 4
 	compress
