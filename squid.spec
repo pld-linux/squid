@@ -77,6 +77,7 @@ Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
 Provides:	group(squid)
 Provides:	user(squid)
+Conflicts:	logrotate < 3.7.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_libexecdir	%{_libdir}/%{name}
