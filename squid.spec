@@ -2,9 +2,6 @@
 # - use /usr/lib/cgi-bin instead of /home/services
 # - test fd-config.patch (works in Fedora)
 # - test new hit_miss_mark.patch (ZPH TOS)
-# - ac-ppc fails: cc1: error: invalid option `32', this is due:
-#   [builder2@forge]$ getconf POSIX_V6_ILP32_OFFBIG_CFLAGS
-#   -m32 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -18,7 +15,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.6.STABLE16
-Release:	0.3
+Release:	0.4
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -52,6 +49,7 @@ Patch111:	%{name}-align.patch
 Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch113:	%{name}-auth_on_acceleration.patch
 Patch114:	%{name}-fd-config.patch
+Patch115:	%{name}-ppc-m32.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -453,6 +451,9 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{?with_combined_log:%patch112 -p1}
 %patch113 -p1
 %patch114 -p1
+%ifarch ppc
+%patch115 -p1
+%endif
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
