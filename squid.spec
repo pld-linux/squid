@@ -2,7 +2,9 @@
 # - use /usr/lib/cgi-bin instead of /home/services
 # - test fd-config.patch (works in Fedora)
 # - test new hit_miss_mark.patch (ZPH TOS)
-# - ac-ppc fails: cc1: error: invalid option `32'
+# - ac-ppc fails: cc1: error: invalid option `32', this is due:
+#   [builder2@forge]$ getconf POSIX_V6_ILP32_OFFBIG_CFLAGS
+#   -m32 -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
