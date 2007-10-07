@@ -14,9 +14,9 @@ diff -Nur squid-2.5.STABLE4.orig/src/access_log.c squid-2.5.STABLE4/src/access_l
  	client = inet_ntoa(al->cache.caddr);
      user1 = accessLogFormatName(al->cache.authuser);
      user2 = accessLogFormatName(al->cache.rfc931);
--    logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %ld %s:%s",
+-    logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %" PRINTF_OFF_T " %s:%s",
 +
-+    logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %ld \"%s\" \"%s\"",
++    logfilePrintf(logfile, "%s %s %s [%s] \"%s %s HTTP/%d.%d\" %d %" PRINTF_OFF_T " \"%s\" \"%s\"",
  	client,
 -	user2 ? user2 : dash_str,
 -	user1 ? user1 : dash_str,
@@ -25,7 +25,7 @@ diff -Nur squid-2.5.STABLE4.orig/src/access_log.c squid-2.5.STABLE4/src/access_l
 -	al->url,
 -	al->http.version.major, al->http.version.minor,
 -	al->http.code,
--	(long int) al->cache.size,
+-	al->cache.size,
 -	log_tags[al->cache.code],
 -	hier_strings[al->hier.code]);
 +       user2 ? user2 : dash_str,
@@ -35,7 +35,7 @@ diff -Nur squid-2.5.STABLE4.orig/src/access_log.c squid-2.5.STABLE4/src/access_l
 +       (al->http_uri ? al->http_uri : al->url),
 +       al->http.version.major, al->http.version.minor,
 +       al->http.code,
-+       (long int) al->cache.size,
++       al->cache.size,
 +       httpHeaderHas( req_hdr, HDR_REFERER ) ?
 +         httpHeaderGetStr( req_hdr, HDR_REFERER ) :
 +         dash_str,     // Referer if we have it, else dash_str.
