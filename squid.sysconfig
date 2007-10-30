@@ -10,3 +10,6 @@ SERVICE_RUN_NICE_LEVEL="+5"
 
 # maximum time (in seconds) to wait for squid to stop
 SQUID_SHUTDOWN_TIMEOUT="60"
+
+# file description limit for squid
+SQUID_FD_LIMIT="8192"
