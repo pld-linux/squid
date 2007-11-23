@@ -100,20 +100,7 @@ stop() {
 	fi
 }
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-  start)
-  	start
-	;;
-  stop)
-  	stop
-	;;
-  restart)
-	stop
-	start
-	;;
-  reload|force-reload)
+reload() {
 	if [ -f /var/lock/subsys/squid ]; then
 		msg_reloading Squid
 		busy
@@ -125,6 +112,23 @@ case "$1" in
 		msg_not_running Squid >&2
 		exit 7
 	fi
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|force-reload)
+	stop
+	start
+	;;
+  reload)
+	reload
 	;;
   status)
 	status squid
