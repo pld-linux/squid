@@ -58,9 +58,23 @@ SQUID_SHUTDOWN_TIMEOUT=${SQUID_SHUTDOWN_TIMEOUT:-60}
 CACHE_SWAP=$(awk '/^cache_dir/{print $3}' /etc/squid/squid.conf)
 [ -z "$CACHE_SWAP" ] && CACHE_SWAP=/var/cache/squid
 
+check_cache_dirs() {
+	local need_init=0 dir
+	for dir in $CACHE_SWAP; do
+		if [ ! -d $dir/00 ]; then
+			need_init=1
+		fi
+	done
+	if [ $need_init = 1 ]; then
+		show "Initializing Squid cache dirs"
+		squid -z -F -D >> /var/log/squid/squid.out 2>&1 && ok || fail
+	fi
+}
+
 start() {
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/squid ]; then
+		check_cache_dirs
 		msg_starting Squid
 		daemon squid $SQUID_OPTS
 		RETVAL=$?
@@ -108,7 +122,7 @@ stop() {
 # NOTE: needs running squid
 configtest() {
 	show "Checking squid config syntax"
-	squid -k check
+	squid -k check >> /var/log/squid/squid.out 2>&1
 	RETVAL=$?
 	[ $RETVAL = 0 ] && ok || fail
 }
@@ -159,8 +173,8 @@ case "$1" in
 	exit $?
 	;;
   init)
-	nls "Initializing %s" squid
-	squid -z
+	show "Initializing Squid"; echo
+	check_cache_dirs
 	;;
   *)
 	msg_usage "$0 {start|stop|init|restart|reload|force-reload|status}"
