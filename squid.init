@@ -88,30 +88,25 @@ stop() {
 	if [ -f /var/lock/subsys/squid ]; then
 		# Stop daemons.
 		msg_stopping Squid
-		if [ -f /var/run/squid.pid ]; then
-			PID=$(filter_chroot $(cat /var/run/squid.pid))
-			if [ -z "$PID" ]; then
-				PID=0
-			fi
-		else
-			PID=0
-		fi
 		killproc squid
-		RETVAL=$?
-		if [ $PID != 0 ]; then
+
+		if [ -f /var/run/squid.pid ]; then
 			show "Waiting for Squid to stop"
 			busy
+
 			timeout=0
-			while ps -U squid -o user | grep -q ^squid
-			do
+			while : ; do
+				[ ! -f /var/run/squid.pid ] || break
 				if [ $timeout -ge $SQUID_SHUTDOWN_TIMEOUT ]; then
-				    break
+					RETVAL=1
+					break
 				fi
-				sleep 1
-				timeout=$((timeout + 1))
+				sleep 1 && echo -n "."
+				timeout=$((timeout+1))
 			done
 			ok
 		fi
+
 		rm -f /var/lock/subsys/squid >/dev/null 2>&1
 	else
 		msg_not_running Squid
