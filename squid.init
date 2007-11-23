@@ -41,9 +41,6 @@
 # Get service config
 [ -f /etc/sysconfig/squid ] && . /etc/sysconfig/squid
 
-# Set default shutdown timeout if it is not set in service config
-SQUID_SHUTDOWN_TIMEOUT=${SQUID_SHUTDOWN_TIMEOUT:-60}
-
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
 	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status -a "$1" != init ]; then
@@ -53,6 +50,13 @@ if is_yes "${NETWORKING}"; then
 else
 	exit 0
 fi
+
+# Set default shutdown timeout if it is not set in service config
+SQUID_SHUTDOWN_TIMEOUT=${SQUID_SHUTDOWN_TIMEOUT:-60}
+
+# determine which one is the cache_swap directory
+CACHE_SWAP=$(awk '/^cache_dir/{print $3}' /etc/squid/squid.conf)
+[ -z "$CACHE_SWAP" ] && CACHE_SWAP=/var/cache/squid
 
 start() {
 	# Check if the service is already running?
@@ -71,7 +75,7 @@ stop() {
 		# Stop daemons.
 		msg_stopping Squid
 		if [ -f /var/run/squid.pid ]; then
-			PID=$(filter_chroot `cat /var/run/squid.pid`)
+			PID=$(filter_chroot $(cat /var/run/squid.pid))
 			if [ -z "$PID" ]; then
 				PID=0
 			fi
@@ -80,7 +84,7 @@ stop() {
 		fi
 		killproc squid
 		RETVAL=$?
-		if [ ! $PID -eq 0 ]; then
+		if [ $PID != 0 ]; then
 			show "Waiting for Squid to stop"
 			busy
 			timeout=0
@@ -90,7 +94,7 @@ stop() {
 				    break
 				fi
 				sleep 1
-				timeout=$((timeout+1))
+				timeout=$((timeout + 1))
 			done
 			ok
 		fi
@@ -98,6 +102,15 @@ stop() {
 	else
 		msg_not_running Squid
 	fi
+}
+
+# check that squid config is ok
+# NOTE: needs running squid
+configtest() {
+	show "Checking squid config syntax"
+	squid -k check
+	RETVAL=$?
+	[ $RETVAL = 0 ] && ok || fail
 }
 
 reload() {
@@ -109,9 +122,21 @@ reload() {
 		[ $RETVAL -ne 0 ] && RETVAL=7
 		[ $RETVAL -eq 0 ] && ok || fail
 	else
-		msg_not_running Squid >&2
+		msg_not_running Squid
 		exit 7
 	fi
+}
+
+restart() {
+	# if service is up, do configtest
+	if [ -f /var/lock/subsys/squid ]; then
+		configtest
+		if [ $RETVAL != 0 ]; then
+			exit 1
+		fi
+	fi
+	stop
+	start
 }
 
 RETVAL=0
@@ -124,8 +149,7 @@ case "$1" in
 	stop
 	;;
   restart|force-reload)
-	stop
-	start
+	restart
 	;;
   reload)
 	reload
