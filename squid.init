@@ -158,6 +158,7 @@ condrestart() {
 		stop
 		start
 	else
+		msg_not_running Squid
 		RETVAL=0
 	fi
 }
