@@ -114,10 +114,9 @@ stop() {
 }
 
 # check that squid config is ok
-# NOTE: needs running squid
 configtest() {
 	show "Checking squid config syntax"
-	squid -k check >> /var/log/squid/squid.out 2>&1
+	squid -k parse >> /var/log/squid/squid.out 2>&1
 	RETVAL=$?
 	[ $RETVAL = 0 ] && ok || fail
 }
