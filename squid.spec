@@ -78,7 +78,7 @@ Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
 Provides:	group(squid)
 # epoll enabled by default:
-Requires:	uname(release) >= 2.6
+Requires:	getconf(_POSIX_POLL)
 Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
