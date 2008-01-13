@@ -78,7 +78,7 @@ Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
 Provides:	group(squid)
 # epoll enabled by default:
-Requires:	getconf(_POSIX_POLL)
+Requires:	uname(release) >= 2.6
 Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -607,7 +607,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/fakeauth_auth
 %attr(755,root,root) %{_sbindir}/*
 
-%attr(755,root,root) %dir %{_sysconfdir}
+%dir %{_sysconfdir}
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
@@ -653,7 +653,7 @@ fi
 %lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
 
-%attr(755,root,root) %dir %{_libexecdir}
+%dir %{_libexecdir}
 
 %attr(770,root,squid) %dir /var/log/archive/squid
 %attr(770,root,squid) %dir /var/log/squid
