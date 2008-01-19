@@ -490,7 +490,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--sysconfdir=%{_sysconfdir} \
 	--with-auth-on-acceleration \
 	--with-pthreads \
-	--with-large-files
+	--with-large-files \
+	--with-maxfd=32768
 
 %{__make}
 
