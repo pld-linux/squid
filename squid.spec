@@ -524,7 +524,8 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
-patch -p0 < %{SOURCE5}
+%{__patch} -p0 < %{SOURCE5}
+rm -f *~ *.orig
 cd -
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
