@@ -51,7 +51,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
-BuildRequires:	openldap-devel >= 2.4.6
+BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
@@ -517,7 +517,8 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
-patch -p0 < %{SOURCE5}
+%{__patch} -p0 < %{SOURCE5}
+rm -f *~ *.orig
 cd -
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
