@@ -32,19 +32,19 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
-# lets have fun - there is no patches... yet :)
+# lets have fun - there is no patches... yet:)
 # Other patches:
 # http://www.it-academy.bg/zph/
-Patch0:	%{name}_hit_miss_mark.patch
-Patch1:	%{name}-fhs.patch
-Patch2:	%{name}-location.patch
-Patch3:	%{name}-domainmatch.patch
-Patch4:	%{name}-libnsl_fixes.patch
-Patch5:	%{name}-crash-on-ENOSPC.patch
-Patch6:	%{name}-newssl.patch
-Patch7:	%{name}-empty-referer.patch
-Patch8:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
-Patch9:	%{name}-auth_on_acceleration.patch
+Patch0:		%{name}_hit_miss_mark.patch
+Patch1:		%{name}-fhs.patch
+Patch2:		%{name}-location.patch
+Patch3:		%{name}-domainmatch.patch
+Patch4:		%{name}-libnsl_fixes.patch
+Patch5:		%{name}-crash-on-ENOSPC.patch
+Patch6:		%{name}-newssl.patch
+Patch7:		%{name}-empty-referer.patch
+Patch8:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch9:		%{name}-auth_on_acceleration.patch
 Patch10:	%{name}-ppc-m32.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
@@ -415,8 +415,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description session_acl
-This  helper maintains a concept of sessions by monitoring requests and
-timing out sessions if no requests have been seen for the idle  timeout
+This helper maintains a concept of sessions by monitoring requests and
+timing out sessions if no requests have been seen for the idle timeout
 timer.
 
 %package scripts
