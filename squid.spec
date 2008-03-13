@@ -1,4 +1,5 @@
 # TODO
+# - REVIEW patches and configuration
 # - use /usr/lib/cgi-bin instead of /home/services
 # - test new hit_miss_mark.patch (ZPH TOS)
 #
@@ -13,20 +14,21 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	2.6.STABLE18
-Release:	2
+Version:	3.0.STABLE2
+# review patches before stable release
+Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
-# Source0-md5:	eb49bc06ea1a40421b6f1ac9e76d1757
+Source0:	http://www.squid-cache.org/Versions/v3/3.0/%{name}-%{version}.tar.bz2
+# Source0-md5:	33c89b22aaf27d12b818b5f120aa0322
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 # http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
-Source4:	%{name}-book-full-html.zip
+Source4:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
 # Source4-md5:	4f3b6dab1de9cbb847df89d8b417378a
 Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
@@ -436,14 +438,14 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
+#%patch2 -p1
+#%patch3 -p1
+#%patch4 -p1
+#%patch5 -p1
+#%patch6 -p1
+#%patch7 -p1
 %{?with_combined_log:%patch8 -p1}
 %patch9 -p1
 %ifarch ppc
@@ -459,39 +461,42 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__automake}
 %configure \
 	--datadir=%{_datadir}/squid \
-	--enable-storeio="aufs,coss,diskd,null,ufs" \
-	--enable-removal-policies="heap,lru" \
-	--enable-icmp \
-	--enable-delay-pools \
-	--enable-useragent-log \
-	--enable-referer-log \
-	--enable-kill-parent-hack \
-	--enable-forward-log \
-	--enable-multicast-miss \
-	--enable-snmp \
 	--enable-arp-acl \
-	--enable-htcp \
-	--enable-ssl \
-	--enable-forw-via-db \
-	--enable-cache-digests \
-	--enable-err-language=English \
-	--enable-coss-aio-ops \
-	--enable-linux-netfilter \
-	--enable-large-cache-files \
 	--enable-auth="basic,digest,negotiate,ntlm" \
 	--enable-basic-auth-helpers="LDAP,MSNT,NCSA,PAM,SASL,SMB,YP,getpwnam,multi-domain-NTLM" \
+	--enable-cache-digests \
+	--enable-coss-aio-ops \
+	--enable-delay-pools \
 	--enable-digest-auth-helpers="ldap,password" \
+	--enable-err-language=English \
+	--enable-esi \
 	--enable-external-acl-helpers="ip_user,ldap_group,session,unix_group,wbinfo_group" \
+	--enable-follow-x-forwarded-for	\
+	--enable-forward-log \
+	--enable-forw-via-db \
+	--enable-htcp \
+	--enable-icap-client \
+	--enable-icmp \
+	--enable-kill-parent-hack \
+	--enable-large-cache-files \
+	--enable-linux-netfilter \
+	--enable-linux-tproxy \
+	--enable-multicast-miss \
 	--enable-ntlm-auth-helpers="SMB,fakeauth,no_check" \
 	--enable-ntlm-fail-open \
+	--enable-referer-log \
+	--enable-removal-policies="heap,lru" \
+	--enable-snmp \
+	--enable-ssl \
+	--enable-storeio="aufs,coss,diskd,null,ufs" \
+	--enable-useragent-log \
 	--enable-x-accelerator-vary \
-	--enable-follow-x-forwarded-for	\
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
 	--with-auth-on-acceleration \
-	--with-pthreads \
 	--with-large-files \
-	--with-maxfd=32768
+	--with-maxfd=32768 \
+	--with-pthreads
 
 %{__make}
 
@@ -592,8 +597,7 @@ fi
 %doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
 %doc docs/* src/mib.txt FAQ*.html book-full.html
 %attr(755,root,root) %{_bindir}/squidclient
-%attr(755,root,root) %{_bindir}/cossdump
-%attr(755,root,root) %{_libexecdir}/diskd-daemon
+%attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4754,root,squid) %{_libexecdir}/pinger
 %attr(755,root,root) %{_libexecdir}/unlinkd
@@ -645,7 +649,7 @@ fi
 %lang(sv) %{_datadir}/squid/errors/Swedish
 %lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
-
+%lang(uk) %{_datadir}/squid/errors/Ukrainian*
 %dir %{_libexecdir}
 
 %attr(770,root,squid) %dir /var/log/archive/squid
