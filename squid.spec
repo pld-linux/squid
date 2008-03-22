@@ -1,7 +1,5 @@
 # TODO
 # - use /usr/lib/cgi-bin instead of /home/services
-# - test fd-config.patch (works in Fedora)
-# - test new hit_miss_mark.patch (ZPH TOS)
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -14,13 +12,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	2.6.STABLE17
+Version:	2.6.STABLE19
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
-# Source0-md5:	e6face0dff4ea054d3ba94236eb56ea1
+# Source0-md5:	e1f355ab907369903b5e28aff0fe8386
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -33,29 +31,27 @@ Source5:	%{name}.conf.patch
 Source6:	%{name}.logrotate
 Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
-# lets have fun - there is no patches... yet :)
+# lets have fun - there is no patches... yet:)
 # Other patches:
 # http://www.it-academy.bg/zph/
-Patch100:	%{name}_hit_miss_mark.patch
-Patch101:	%{name}-fhs.patch
-Patch102:	%{name}-location.patch
-Patch103:	%{name}-domainmatch.patch
-Patch104:	%{name}-libnsl_fixes.patch
-Patch106:	%{name}-crash-on-ENOSPC.patch
-Patch107:	%{name}-newssl.patch
-Patch109:	%{name}-more_FD-new.patch
-Patch110:	%{name}-empty-referer.patch
-Patch111:	%{name}-align.patch
-Patch112:	%{name}-2.5.STABLE4-apache-like-combined-log.patch
-Patch113:	%{name}-auth_on_acceleration.patch
-Patch114:	%{name}-fd-config.patch
-Patch115:	%{name}-ppc-m32.patch
+Patch0:		%{name}_hit_miss_mark.patch
+Patch1:		%{name}-fhs.patch
+Patch2:		%{name}-location.patch
+Patch3:		%{name}-domainmatch.patch
+Patch4:		%{name}-libnsl_fixes.patch
+Patch5:		%{name}-crash-on-ENOSPC.patch
+Patch6:		%{name}-newssl.patch
+Patch7:		%{name}-empty-referer.patch
+Patch8:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch9:		%{name}-auth_on_acceleration.patch
+Patch10:	%{name}-ppc-m32.patch
+Patch11:	%{name}-fd-config.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
-BuildRequires:	openldap-devel >= 2.4.6
+BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
@@ -417,8 +413,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description session_acl
-This  helper maintains a concept of sessions by monitoring requests and
-timing out sessions if no requests have been seen for the idle  timeout
+This helper maintains a concept of sessions by monitoring requests and
+timing out sessions if no requests have been seen for the idle timeout
 timer.
 
 %package scripts
@@ -438,22 +434,20 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-%patch100 -p1
-%patch101 -p1
-%patch102 -p1
-%patch103 -p1
-%patch104 -p1
-%patch106 -p1
-%patch107 -p1
-%patch109 -p1
-%patch110 -p1
-%patch111 -p1
-%{?with_combined_log:%patch112 -p1}
-%patch113 -p1
-%patch114 -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%{?with_combined_log:%patch8 -p1}
+%patch9 -p1
 %ifarch ppc
-%patch115 -p1
+%patch10 -p1
 %endif
+%patch11 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -497,6 +491,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--with-pthreads \
 	--with-large-files \
 	--enable-fd-config \
+	--disable-epoll \
 	--with-maxfd=32768
 
 %{__make}
@@ -523,7 +518,8 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
-patch -p0 < %{SOURCE5}
+%{__patch} -p0 < %{SOURCE5}
+rm -f *~ *.orig
 cd -
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
@@ -605,7 +601,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/fakeauth_auth
 %attr(755,root,root) %{_sbindir}/*
 
-%attr(755,root,root) %dir %{_sysconfdir}
+%dir %{_sysconfdir}
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
@@ -650,8 +646,11 @@ fi
 %lang(sv) %{_datadir}/squid/errors/Swedish
 %lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
+%lang(uk) %{_datadir}/squid/errors/Ukrainian-1251
+%lang(uk) %{_datadir}/squid/errors/Ukrainian-koi8-u
+%lang(uk) %{_datadir}/squid/errors/Ukrainian-utf8
 
-%attr(755,root,root) %dir %{_libexecdir}
+%dir %{_libexecdir}
 
 %attr(770,root,squid) %dir /var/log/archive/squid
 %attr(770,root,squid) %dir /var/log/squid

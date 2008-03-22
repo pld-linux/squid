@@ -1,4 +1,0 @@
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
-
-00 4 * * *	stats	calamaris-croniface daily
-30 4 * * 0	stats	calamaris-croniface weekly
