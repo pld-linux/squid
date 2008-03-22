@@ -647,9 +647,9 @@ fi
 %lang(sv) %{_datadir}/squid/errors/Swedish
 %lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
-%lang(ua) %{_datadir}/squid/errors/Ukrainian-1251
-%lang(ua) %{_datadir}/squid/errors/Ukrainian-koi8-u
-%lang(ua) %{_datadir}/squid/errors/Ukrainian-utf8
+%lang(uk) %{_datadir}/squid/errors/Ukrainian-1251
+%lang(uk) %{_datadir}/squid/errors/Ukrainian-koi8-u
+%lang(uk) %{_datadir}/squid/errors/Ukrainian-utf8
 
 %dir %{_libexecdir}
 
