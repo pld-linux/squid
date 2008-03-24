@@ -13,7 +13,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.6.STABLE19
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -72,6 +72,8 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
+# epoll enabled by default:
+Requires:	uname(release) >= 2.6
 Provides:	group(squid)
 Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
@@ -491,7 +493,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--with-pthreads \
 	--with-large-files \
 	--enable-fd-config \
-	--disable-epoll \
 	--with-maxfd=32768
 
 %{__make}
