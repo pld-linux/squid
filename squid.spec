@@ -18,7 +18,7 @@ Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
-# Source0-md5:	e1f355ab907369903b5e28aff0fe8386
+# Source0-md5:	6e1d87e9ae47f825c814a954a6febc36
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
