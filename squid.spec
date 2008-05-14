@@ -1,7 +1,10 @@
 # TODO
 # - REVIEW patches and configuration
 # - use /usr/lib/cgi-bin instead of /home/services
-# - test new hit_miss_mark.patch (ZPH TOS)
+# - ZPH TOS -
+# For this to work correctly, you will need to patch your linux
+# kernel with the TOS preserving ZPH patch.
+# The kernel patch can be downloaded from http://zph.bratcheda.org
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -14,14 +17,14 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.0.STABLE4
+Version:	3.0.STABLE5
 # review patches before stable release
 Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.0/%{name}-%{version}.tar.bz2
-# Source0-md5:	50ea09d59b8a37b34d0ea38acb1eef43
+# Source0-md5:	60255e66bca8203afb9a635f318b9c65
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -36,7 +39,7 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
 # lets have fun - there is no patches... yet:)
 # Other patches:
-# http://www.it-academy.bg/zph/
+# http://zph.bratcheda.org/
 Patch0:		%{name}_hit_miss_mark.patch
 Patch1:		%{name}-fhs.patch
 Patch2:		%{name}-location.patch
@@ -438,7 +441,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 #%patch2 -p1
 #%patch3 -p1
@@ -496,7 +499,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--with-auth-on-acceleration \
 	--with-large-files \
 	--with-maxfd=32768 \
-	--with-pthreads
+	--with-pthreads \
+	--enable-zph-qos
 
 %{__make}
 
