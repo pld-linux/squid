@@ -1,7 +1,5 @@
 /var/log/squid/access*.log {
 	olddir /var/log/archive/squid
-	weekly
-	rotate 4
 #	dateext
 	compress
 	create 660 root squid
@@ -14,8 +12,6 @@
 
 /var/log/squid/[sc]*.log {
 	olddir /var/log/archive/squid
-	weekly
-	rotate 4
 	compress
 	create 660 root squid
 	postrotate
