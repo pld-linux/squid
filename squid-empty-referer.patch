@@ -1,7 +1,7 @@
-diff -urN squid-2.7.STABLE4.orig/src/client_side.c squid-2.7.STABLE4/src/client_side.c
---- squid-2.7.STABLE4.orig/src/client_side.c	2008-07-21 22:43:27.000000000 +0200
-+++ squid-2.7.STABLE4/src/client_side.c	2008-09-18 12:51:05.169468168 +0200
-@@ -1462,10 +1462,14 @@
+diff -Nur squid-2.5.STABLE3.orig/src/client_side.c squid-2.5.STABLE3/src/client_side.c
+--- squid-2.5.STABLE3.orig/src/client_side.c	Mon Sep  8 15:44:34 2003
++++ squid-2.5.STABLE3/src/client_side.c	Mon Sep  8 17:00:06 2003
+@@ -988,11 +988,16 @@
  #if USE_USERAGENT_LOG
      if ((str = httpHeaderGetStr(req_hdr, HDR_USER_AGENT)))
  	logUserAgent(fqdnFromAddr(http->conn->log_addr), str);
@@ -10,9 +10,11 @@ diff -urN squid-2.7.STABLE4.orig/src/client_side.c squid-2.7.STABLE4/src/client_
  #endif
  #if USE_REFERER_LOG
      if ((str = httpHeaderGetStr(req_hdr, HDR_REFERER)))
- 	logReferer(fqdnFromAddr(http->conn->log_addr), str, rfc1738_escape_unescaped(http->uri));
+ 	logReferer(fqdnFromAddr(http->conn->log_addr), str,
+ 	    http->log_uri);
 +    else
-+	logReferer(fqdnFromAddr(http->conn->log_addr), "-", rfc1738_escape_unescaped(http->uri));
++	logReferer(fqdnFromAddr(http->conn->log_addr), "-",
++	http->log_uri);
  #endif
  #if FORW_VIA_DB
      if (httpHeaderHas(req_hdr, HDR_X_FORWARDED_FOR)) {
