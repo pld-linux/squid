@@ -1,6 +1,6 @@
 # TODO
 # - use /usr/lib/cgi-bin instead of /home/services
-#
+# - update combined_log patch
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
 #
@@ -12,13 +12,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	2.6.STABLE21
-Release:	1
+Version:	2.7.STABLE4
+Release:	0.9
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v2/2.6/%{name}-%{version}.tar.bz2
-# Source0-md5:	3a24e37ee2bc0c4721973ca6354d4aa4
+Source0:	http://www.squid-cache.org/Versions/v2/2.7/%{name}-%{version}.tar.bz2
+# Source0-md5:	88ea575a67d35013ec786761d8a14f33
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -33,19 +33,15 @@ Source7:	%{name}.pamd
 # Bug fixes from Squid home page, please include URL
 # lets have fun - there is no patches... yet:)
 # Other patches:
-# http://www.it-academy.bg/zph/
-Patch0:		%{name}_hit_miss_mark.patch
-Patch1:		%{name}-fhs.patch
-Patch2:		%{name}-location.patch
-Patch3:		%{name}-domainmatch.patch
-Patch4:		%{name}-libnsl_fixes.patch
-Patch5:		%{name}-crash-on-ENOSPC.patch
-Patch6:		%{name}-newssl.patch
-Patch7:		%{name}-empty-referer.patch
-Patch8:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
-Patch9:		%{name}-auth_on_acceleration.patch
-Patch10:	%{name}-ppc-m32.patch
-Patch11:	%{name}-fd-config.patch
+Patch0:		%{name}-fhs.patch
+Patch1:		%{name}-location.patch
+Patch2:		%{name}-domainmatch.patch
+Patch3:		%{name}-libnsl_fixes.patch
+Patch4:		%{name}-newssl.patch
+Patch5:		%{name}-empty-referer.patch
+Patch6:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch7:		%{name}-auth_on_acceleration.patch
+Patch8:		%{name}-ppc-m32.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -74,6 +70,7 @@ Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
 # epoll enabled by default:
 Requires:	uname(release) >= 2.6
+Requires:	w3c-libwww
 Provides:	group(squid)
 Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
@@ -442,14 +439,11 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
+%{?with_combined_log:%patch6 -p1}
 %patch7 -p1
-%{?with_combined_log:%patch8 -p1}
-%patch9 -p1
 %ifarch ppc
-%patch10 -p1
+%patch8 -p1
 %endif
-%patch11 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -492,7 +486,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--with-auth-on-acceleration \
 	--with-pthreads \
 	--with-large-files \
-	--enable-fd-config \
 	--with-maxfd=32768
 
 %{__make}
@@ -596,10 +589,11 @@ fi
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_bindir}/cossdump
 %attr(755,root,root) %{_libexecdir}/diskd-daemon
+%attr(755,root,root) %{_libexecdir}/fakeauth_auth
+%attr(755,root,root) %{_libexecdir}/logfile-daemon
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4754,root,squid) %{_libexecdir}/pinger
 %attr(755,root,root) %{_libexecdir}/unlinkd
-%attr(755,root,root) %{_libexecdir}/fakeauth_auth
 %attr(755,root,root) %{_sbindir}/*
 
 %dir %{_sysconfdir}
