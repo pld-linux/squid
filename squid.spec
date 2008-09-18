@@ -47,6 +47,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
+BuildRequires:	libmd5-devel
 BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
@@ -70,7 +71,6 @@ Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
 # epoll enabled by default:
 Requires:	uname(release) >= 2.6
-Requires:	w3c-libwww
 Provides:	group(squid)
 Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
