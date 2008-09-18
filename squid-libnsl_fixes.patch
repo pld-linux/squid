@@ -1,6 +1,5 @@
-diff -urN squid-2.7.STABLE4.orig/configure.in squid-2.7.STABLE4/configure.in
---- squid-2.7.STABLE4.orig/configure.in	2008-08-08 21:21:03.000000000 +0200
-+++ squid-2.7.STABLE4/configure.in	2008-09-18 12:42:51.646184400 +0200
+--- ./configure.in.org	2006-12-03 22:02:15.000000000 +0000
++++ ./configure.in	2006-12-03 22:04:56.000000000 +0000
 @@ -29,6 +29,7 @@
  
  
@@ -9,7 +8,7 @@ diff -urN squid-2.7.STABLE4.orig/configure.in squid-2.7.STABLE4/configure.in
  REGEXLIB=''	# -lregex
  LIBREGEX=''	# libregex.a
  
-@@ -2043,8 +2044,10 @@
+@@ -2011,8 +2012,10 @@
   fi
  
  dnl Check for needed libraries
@@ -19,12 +18,11 @@ diff -urN squid-2.7.STABLE4.orig/configure.in squid-2.7.STABLE4/configure.in
 +AC_CHECK_LIB(nsl, yp_match, NSLLIB="-lnsl")
 +AC_SUBST(NSLLIB)
 +AC_SEARCH_LIBS(socket, socket)
- dnl Check for Winsock only on MinGW, on Cygwin we must use emulated BSD socket API
- 	case "$host_os" in
- 	mingw|mingw32)
-diff -urN squid-2.7.STABLE4.orig/helpers/basic_auth/YP/Makefile.am squid-2.7.STABLE4/helpers/basic_auth/YP/Makefile.am
---- squid-2.7.STABLE4.orig/helpers/basic_auth/YP/Makefile.am	2005-05-17 18:56:26.000000000 +0200
-+++ squid-2.7.STABLE4/helpers/basic_auth/YP/Makefile.am	2008-09-18 12:44:11.039717339 +0200
+ AC_MSG_CHECKING(for winsock)
+ save_LIBS="$LIBS"
+ for curlib in ws2_32 wsock32; do
+--- ./helpers/basic_auth/YP/Makefile.am.org	2005-05-17 16:56:26.000000000 +0000
++++ ./helpers/basic_auth/YP/Makefile.am	2006-12-03 22:06:20.000000000 +0000
 @@ -7,5 +7,5 @@
  
  libexec_PROGRAMS = yp_auth
