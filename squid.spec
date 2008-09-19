@@ -43,7 +43,6 @@ Source7:	%{name}.pamd
 Patch0:		%{name}_hit_miss_mark.patch
 Patch1:		%{name}-fhs.patch
 Patch2:		%{name}-location.patch
-Patch3:		%{name}-domainmatch.patch
 Patch4:		%{name}-libnsl_fixes.patch
 Patch5:		%{name}-crash-on-ENOSPC.patch
 Patch6:		%{name}-newssl.patch
@@ -445,9 +444,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-#%patch3 -p1
-#%patch4 -p1
-#%patch5 -p1
+%patch4 -p1
+%patch5 -p1
 #%patch6 -p1
 #%patch7 -p1
 %{?with_combined_log:%patch8 -p1}
@@ -459,6 +457,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
 %build
+%{__libtoolize}
 %{__aclocal}
 %{__autoconf}
 %{__autoheader}
@@ -492,7 +491,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-removal-policies="heap,lru" \
 	--enable-snmp \
 	--enable-ssl \
-	--enable-storeio="aufs,coss,diskd,null,ufs" \
+	--enable-storeio="aufs,diskd,null,ufs" \
 	--enable-useragent-log \
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
