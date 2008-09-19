@@ -45,7 +45,6 @@ Patch1:		%{name}-fhs.patch
 Patch2:		%{name}-location.patch
 Patch4:		%{name}-libnsl_fixes.patch
 Patch5:		%{name}-crash-on-ENOSPC.patch
-Patch6:		%{name}-newssl.patch
 Patch7:		%{name}-empty-referer.patch
 Patch8:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch9:		%{name}-auth_on_acceleration.patch
@@ -446,7 +445,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
-#%patch6 -p1
 #%patch7 -p1
 %{?with_combined_log:%patch8 -p1}
 %patch9 -p1
