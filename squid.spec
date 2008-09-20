@@ -47,7 +47,6 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
-BuildRequires:	libmd5-devel
 BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
@@ -467,6 +466,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-arp-acl \
 	--enable-htcp \
 	--enable-ssl \
+	--with-system-md5 \
 	--enable-forw-via-db \
 	--enable-cache-digests \
 	--enable-err-language=English \
