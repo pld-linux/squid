@@ -1,0 +1,3 @@
+- REL++
+- add SQUID_FD_LIMIT variable in /etc/sysconfig/squid for set how many file
+  descriptions squid have available, default is 8192
