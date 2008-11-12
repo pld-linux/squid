@@ -523,13 +523,6 @@ install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-cat > apache.conf <<'EOF'
-Alias /%{_webapp} %{_cgidir}/cachemgr.cgi
-<Directory %{_appdir}>
-	Allow from all
-</Directory>
-EOF
-
 mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
 cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
