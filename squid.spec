@@ -1,10 +1,12 @@
 # TODO
 # - REVIEW patches and configuration
-# - use /usr/lib/cgi-bin instead of /home/services
 # - ZPH TOS -
 # For this to work correctly, you will need to patch your linux
 # kernel with the TOS preserving ZPH patch.
 # The kernel patch can be downloaded from http://zph.bratcheda.org
+# - Installed (but unpackaged) file(s) found:
+#   /usr/share/squid/errors/templates/ERR_ACCESS_DENIED
+#   /usr/share/squid/errors/templates/ERR_ZERO_SIZE_OBJECT
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -19,7 +21,7 @@ Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.0.STABLE10
 # review patches before stable release
-Release:	0.1
+Release:	0.2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -40,6 +42,7 @@ Source7:	%{name}.pamd
 # lets have fun - there is no patches... yet:)
 # Other patches:
 # http://zph.bratcheda.org/
+Source8:	%{name}-cachemgr-apache.conf
 Patch0:		%{name}_hit_miss_mark.patch
 Patch1:		%{name}-fhs.patch
 Patch2:		%{name}-location.patch
@@ -49,6 +52,7 @@ Patch7:		%{name}-empty-referer.patch
 Patch8:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch9:		%{name}-auth_on_acceleration.patch
 Patch10:	%{name}-ppc-m32.patch
+Patch11:	%{name}-cachemgr-webapp.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -83,9 +87,11 @@ Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_webapps	/etc/webapps
+%define		_webapp		cachemgr
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		/home/services/httpd/cgi-bin
+%define		_cgidir		%{_prefix}/lib/cgi-bin/%{_webapp}
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -186,9 +192,14 @@ Squid - це кешуючий проксі-сервер для web-клієнт�
 %package cachemgr
 Summary:	CGI script for Squid management
 Summary(pl.UTF-8):	Skrypt CGI do zarządzania Squidem przez WWW
-Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Group:		Applications/WWW
+# does not require squid locally
+Requires:	group(http)
+Requires:	webapps
 Requires:	webserver
+Requires:	webserver(access)
+Requires:	webserver(alias)
+Requires:	webserver(cgi)
 
 %description cachemgr
 Cachemgr.cgi is a CGI script that allows administrator to chceck
@@ -451,6 +462,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %ifarch ppc
 %patch10 -p1
 %endif
+%patch11 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -504,7 +516,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_cgidir} \
+install -d $RPM_BUILD_ROOT{%{_cgidir},%{_webapps}/%{_webapp}} \
 	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/man8 \
@@ -521,6 +533,9 @@ install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
+cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+rm -f $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
 cp -f squid.conf{,.default}
@@ -593,6 +608,24 @@ fi
 
 %triggerpostun -- squid < 7:2.5.STABLE7-5
 %addusertogroup stats squid
+
+%triggerin cachemgr -- apache1 < 1.3.37-3, apache1-base
+%webapp_register apache %{_webapp}
+
+%triggerun cachemgr -- apache1 < 1.3.37-3, apache1-base
+%webapp_unregister apache %{_webapp}
+
+%triggerin cachemgr -- apache < 2.2.0, apache-base
+%webapp_register httpd %{_webapp}
+
+%triggerun cachemgr -- apache < 2.2.0, apache-base
+%webapp_unregister httpd %{_webapp}
+
+%triggerpostun -- cachemgr < 7:3.0.STABLE10-0.2
+if [ -f %{_sysconfdir}/cachemgr.conf.rpmsave ]; then
+	cp -f %{_webapps}/%{_webapp}/cachemgr.conf{,.rpmsave}
+	mv -f %{_sysconfdir}/cachemgr.conf.rpmsave %{_webapps}/%{_webapp}/cachemgr.conf
+fi
 
 %files
 %defattr(644,root,root,755)
@@ -667,8 +700,11 @@ fi
 
 %files cachemgr
 %defattr(644,root,root,755)
-%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/cachemgr.conf
-%attr(755,root,root) %{_cgidir}/*
+%dir %attr(750,root,http) %{_webapps}/%{_webapp}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/apache.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/httpd.conf
+%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/cachemgr.conf
+%attr(755,root,root) %{_cgidir}/cachemgr.cgi
 %{_mandir}/man8/cachemgr.cgi.8*
 
 %files ldap_auth
