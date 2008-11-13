@@ -8,7 +8,7 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 #
-# there didn't exist 64bit 2.4 kernel, so can safely enable epoll
+# there didn't exist x86_64 2.4 kernel in PLD, so can safely enable epoll
 %ifarch %{x8664}
 %define		with_epoll	1
 %endif
