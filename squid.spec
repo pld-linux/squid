@@ -8,6 +8,10 @@
 %bcond_without	epoll		# disable epoll support
 %endif
 #
+# there didn't exist 64bit 2.4 kernel, so can safely enable epoll
+%ifarch %{x8664}
+%define		with_epoll	1
+%endif
 Summary:	SQUID Internet Object Cache
 Summary(es.UTF-8):	proxy/cache para WWW/FTP/gopher
 Summary(pl.UTF-8):	Uniwersalny serwer proxy-cache
@@ -17,7 +21,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.7.STABLE5
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
