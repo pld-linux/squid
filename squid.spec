@@ -4,14 +4,14 @@
 %bcond_with	combined_log	# enables apache-like combined log format
 %if "%{pld_release}" == "ac"
 %bcond_with		epoll		# enable epoll support
-%else
-%bcond_without	epoll		# disable epoll support
-%endif
-#
 # there didn't exist x86_64 2.4 kernel in PLD, so can safely enable epoll
 %ifarch %{x8664}
 %define		with_epoll	1
 %endif
+%else
+%bcond_without	epoll		# disable epoll support
+%endif
+
 Summary:	SQUID Internet Object Cache
 Summary(es.UTF-8):	proxy/cache para WWW/FTP/gopher
 Summary(pl.UTF-8):	Uniwersalny serwer proxy-cache
