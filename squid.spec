@@ -538,9 +538,8 @@ cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 rm -f $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
-cp -f squid.conf{,.default}
 %{__patch} -p0 < %{SOURCE5}
-rm -f *~ *.orig
+rm -f *~ *.orig mime.conf.default squid.conf.default
 cd -
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
@@ -630,7 +629,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
-%doc docs/* src/mib.txt FAQ*.html book-full.html
+%doc docs/* src/mib.txt FAQ*.html book-full.html src/squid.conf.default src/mime.conf.default
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
@@ -639,15 +638,13 @@ fi
 %attr(755,root,root) %{_libexecdir}/fakeauth_auth
 %attr(755,root,root) %{_sbindir}/*
 
-%dir %{_sysconfdir}
-
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/squid
+
+%dir %{_sysconfdir}
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
-%attr(640,root,root) %{_sysconfdir}/mime.conf.default
-%attr(640,root,root) %{_sysconfdir}/squid.conf.default
 
 %dir %{_datadir}/squid
 %dir %{_datadir}/squid/errors
