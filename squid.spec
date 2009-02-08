@@ -202,7 +202,7 @@ Requires:	webserver(alias)
 Requires:	webserver(cgi)
 
 %description cachemgr
-Cachemgr.cgi is a CGI script that allows administrator to chceck
+Cachemgr.cgi is a CGI script that allows administrator to check
 various informations about Squid via WWW.
 
 %description cachemgr -l pl.UTF-8
