@@ -73,11 +73,12 @@ Requires(post):	grep
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
-Requires(pre):	/bin/id
+Requires(pre,triggerpostun):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires(pre,triggerpostun):	/usr/sbin/usermod
 Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
 Provides:	group(squid)
@@ -425,7 +426,8 @@ ograniczenie dostępu użytkowników proxy na podstawie ich
 przynależności do grup w domenie NT przy użyciu wbinfo.
 
 %package session_acl
-Summary:	Squid session tracking external acl group helper
+Summary:	Squid session tracking external ACL group helper
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez śledzenie sesji
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -433,6 +435,10 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This helper maintains a concept of sessions by monitoring requests and
 timing out sessions if no requests have been seen for the idle timeout
 timer.
+
+%description session_acl -l pl.UTF-8
+Moduł oparty na koncepcji sesji, śledzący zapytania i wygaszający sesje
+jeśli w określonym czasie nie widziano w ich obrębie kolejnych zapytań.
 
 %package scripts
 Summary:	Perl scripts for Squid
@@ -563,10 +569,10 @@ rm -f docs/Makefile*
 rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
 	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
 
-> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
-> $RPM_BUILD_ROOT/var/cache/squid/swap.state
-> $RPM_BUILD_ROOT/var/cache/squid/swap.state.clean
-> $RPM_BUILD_ROOT/var/cache/squid/swap.state.last-clean
+:> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
+:> $RPM_BUILD_ROOT/var/cache/squid/swap.state
+:> $RPM_BUILD_ROOT/var/cache/squid/swap.state.clean
+:> $RPM_BUILD_ROOT/var/cache/squid/swap.state.last-clean
 
 %clean
 rm -rf $RPM_BUILD_ROOT
