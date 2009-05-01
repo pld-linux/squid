@@ -76,7 +76,7 @@ start() {
 	if [ ! -f /var/lock/subsys/squid ]; then
 		check_cache_dirs
 		msg_starting Squid
-		daemon squid $SQUID_OPTS
+		daemon /usr/sbin/squid $SQUID_OPTS
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/squid
 	else
