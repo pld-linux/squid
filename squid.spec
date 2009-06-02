@@ -21,7 +21,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	2.7.STABLE6
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -52,6 +52,7 @@ Patch6:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch7:		%{name}-auth_on_acceleration.patch
 Patch8:		%{name}-ppc-m32.patch
 Patch9:		%{name}-cachemgr-webapp.patch
+Patch10:	%{name}-llh.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -461,6 +462,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch8 -p1
 %endif
 %patch9 -p1
+%patch10 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
