@@ -19,14 +19,14 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.0.STABLE15
+Version:	3.0.STABLE16
 # review patches before stable release
 Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.0/%{name}-%{version}.tar.bz2
-# Source0-md5:	5830a3c8e8d64f3483b38093da2a96fa
+# Source0-md5:	aa039a2c75404a496f0e99a278599e00
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -457,7 +457,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch4 -p1
@@ -688,6 +688,7 @@ fi
 %lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
 %lang(tr) %{_datadir}/squid/errors/Turkish
 %lang(uk) %{_datadir}/squid/errors/Ukrainian*
+%{_datadir}/squid/errors/templates
 %dir %{_libexecdir}
 
 %attr(770,root,squid) %dir /var/log/archive/squid
