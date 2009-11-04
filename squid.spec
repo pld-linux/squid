@@ -20,13 +20,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	2.7.STABLE6
-Release:	3
+Version:	2.7.STABLE7
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.7/%{name}-%{version}.tar.bz2
-# Source0-md5:	6de3a6a7a56a7ecae092f2d31a04f039
+# Source0-md5:	c18b0371fca813d5e7c7e0baf87baa22
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -702,6 +702,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/apache.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/httpd.conf
 %attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/cachemgr.conf
+%dir %{_cgidir}
 %attr(755,root,root) %{_cgidir}/cachemgr.cgi
 %{_mandir}/man8/cachemgr.cgi.8*
 
