@@ -214,7 +214,6 @@ zapoznać się z informacjami o pracy Squida poprzez WWW.
 Summary:	LDAP authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ldap_auth
 This Squid helper allows authentication against LDAP directories using
@@ -228,7 +227,6 @@ uwierzytelniania (otwartym tekstem).
 Summary:	PAM authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania PAM dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	pam >= 0.77.3
 
 %description pam_auth
@@ -244,7 +242,6 @@ Program ten pozwala na uwierzytelnianie użytkowników squida w dowolnym
 Summary:	SMB authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania SMB dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description smb_auth
 This is a proxy authentication module. With smb_auth you can
@@ -260,7 +257,6 @@ Samba.
 Summary:	MSNT domain authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania w domenie MSNT dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description msnt_auth
 This is an authentication module for the Squid proxy server to
@@ -274,7 +270,6 @@ uwierzytelnianie użytkowników proxy w domenie NT.
 Summary:	YP authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania YP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description yp_auth
 This is an authentication module for the Squid proxy server to
@@ -288,7 +283,6 @@ uwierzytelnianie użytkowników proxy poprzez YP.
 Summary:	NCSA httpd style authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania NCSA httpd dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ncsa_auth
 This module uses a NCSA httpd style password file for authentication.
@@ -300,7 +294,6 @@ Moduł uwierzytelniania proxy używający pliku haseł jak w NCSA httpd.
 Summary:	SASL authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania SASL dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description sasl_auth
 This is an authentication module for the Squid proxy server to
@@ -314,7 +307,6 @@ uwierzytelnianie użytkowników proxy poprzez SASL.
 Summary:	getpwname authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania getpwname dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description getpwname_auth
 This is an authentication module for the Squid proxy server to
@@ -328,7 +320,6 @@ uwierzytelnianie użytkowników proxy poprzez getpwname.
 Summary:	passwd authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania passwd dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description passwd_auth
 This is an authentication module for the Squid proxy server to
@@ -342,7 +333,6 @@ uwierzytelnianie użytkowników proxy poprzez oddzielny plik passwd.
 Summary:	NTLM authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania NTLM dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description ntlm_auth
 This is an authentication module for the Squid proxy server to
@@ -356,7 +346,6 @@ uwierzytelnianie użytkowników proxy poprzez NTLM.
 Summary:	LDAP authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
 Group:		Networking/Admin
-Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description digest_ldap_auth
 This is an authentication module for the Squid proxy server to
