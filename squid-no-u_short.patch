@@ -1,0 +1,11 @@
+--- squid-2.5.STABLE12/configure.in~	2006-03-05 02:00:57.000000000 +0100
++++ squid-2.5.STABLE12/configure.in	2006-03-05 02:06:11.000000000 +0100
+@@ -1550,7 +1550,7 @@
+ AC_CHECK_TYPE(size_t, unsigned int)
+ AC_CHECK_TYPE(ssize_t, int)
+ AC_CHECK_TYPE(off_t, int)
+-AC_CHECK_TYPE(mode_t, u_short)
++AC_CHECK_TYPE(mode_t, unsigned short)
+ AC_CHECK_TYPE(fd_mask, int)
+ 
+ AC_CHECK_SIZEOF_SYSTYPE(off_t, 4)

@@ -1,0 +1,22 @@
+--- squid-2.7.STABLE5/tools/Makefile.am~	2006-09-22 12:08:46.000000000 +0300
++++ squid-2.7.STABLE5/tools/Makefile.am	2008-11-12 15:55:17.030499323 +0200
+@@ -39,7 +39,7 @@
+ EXTRA_DIST = \
+ 	cachemgr.conf
+ 
+-DEFAULT_CACHEMGR_CONFIG = $(sysconfdir)/cachemgr.conf
++DEFAULT_CACHEMGR_CONFIG = /etc/webapps/cachemgr/cachemgr.conf
+ 
+ $(OBJS): $(top_srcdir)/include/version.h ../include/autoconf.h
+ 
+--- squid-2.7.STABLE5/doc/Makefile.am~	2006-05-31 02:52:10.000000000 +0300
++++ squid-2.7.STABLE5/doc/Makefile.am	2008-11-12 15:54:19.871204867 +0200
+@@ -7,7 +7,7 @@
+ #
+ 
+ DEFAULT_CONFIG_FILE = $(sysconfdir)/squid.conf
+-DEFAULT_CACHEMGR_CONFIG = $(sysconfdir)/cachemgr.conf
++DEFAULT_CACHEMGR_CONFIG = /etc/webapps/cachemgr/cachemgr.conf
+ DEFAULT_MIME_TABLE      = $(sysconfdir)/mime.conf
+ DEFAULT_ERROR_DIR       = $(datadir)/errors/@ERR_DEFAULT_LANGUAGE@
+ 

@@ -1,0 +1,11 @@
+--- ./configure.in.org	Fri Jul  5 00:58:12 2002
++++ ./configure.in	Fri Jul  5 01:01:35 2002
+@@ -1595,7 +1595,7 @@
+ else
+ 	AC_MSG_RESULT("no")
+ 	echo "Will use our own inet_ntoa()."
+-	LIBOBJS="$LIBOBJS inet_ntoa.o"
++	AC_LIBOBJ([inet_ntoa])
+ #	echo "WARNING: This looks bad, and probably prevents Squid from working."
+ #	echo "         If you're on IRIX and using GCC 2.8, you probably need"
+ #	echo "         to use the IRIX C compiler instead."

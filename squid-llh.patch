@@ -1,0 +1,14 @@
+--- squid-2.7.STABLE6/src/tools.c~	2008-10-07 00:27:17.000000000 +0300
++++ squid-2.7.STABLE6/src/tools.c	2009-06-02 12:25:37.583130492 +0300
+@@ -42,11 +42,6 @@
+ 
+ #if HAVE_SYS_CAPABILITY_H
+ #if LIBCAP_BROKEN
+-/* Ugly glue to get around linux header madness colliding with glibc */
+-#undef _POSIX_SOURCE
+-#define _LINUX_TYPES_H
+-#define _LINUX_FS_H
+-typedef uint32_t __u32;
+ #endif
+ #include <sys/capability.h>
+ #endif /* HAVE_SYS_CAPABILITY_H */
