@@ -20,13 +20,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	2.7.STABLE7
-Release:	2
+Version:	2.7.STABLE9
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v2/2.7/%{name}-%{version}.tar.bz2
-# Source0-md5:	c18b0371fca813d5e7c7e0baf87baa22
+# Source0-md5:	3c6642c85470b1079207d43bba25a819
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -45,7 +45,6 @@ Source8:	%{name}-cachemgr-apache.conf
 Patch0:		%{name}-fhs.patch
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-domainmatch.patch
-Patch3:		%{name}-libnsl_fixes.patch
 Patch4:		%{name}-newssl.patch
 Patch5:		%{name}-empty-referer.patch
 Patch6:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
@@ -453,7 +452,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %{?with_combined_log:%patch6 -p1}
