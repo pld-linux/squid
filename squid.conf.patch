@@ -1,56 +1,34 @@
---- squid.conf.default	2007-09-19 14:12:39.156693053 +0200
-+++ squid.conf	2007-09-19 14:37:07.342454656 +0200
-@@ -622,7 +622,7 @@
+--- squid.conf.default	2010-09-08 13:45:20.000000000 +0200
++++ squid.conf	2010-09-08 17:29:24.765819003 +0200
+@@ -43,7 +43,7 @@
  # We strongly recommend the following be uncommented to protect innocent
  # web applications running on the proxy server who think the only
  # one who can access services on "localhost" is a local user
 -#http_access deny to_localhost
 +http_access deny to_localhost
+ 
  #
  # INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
+@@ -65,7 +65,8 @@
+ hierarchy_stoplist cgi-bin ?
  
-@@ -1832,8 +1832,10 @@
- #	Note that for coss, max-size must be less than COSS_MEMBUF_SZ
- #	(hard coded at 1 MB).
- #
-+#	NOTE: Remeber to initialize cache directories: squid -z -F
-+#
- #Default:
--# cache_dir ufs /var/cache/squid 100 16 256
+ # Uncomment and adjust the following to add a disk cache directory.
+-#cache_dir ufs /var/cache/squid 100 16 256
++# NOTE: Remeber to initialize cache directories: squid -z -F
 +cache_dir diskd /var/cache/squid 100 16 256
  
- #  TAG: store_dir_select_algorithm
- #	Set this to 'round-robin' as an alternative.
-@@ -2068,8 +2070,13 @@
- #	in the habit of using 'squid -k rotate' instead of 'kill -USR1
- #	<pid>'.
- #
-+#	Default value for logfile_rotate is 10, but PLD uses 'logrotate',
-+#	which is more configurable, to perform this task. Setting this
-+#	value to '0' disables built-in log rotation and allows 'logrotate'
-+#	to do it's job.
-+#
- #Default:
--# logfile_rotate 10
+ # Leave coredumps in the first cache dir
+ coredump_dir /var/cache/squid
+@@ -75,3 +76,12 @@
+ refresh_pattern ^gopher:	1440	0%	1440
+ refresh_pattern -i (/cgi-bin/|\?) 0	0%	0
+ refresh_pattern .		0	20%	4320
++
++# Default value for logfile_rotate is 10, but PLD uses 'logrotate',
++# which is more configurable, to perform this task. Setting this
++# value to '0' disables built-in log rotation and allows 'logrotate'
++# to do it's job.
 +logfile_rotate 0
- 
- #  TAG: emulate_httpd_log	on|off
- #	The Cache can emulate the log file format which many 'httpd'
-@@ -2982,7 +2989,7 @@
- #	cache_effective_user.
- #
- #Default:
--# cache_effective_user nobody
++
 +cache_effective_user squid
- 
- #  TAG: cache_effective_group
- #	If you want Squid to run with a specific GID regardless of
-@@ -2994,7 +3001,7 @@
- #	group.
- #
- #Default:
--# none
 +cache_effective_group squid
- 
- #  TAG: httpd_suppress_version_string	on|off
- #	Suppress Squid version string info in HTTP headers and HTML error pages.

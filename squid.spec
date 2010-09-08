@@ -4,9 +4,6 @@
 # For this to work correctly, you will need to patch your linux
 # kernel with the TOS preserving ZPH patch.
 # The kernel patch can be downloaded from http://zph.bratcheda.org
-# - Installed (but unpackaged) file(s) found:
-#   /usr/share/squid/errors/templates/ERR_ACCESS_DENIED
-#   /usr/share/squid/errors/templates/ERR_ZERO_SIZE_OBJECT
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
@@ -19,14 +16,14 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.0.STABLE16
+Version:	3.1.8
 # review patches before stable release
 Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v3/3.0/%{name}-%{version}.tar.bz2
-# Source0-md5:	aa039a2c75404a496f0e99a278599e00
+Source0:	http://www.squid-cache.org/Versions/v3/3.1/%{name}-%{version}.tar.bz2
+# Source0-md5:	a8160dfba55ab7c400c622b72d39fc13
 # http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
 Source1:	%{name}-FAQ.tar.gz
 # Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
@@ -46,19 +43,20 @@ Source8:	%{name}-cachemgr-apache.conf
 Patch0:		%{name}_hit_miss_mark.patch
 Patch1:		%{name}-fhs.patch
 Patch2:		%{name}-location.patch
-Patch4:		%{name}-libnsl_fixes.patch
-Patch5:		%{name}-crash-on-ENOSPC.patch
-Patch7:		%{name}-empty-referer.patch
-Patch8:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
-Patch9:		%{name}-auth_on_acceleration.patch
-Patch10:	%{name}-ppc-m32.patch
-Patch11:	%{name}-cachemgr-webapp.patch
+Patch3:		%{name}-crash-on-ENOSPC.patch
+Patch4:		%{name}-empty-referer.patch
+Patch5:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch6:		%{name}-ppc-m32.patch
+Patch7:		%{name}-cachemgr-webapp.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
+BuildRequires:	expat-devel
+BuildRequires:	heimdal-devel
 BuildRequires:	libltdl-devel
+BuildRequires:	libxml2-devel
 BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
@@ -210,6 +208,24 @@ various informations about Squid via WWW.
 Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi
 zapoznać się z informacjami o pracy Squida poprzez WWW.
 
+%package kerb_auth
+Summary:	Authentication via the Negotiate RFC 4559 for proxies
+Summary(pl.UTF-8):	Uwierzytelnianie przez negocjację RFC 4559 dla serwerów proxy
+Group:		Networking/Admin
+
+%description kerb_auth
+This squid helper is a reference implementation that supports
+authentication via the Negotiate RFC 4559 for proxies.
+It decodes RFC 2478 SPNEGO GSS-API tokens from IE7 either through
+helper functions or via SPNEGO supporting Kerberos libraries
+and RFC 1964 Kerberos tokens from Firefox on Linux.
+
+%description kerb_auth -l pl.UTF-8
+Pakiet ten jest implementacją uwierzytelniania przez negocjacji RFC 4559
+dla serwerów proxy. Dekoduje żetony SPNEGO GSS-API RFC 2478
+z IE7 poprzez funkcje pomocnicze lub przez biblioteki Kerberos
+wspierające SPNEGO i żetony Kerberos RFC 1964 z Firefoksa w Linuksie.
+
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
@@ -342,6 +358,19 @@ authenticate users on NTLM.
 Jest to moduł uwierzytelniania proxy, który pozwala na
 uwierzytelnianie użytkowników proxy poprzez NTLM.
 
+%package radius_auth
+Summary:	RADIUS authentication helper for Squid
+Summary(pl.UTF-8):	Obsługa uwierzytelniania RADIUS dla squida
+Group:		Networking/Admin
+
+%description radius_auth
+This  helper allows Squid to connect to a RADIUS server to validate
+the user name and password of Basic HTTP authentication.
+
+%description radius_auth -l pl.UTF-8
+Program ten pozwala na uwierzytelnianie użytkowników squida przez
+serwer RADIUS.
+
 %package digest_ldap_auth
 Summary:	LDAP authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
@@ -449,15 +478,13 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 #%patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch4 -p1
-%patch5 -p1
-#%patch7 -p1
-%{?with_combined_log:%patch8 -p1}
-%patch9 -p1
+%{?with_combined_log:%patch5 -p1}
 %ifarch ppc
-%patch10 -p1
+%patch6 -p1
 %endif
-%patch11 -p1
+%patch7 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -468,17 +495,22 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__autoheader}
 %{__automake}
 %configure \
+	--with-logdir=/var/log/squid \
+	--with-pidfile=/var/run/squid.pid \
 	--datadir=%{_datadir}/squid \
 	--enable-arp-acl \
 	--enable-auth="basic,digest,negotiate,ntlm" \
-	--enable-basic-auth-helpers="LDAP,MSNT,NCSA,PAM,SASL,SMB,YP,getpwnam,multi-domain-NTLM" \
+	--enable-basic-auth-helpers="LDAP,MSNT,NCSA,PAM,SASL,SMB,YP,getpwnam,multi-domain-NTLM,squid_radius_auth" \
+	--enable-ntlm-auth-helpers="fakeauth,no_check,smb_lm" \
+	--enable-negotiate-auth-helpers="squid_kerb_auth" \
+	--enable-digest-auth-helpers="ldap,password" \
+	--enable-external-acl-helpers="ip_user,ldap_group,session,unix_group,wbinfo_group" \
+	--enable-ntlm-fail-open \
 	--enable-cache-digests \
 	--enable-coss-aio-ops \
 	--enable-delay-pools \
-	--enable-digest-auth-helpers="ldap,password" \
 	--enable-err-language=English \
 	--enable-esi \
-	--enable-external-acl-helpers="ip_user,ldap_group,session,unix_group,wbinfo_group" \
 	--enable-follow-x-forwarded-for	\
 	--enable-forward-log \
 	--enable-forw-via-db \
@@ -490,13 +522,12 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-linux-netfilter \
 	--enable-linux-tproxy \
 	--enable-multicast-miss \
-	--enable-ntlm-auth-helpers="SMB,fakeauth,no_check" \
-	--enable-ntlm-fail-open \
 	--enable-referer-log \
 	--enable-removal-policies="heap,lru" \
 	--enable-snmp \
 	--enable-ssl \
-	--enable-storeio="aufs,diskd,null,ufs" \
+	--enable-ipv6 \
+	--enable-storeio="aufs,diskd,ufs" \
 	--enable-useragent-log \
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
@@ -530,11 +561,11 @@ touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
 cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
-rm -f $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
+rm $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
 %{__patch} -p0 < %{SOURCE5}
-rm -f *~ *.orig mime.conf.default squid.conf.default
+rm *.default squid.conf.documented
 cd -
 
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
@@ -543,8 +574,7 @@ install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
-# These two files start squid. They are replaced by /etc/rc.d/init.d script.
-rm -f $RPM_BUILD_ROOT%{_bindir}/R*
+rm $RPM_BUILD_ROOT%{_datadir}/squid/errors/{COPYRIGHT,TRANSLATORS}
 
 # cp, to have re-entrant install
 rm -rf docs
@@ -552,11 +582,7 @@ cp -a doc docs
 # dunno why, but manual is not installed
 mv docs/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
 # We don't want Makefiles as docs...
-rm -f docs/Makefile*
-
-# We don't like message: rpm found unpackaged files ...
-rm -f $RPM_BUILD_ROOT/etc/squid/msntauth.conf.default \
-	$RPM_BUILD_ROOT/etc/squid/squid.conf.orig
+rm docs/Makefile*
 
 :> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
 :> $RPM_BUILD_ROOT/var/cache/squid/swap.state
@@ -623,8 +649,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
-%doc docs/* src/mib.txt FAQ*.html book-full.html src/squid.conf.default src/mime.conf.default
+%doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
+%doc RELEASENOTES.html SPONSORS docs/* src/mib.txt FAQ*.html book-full.html
+%doc src/squid.conf.default src/squid.conf.documented src/mime.conf.default
+%doc errors/TRANSLATORS
 %attr(755,root,root) %{_bindir}/squidclient
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
@@ -640,44 +668,91 @@ fi
 %dir %{_sysconfdir}
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/squid.conf
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/mime.conf
+%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/errorpage.css
 
 %dir %{_datadir}/squid
 %dir %{_datadir}/squid/errors
 %{_datadir}/squid/icons
 %{_datadir}/squid/mib.txt
-%lang(am) %{_datadir}/squid/errors/Armenian
-%lang(az) %{_datadir}/squid/errors/Azerbaijani
-%lang(bg) %{_datadir}/squid/errors/Bulgarian
-%lang(ca) %{_datadir}/squid/errors/Catalan
-%lang(cs) %{_datadir}/squid/errors/Czech
-%lang(da) %{_datadir}/squid/errors/Danish
-%lang(nl) %{_datadir}/squid/errors/Dutch
-%{_datadir}/squid/errors/English
-%lang(et) %{_datadir}/squid/errors/Estonian
-%lang(fi) %{_datadir}/squid/errors/Finnish
-%lang(fr) %{_datadir}/squid/errors/French
-%lang(de) %{_datadir}/squid/errors/German
-%lang(el) %{_datadir}/squid/errors/Greek
-%lang(he) %{_datadir}/squid/errors/Hebrew
-%lang(hu) %{_datadir}/squid/errors/Hungarian
-%lang(it) %{_datadir}/squid/errors/Italian
-%lang(ja) %{_datadir}/squid/errors/Japanese
-%lang(ko) %{_datadir}/squid/errors/Korean
-%lang(lt) %{_datadir}/squid/errors/Lithuanian
-%lang(pl) %{_datadir}/squid/errors/Polish
-%lang(pt) %{_datadir}/squid/errors/Portuguese
-%lang(ro) %{_datadir}/squid/errors/Romanian
-%lang(ru) %{_datadir}/squid/errors/Russian-1251
-%lang(ru) %{_datadir}/squid/errors/Russian-koi8-r
-%lang(zh_CN) %{_datadir}/squid/errors/Simplify_Chinese
-%lang(sk) %{_datadir}/squid/errors/Slovak
-%lang(es) %{_datadir}/squid/errors/Spanish
-%lang(sr) %{_datadir}/squid/errors/Serbian
-%lang(sv) %{_datadir}/squid/errors/Swedish
-%lang(zh_TW) %{_datadir}/squid/errors/Traditional_Chinese
-%lang(tr) %{_datadir}/squid/errors/Turkish
-%lang(uk) %{_datadir}/squid/errors/Ukrainian*
 %{_datadir}/squid/errors/templates
+%lang(af) %{_datadir}/squid/errors/af
+%lang(ar) %{_datadir}/squid/errors/ar
+%lang(ar) %{_datadir}/squid/errors/ar-*
+%lang(az) %{_datadir}/squid/errors/az
+%lang(az) %{_datadir}/squid/errors/az-*
+%lang(bg) %{_datadir}/squid/errors/bg
+%lang(bg) %{_datadir}/squid/errors/bg-*
+%lang(ca) %{_datadir}/squid/errors/ca
+%lang(cs) %{_datadir}/squid/errors/cs
+%lang(cs) %{_datadir}/squid/errors/cs-*
+%lang(da) %{_datadir}/squid/errors/da
+%lang(da) %{_datadir}/squid/errors/da-*
+%lang(de) %{_datadir}/squid/errors/de
+%lang(de) %{_datadir}/squid/errors/de-*
+%lang(el) %{_datadir}/squid/errors/el
+%lang(el) %{_datadir}/squid/errors/el-*
+%{_datadir}/squid/errors/en
+%{_datadir}/squid/errors/en-*
+%lang(es) %{_datadir}/squid/errors/es
+%lang(es) %{_datadir}/squid/errors/es-*
+%lang(et) %{_datadir}/squid/errors/et
+%lang(et) %{_datadir}/squid/errors/et-*
+%lang(fa) %{_datadir}/squid/errors/fa
+%lang(fa) %{_datadir}/squid/errors/fa-*
+%lang(fi) %{_datadir}/squid/errors/fi
+%lang(fi) %{_datadir}/squid/errors/fi-*
+%lang(fr) %{_datadir}/squid/errors/fr
+%lang(fr) %{_datadir}/squid/errors/fr-*
+%lang(he) %{_datadir}/squid/errors/he
+%lang(he) %{_datadir}/squid/errors/he-*
+%lang(hu) %{_datadir}/squid/errors/hu
+%lang(hu) %{_datadir}/squid/errors/hu-*
+%lang(hy) %{_datadir}/squid/errors/hy
+%lang(hy) %{_datadir}/squid/errors/hy-*
+%lang(id) %{_datadir}/squid/errors/id
+%lang(id) %{_datadir}/squid/errors/id-*
+%lang(it) %{_datadir}/squid/errors/it
+%lang(it) %{_datadir}/squid/errors/it-*
+%lang(ja) %{_datadir}/squid/errors/ja
+%lang(ja) %{_datadir}/squid/errors/ja-*
+%lang(ko) %{_datadir}/squid/errors/ko
+%lang(ko) %{_datadir}/squid/errors/ko-*
+%lang(lt) %{_datadir}/squid/errors/lt
+%lang(lt) %{_datadir}/squid/errors/lt-*
+%lang(lv) %{_datadir}/squid/errors/lv
+%lang(lv) %{_datadir}/squid/errors/lv-*
+%lang(ms) %{_datadir}/squid/errors/ms
+%lang(ms) %{_datadir}/squid/errors/ms-*
+%lang(nl) %{_datadir}/squid/errors/nl
+%lang(nl) %{_datadir}/squid/errors/nl-*
+%lang(pl) %{_datadir}/squid/errors/pl
+%lang(pl) %{_datadir}/squid/errors/pl-*
+%lang(pt) %{_datadir}/squid/errors/pt
+%lang(pt) %{_datadir}/squid/errors/pt-pt
+%lang(pt_BR) %{_datadir}/squid/errors/pt-br
+%lang(ro) %{_datadir}/squid/errors/ro
+%lang(ro) %{_datadir}/squid/errors/ro-*
+%lang(ru) %{_datadir}/squid/errors/ru
+%lang(ru) %{_datadir}/squid/errors/ru-*
+%lang(sk) %{_datadir}/squid/errors/sk
+%lang(sk) %{_datadir}/squid/errors/sk-*
+%lang(sr) %{_datadir}/squid/errors/sr
+%lang(sr) %{_datadir}/squid/errors/sr-*
+%lang(sv) %{_datadir}/squid/errors/sv
+%lang(sv) %{_datadir}/squid/errors/sv-*
+%lang(th) %{_datadir}/squid/errors/th
+%lang(th) %{_datadir}/squid/errors/th-*
+%lang(tr) %{_datadir}/squid/errors/tr
+%lang(tr) %{_datadir}/squid/errors/tr-*
+%lang(uk) %{_datadir}/squid/errors/uk
+%lang(uk) %{_datadir}/squid/errors/uk-*
+%lang(uz) %{_datadir}/squid/errors/uz
+%lang(zh_CN) %{_datadir}/squid/errors/zh-cn
+%lang(zh_CN) %{_datadir}/squid/errors/zh-sg
+%lang(zh_CN) %{_datadir}/squid/errors/zh-tw
+%lang(zh_TW) %{_datadir}/squid/errors/zh-hk
+%lang(zh_TW) %{_datadir}/squid/errors/zh-mo
+
 %dir %{_libexecdir}
 
 %attr(770,root,squid) %dir /var/log/archive/squid
@@ -689,6 +764,7 @@ fi
 %ghost /var/cache/squid/swap.state
 %ghost /var/cache/squid/swap.state.clean
 %ghost /var/cache/squid/swap.state.last-clean
+%{_mandir}/man1/squidclient.1*
 %{_mandir}/man8/squid.8*
 
 %files cachemgr
@@ -703,8 +779,8 @@ fi
 %files ldap_auth
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/LDAP/README
-%attr(755,root,root) %{_libexecdir}/%{name}_ldap_auth
-%{_mandir}/man8/%{name}_ldap_auth.*
+%attr(755,root,root) %{_libexecdir}/squid_ldap_auth
+%{_mandir}/man8/squid_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
@@ -748,10 +824,24 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/digest_pw_auth
 
+%files kerb_auth
+%defattr(644,root,root,755)
+%doc helpers/negotiate_auth/squid_kerb_auth/README
+%attr(755,root,root) %{_libexecdir}/negotiate_kerb_auth
+%attr(755,root,root) %{_libexecdir}/negotiate_kerb_auth_test
+%attr(755,root,root) %{_libexecdir}/squid_kerb_auth
+%attr(755,root,root) %{_libexecdir}/squid_kerb_auth_test
+
 %files ntlm_auth
 %defattr(644,root,root,755)
 %doc helpers/ntlm_auth/no_check/{README*,no_check.pl}
-%attr(755,root,root) %{_libexecdir}/ntlm_auth
+%attr(755,root,root) %{_libexecdir}/ntlm_smb_lm_auth
+
+%files radius_auth
+%defattr(644,root,root,755)
+%doc helpers/basic_auth/squid_radius_auth/README
+%attr(755,root,root) %{_libexecdir}/squid_radius_auth
+%{_mandir}/man8/squid_radius_auth.8*
 
 %files digest_ldap_auth
 %defattr(644,root,root,755)
