@@ -40,7 +40,6 @@ Source7:	%{name}.pamd
 # Other patches:
 # http://zph.bratcheda.org/
 Source8:	%{name}-cachemgr-apache.conf
-Patch0:		%{name}_hit_miss_mark.patch
 Patch1:		%{name}-fhs.patch
 Patch2:		%{name}-location.patch
 Patch3:		%{name}-crash-on-ENOSPC.patch
@@ -475,7 +474,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
-#%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
