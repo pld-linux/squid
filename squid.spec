@@ -40,13 +40,13 @@ Source7:	%{name}.pamd
 # Other patches:
 # http://zph.bratcheda.org/
 Source8:	%{name}-cachemgr-apache.conf
-Patch1:		%{name}-fhs.patch
-Patch2:		%{name}-location.patch
-Patch3:		%{name}-crash-on-ENOSPC.patch
-Patch4:		%{name}-empty-referer.patch
-Patch5:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
-Patch6:		%{name}-ppc-m32.patch
-Patch7:		%{name}-cachemgr-webapp.patch
+Patch0:		%{name}-fhs.patch
+Patch1:		%{name}-location.patch
+Patch2:		%{name}-crash-on-ENOSPC.patch
+Patch3:		%{name}-empty-referer.patch
+Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
+Patch5:		%{name}-ppc-m32.patch
+Patch6:		%{name}-cachemgr-webapp.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -54,6 +54,7 @@ BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
+BuildRequires:	libcap-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	openldap-devel >= 2.3.0
@@ -474,15 +475,15 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 # Bug fixes from Squid home page:
 
 # Other patches:
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
-%{?with_combined_log:%patch5 -p1}
+%{?with_combined_log:%patch4 -p1}
 %ifarch ppc
-%patch6 -p1
+%patch5 -p1
 %endif
-%patch7 -p1
+%patch6 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
