@@ -54,6 +54,7 @@ BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
+BuildRequires:	libecap-devel
 BuildRequires:	libcap-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libxml2-devel
@@ -515,6 +516,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-forw-via-db \
 	--enable-htcp \
 	--enable-icap-client \
+	--enable-ecap \
 	--enable-icmp \
 	--enable-kill-parent-hack \
 	--enable-large-cache-files \
