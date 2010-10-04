@@ -18,7 +18,7 @@ Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.1.8
 # review patches before stable release
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
