@@ -16,30 +16,21 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.1.8
-# review patches before stable release
-Release:	2
+Version:	3.1.9
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.1/%{name}-%{version}.tar.bz2
-# Source0-md5:	a8160dfba55ab7c400c622b72d39fc13
-# http://www.squid-cache.org/Doc/FAQ/FAQ.tar.gz
-Source1:	%{name}-FAQ.tar.gz
-# Source1-md5:	cb9a955f8cda9cc166e086fccd412a43
-Source2:	%{name}.init
-Source3:	%{name}.sysconfig
-# http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
-Source4:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
-# Source4-md5:	4f3b6dab1de9cbb847df89d8b417378a
-Source5:	%{name}.conf.patch
-Source6:	%{name}.logrotate
-Source7:	%{name}.pamd
-# Bug fixes from Squid home page, please include URL
-# lets have fun - there is no patches... yet:)
-# Other patches:
-# http://zph.bratcheda.org/
-Source8:	%{name}-cachemgr-apache.conf
+# Source0-md5:	896ace723445ac168986ba8854437ce3
+Source1:	%{name}.init
+Source2:	%{name}.sysconfig
+Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
+# Source3-md5:	4f3b6dab1de9cbb847df89d8b417378a
+Source4:	%{name}.conf.patch
+Source5:	%{name}.logrotate
+Source6:	%{name}.pamd
+Source7:	%{name}-cachemgr-apache.conf
 Patch0:		%{name}-fhs.patch
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
@@ -54,8 +45,8 @@ BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
-BuildRequires:	libecap-devel
 BuildRequires:	libcap-devel
+BuildRequires:	libecap-devel
 BuildRequires:	libltdl-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	openldap-devel >= 2.3.0
@@ -72,11 +63,11 @@ Requires(post):	grep
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
-Requires(pre,triggerpostun):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires(pre,triggerpostun):	/bin/id
 Requires(pre,triggerpostun):	/usr/sbin/usermod
 Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
@@ -216,16 +207,16 @@ Group:		Networking/Admin
 
 %description kerb_auth
 This squid helper is a reference implementation that supports
-authentication via the Negotiate RFC 4559 for proxies.
-It decodes RFC 2478 SPNEGO GSS-API tokens from IE7 either through
-helper functions or via SPNEGO supporting Kerberos libraries
-and RFC 1964 Kerberos tokens from Firefox on Linux.
+authentication via the Negotiate RFC 4559 for proxies. It decodes RFC
+2478 SPNEGO GSS-API tokens from IE7 either through helper functions or
+via SPNEGO supporting Kerberos libraries and RFC 1964 Kerberos tokens
+from Firefox on Linux.
 
 %description kerb_auth -l pl.UTF-8
-Pakiet ten jest implementacją uwierzytelniania przez negocjacji RFC 4559
-dla serwerów proxy. Dekoduje żetony SPNEGO GSS-API RFC 2478
-z IE7 poprzez funkcje pomocnicze lub przez biblioteki Kerberos
-wspierające SPNEGO i żetony Kerberos RFC 1964 z Firefoksa w Linuksie.
+Pakiet ten jest implementacją uwierzytelniania przez negocjacji RFC
+4559 dla serwerów proxy. Dekoduje żetony SPNEGO GSS-API RFC 2478 z IE7
+poprzez funkcje pomocnicze lub przez biblioteki Kerberos wspierające
+SPNEGO i żetony Kerberos RFC 1964 z Firefoksa w Linuksie.
 
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
@@ -365,8 +356,8 @@ Summary(pl.UTF-8):	Obsługa uwierzytelniania RADIUS dla squida
 Group:		Networking/Admin
 
 %description radius_auth
-This  helper allows Squid to connect to a RADIUS server to validate
-the user name and password of Basic HTTP authentication.
+This helper allows Squid to connect to a RADIUS server to validate the
+user name and password of Basic HTTP authentication.
 
 %description radius_auth -l pl.UTF-8
 Program ten pozwala na uwierzytelnianie użytkowników squida przez
@@ -456,8 +447,9 @@ timing out sessions if no requests have been seen for the idle timeout
 timer.
 
 %description session_acl -l pl.UTF-8
-Moduł oparty na koncepcji sesji, śledzący zapytania i wygaszający sesje
-jeśli w określonym czasie nie widziano w ich obrębie kolejnych zapytań.
+Moduł oparty na koncepcji sesji, śledzący zapytania i wygaszający
+sesje jeśli w określonym czasie nie widziano w ich obrębie kolejnych
+zapytań.
 
 %package scripts
 Summary:	Perl scripts for Squid
@@ -472,10 +464,7 @@ This package contains Perl scripts and contributed programs for Squid.
 Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %prep
-%setup -q -a1 -a4
-# Bug fixes from Squid home page:
-
-# Other patches:
+%setup -q -a3
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -556,22 +545,22 @@ install -d $RPM_BUILD_ROOT{%{_cgidir},%{_webapps}/%{_webapp}} \
 cp -a contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/pam.d/squid
+install %{SOURCE6} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
-cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
-cp -a %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 rm $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
-%{__patch} -p0 < %{SOURCE5}
+%{__patch} -p0 < %{SOURCE4}
 rm *.default squid.conf.documented
 cd -
 
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/squid
-install %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/squid
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/squid
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
@@ -651,7 +640,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS docs/* src/mib.txt FAQ*.html book-full.html
+%doc RELEASENOTES.html SPONSORS docs/* src/mib.txt book-full.html
 %doc src/squid.conf.default src/squid.conf.documented src/mime.conf.default
 %doc errors/TRANSLATORS
 %attr(755,root,root) %{_bindir}/squidclient
