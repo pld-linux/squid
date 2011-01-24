@@ -48,6 +48,8 @@ BuildRequires:	heimdal-devel
 BuildRequires:	libcap-devel
 BuildRequires:	libecap-devel
 BuildRequires:	libltdl-devel
+BuildRequires:	libstdc++-devel
+BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
