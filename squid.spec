@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.1.11
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -76,6 +76,8 @@ Requires:	setup >= 2.4.6
 Provides:	group(squid)
 # epoll enabled by default:
 Requires:	uname(release) >= 2.6
+# TPROXYv4 (v2 disabled b/c it breaks v4)
+#Suggests:	uname(release) >= 2.6.28.3
 Provides:	user(squid)
 Conflicts:	logrotate < 3.7-4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -512,7 +514,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-kill-parent-hack \
 	--enable-large-cache-files \
 	--enable-linux-netfilter \
-	--enable-linux-tproxy \
+	--disable-linux-tproxy \
 	--enable-multicast-miss \
 	--enable-referer-log \
 	--enable-removal-policies="heap,lru" \
