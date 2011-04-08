@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.1.11
-Release:	2
+Version:	3.1.12
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.1/%{name}-%{version}.tar.bz2
-# Source0-md5:	4b071d2bf4959f2d081344f2f69dd2f1
+# Source0-md5:	3b4979e4b44f46d4e13f50326c537d89
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -719,6 +719,7 @@ fi
 %lang(ms) %{_datadir}/squid/errors/ms-*
 %lang(nl) %{_datadir}/squid/errors/nl
 %lang(nl) %{_datadir}/squid/errors/nl-*
+%lang(op) %{_datadir}/squid/errors/oc
 %lang(pl) %{_datadir}/squid/errors/pl
 %lang(pl) %{_datadir}/squid/errors/pl-*
 %lang(pt) %{_datadir}/squid/errors/pt
@@ -741,6 +742,8 @@ fi
 %lang(uk) %{_datadir}/squid/errors/uk
 %lang(uk) %{_datadir}/squid/errors/uk-*
 %lang(uz) %{_datadir}/squid/errors/uz
+%lang(vi) %{_datadir}/squid/errors/vi
+%lang(vi) %{_datadir}/squid/errors/vi-*
 %lang(zh_CN) %{_datadir}/squid/errors/zh-cn
 %lang(zh_CN) %{_datadir}/squid/errors/zh-sg
 %lang(zh_CN) %{_datadir}/squid/errors/zh-tw
