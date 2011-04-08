@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.1.12
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -719,7 +719,7 @@ fi
 %lang(ms) %{_datadir}/squid/errors/ms-*
 %lang(nl) %{_datadir}/squid/errors/nl
 %lang(nl) %{_datadir}/squid/errors/nl-*
-%lang(op) %{_datadir}/squid/errors/oc
+%lang(oc) %{_datadir}/squid/errors/oc
 %lang(pl) %{_datadir}/squid/errors/pl
 %lang(pl) %{_datadir}/squid/errors/pl-*
 %lang(pt) %{_datadir}/squid/errors/pt
