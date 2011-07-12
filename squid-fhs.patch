@@ -1,7 +1,7 @@
-diff -ur squid-2.5.STABLE7.orig/src/Makefile.am squid-2.5.STABLE7/src/Makefile.am
---- squid-2.5.STABLE7.orig/src/Makefile.am	2004-09-25 23:37:35.000000000 +0200
-+++ squid-2.5.STABLE7/src/Makefile.am	2004-10-12 11:34:16.900258376 +0200
-@@ -719,8 +719,8 @@
+diff -ur squid-3.1.14-orig/src/Makefile.am squid-3.1.14/src/Makefile.am
+--- squid-3.1.14-orig/src/Makefile.am	2011-07-04 06:38:34.000000000 +0200
++++ squid-3.1.14/src/Makefile.am	2011-07-12 13:15:33.936929633 +0200
+@@ -728,8 +728,8 @@
  DEFAULT_ACCESS_LOG      = $(DEFAULT_LOG_PREFIX)/access.log
  DEFAULT_STORE_LOG       = $(DEFAULT_LOG_PREFIX)/store.log
  DEFAULT_PID_FILE        = $(DEFAULT_PIDFILE)
@@ -9,6 +9,6 @@ diff -ur squid-2.5.STABLE7.orig/src/Makefile.am squid-2.5.STABLE7/src/Makefile.a
 -DEFAULT_SWAP_DIR        = $(localstatedir)/cache
 +DEFAULT_SWAP_DIR        = $(localstatedir)/cache/squid
 +DEFAULT_NETDB_FILE      = $(DEFAULT_SWAP_DIR)/netdb.state
+ DEFAULT_SSL_DB_DIR	= $(localstatedir)/lib/ssl_db
  DEFAULT_PINGER		= $(libexecdir)/`echo pinger | sed '$(transform);s/$$/$(EXEEXT)/'`
  DEFAULT_UNLINKD		= $(libexecdir)/`echo unlinkd | sed '$(transform);s/$$/$(EXEEXT)/'`
- DEFAULT_DISKD		= $(libexecdir)/`echo diskd | sed '$(transform);s/$$/$(EXEEXT)/'`
