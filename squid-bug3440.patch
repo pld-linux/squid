@@ -1,0 +1,26 @@
+=== modified file 'src/Store.h'
+--- squid-3.1.18.old/src/Store.h	2011-12-02 12:17:07 +0000
++++ squid-3.1.18/src/Store.h	2011-12-06 12:31:35 +0000
+@@ -191,7 +191,7 @@
+ 
+ #if USE_ADAPTATION
+     /// call back producer when more buffer space is available
+-    void deferProducer(const AsyncCall::Pointer &producer);
++    void deferProducer(AsyncCall::Pointer &producer);
+     /// calls back producer registered with deferProducer
+     void kickProducer();
+ #endif
+
+=== modified file 'src/store.cc'
+--- squid-3.1.18.old/src/store.cc	2011-12-02 12:17:07 +0000
++++ squid-3.1.18/src/store.cc	2011-12-06 12:31:35 +0000
+@@ -368,7 +368,7 @@
+ 
+ #if USE_ADAPTATION
+ void
+-StoreEntry::deferProducer(const AsyncCall::Pointer &producer)
++StoreEntry::deferProducer(AsyncCall::Pointer &producer)
+ {
+     if (!deferredProducer)
+         deferredProducer = producer;
+
