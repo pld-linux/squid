@@ -1,4 +1,5 @@
 /var/log/squid/access*.log {
+	su root squid
 	olddir /var/log/archive/squid
 #	dateext
 	compress
@@ -11,6 +12,7 @@
 }
 
 /var/log/squid/[sc]*.log {
+	su root squid
 	olddir /var/log/archive/squid
 	compress
 	create 660 root squid
