@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.1.19
+Version:	3.1.20
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.1/%{name}-%{version}.tar.bz2
-# Source0-md5:	9b6ffaf96bee8f05f0085bc6361d7c94
+# Source0-md5:	c4d733a383c0508fd0746d64a2d7278a
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -38,6 +38,7 @@ Patch3:		%{name}-empty-referer.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
+Patch7:		%{name}-ecap.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -478,6 +479,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch5 -p1
 %endif
 %patch6 -p1
+%patch7 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -731,6 +733,8 @@ fi
 %lang(ru) %{_datadir}/squid/errors/ru-*
 %lang(sk) %{_datadir}/squid/errors/sk
 %lang(sk) %{_datadir}/squid/errors/sk-*
+%lang(sk) %{_datadir}/squid/errors/sl
+%lang(sk) %{_datadir}/squid/errors/sl-*
 %lang(sr) %{_datadir}/squid/errors/sr
 %lang(sr) %{_datadir}/squid/errors/sr-*
 %lang(sv) %{_datadir}/squid/errors/sv
