@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.1.20
-Release:	3
+Version:	3.1.21
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.1/%{name}-%{version}.tar.bz2
-# Source0-md5:	c4d733a383c0508fd0746d64a2d7278a
+# Source0-md5:	cc4ad434ae5bf16b0985523f3feab0a6
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -38,7 +38,6 @@ Patch3:		%{name}-empty-referer.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
-Patch7:		%{name}-ecap.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -479,7 +478,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch5 -p1
 %endif
 %patch6 -p1
-%patch7 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
@@ -876,5 +874,17 @@ fi
 
 %files scripts
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/*.pl
+%attr(755,root,root) %{_libexecdir}/AnnounceCache.pl
+%attr(755,root,root) %{_libexecdir}/access-log-matrix.pl
+%attr(755,root,root) %{_libexecdir}/cache-compare.pl
+%attr(755,root,root) %{_libexecdir}/cachetrace.pl
+%attr(755,root,root) %{_libexecdir}/check_cache.pl
 %attr(755,root,root) %{_libexecdir}/contrib
+%attr(755,root,root) %{_libexecdir}/fileno-to-pathname.pl
+%attr(755,root,root) %{_libexecdir}/flag_truncs.pl
+%attr(755,root,root) %{_libexecdir}/icp-test.pl
+%attr(755,root,root) %{_libexecdir}/icpserver.pl
+%attr(755,root,root) %{_libexecdir}/no_check.pl
+%attr(755,root,root) %{_libexecdir}/tcp-banger.pl
+%attr(755,root,root) %{_libexecdir}/udp-banger.pl
+%attr(755,root,root) %{_libexecdir}/upgrade-1.0-store.pl
