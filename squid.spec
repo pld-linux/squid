@@ -41,11 +41,12 @@ Patch6:		%{name}-cachemgr-webapp.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
+BuildRequires:	cppunit-devel
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
-BuildRequires:	libcap-devel
+BuildRequires:	libcap-devel >= 1:2.09
 BuildRequires:	libecap-devel >= 0.2.0
 BuildRequires:	libltdl-devel
 BuildRequires:	libnetfilter_conntrack-devel
