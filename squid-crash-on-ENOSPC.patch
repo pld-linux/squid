@@ -1,12 +1,15 @@
-diff -urN squid-3.0.STABLE9.orig/src/logfile.cc squid-3.0.STABLE9/src/logfile.cc
---- squid-3.0.STABLE9.orig/src/logfile.cc	2008-09-09 18:06:44.000000000 +0200
-+++ squid-3.0.STABLE9/src/logfile.cc	2008-09-19 07:51:18.505959615 +0200
-@@ -321,5 +321,7 @@
+--- squid-3.2.3/src/log/ModStdio.cc~	2012-10-20 14:39:49.000000000 +0200
++++ squid-3.2.3/src/log/ModStdio.cc	2012-10-26 12:23:52.502399442 +0200
+@@ -60,7 +60,11 @@
      if (!lf->flags.fatal)
          return;
  
 -    fatalf("logfileWrite: %s: %s\n", lf->path, xstrerror());
 +#if HAVE_SYSLOG
 +    syslog(LOG_ALERT, "logfileWrite: %s: %s", lf->path, xstrerror());
++#else
++    debugs(50, 1, "logfileWrite: " << lf->path << ": " << xstrerror());
 +#endif
  }
+ 
+ static void

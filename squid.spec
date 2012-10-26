@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.1.21
-Release:	2
+Version:	3.2.3
+Release:	0.1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v3/3.1/%{name}-%{version}.tar.bz2
-# Source0-md5:	cc4ad434ae5bf16b0985523f3feab0a6
+Source0:	http://www.squid-cache.org/Versions/v3/3.2/%{name}-%{version}.tar.bz2
+# Source0-md5:	b26171dfd397defd9ee113d555691b86
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -31,10 +31,10 @@ Source4:	%{name}.conf.patch
 Source5:	%{name}.logrotate
 Source6:	%{name}.pamd
 Source7:	%{name}-cachemgr-apache.conf
+Source8:	%{name}.tmpfiles
 Patch0:		%{name}-fhs.patch
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
-Patch3:		%{name}-empty-referer.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
@@ -46,8 +46,9 @@ BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
 BuildRequires:	libcap-devel
-BuildRequires:	libecap-devel
+BuildRequires:	libecap-devel >= 0.2.0
 BuildRequires:	libltdl-devel
+BuildRequires:	libnetfilter_conntrack-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
@@ -204,19 +205,21 @@ various informations about Squid via WWW.
 Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi
 zapoznać się z informacjami o pracy Squida poprzez WWW.
 
-%package kerb_auth
+%package kerberos_auth
 Summary:	Authentication via the Negotiate RFC 4559 for proxies
 Summary(pl.UTF-8):	Uwierzytelnianie przez negocjację RFC 4559 dla serwerów proxy
 Group:		Networking/Admin
+Obsoletes:	squid-kerb_auth < %{version}-%{release}
+Provides:	squid-kerb_auth = %{version}-%{release}
 
-%description kerb_auth
+%description kerberos_auth
 This squid helper is a reference implementation that supports
 authentication via the Negotiate RFC 4559 for proxies. It decodes RFC
 2478 SPNEGO GSS-API tokens from IE7 either through helper functions or
 via SPNEGO supporting Kerberos libraries and RFC 1964 Kerberos tokens
 from Firefox on Linux.
 
-%description kerb_auth -l pl.UTF-8
+%description kerberos_auth -l pl.UTF-8
 Pakiet ten jest implementacją uwierzytelniania przez negocjacji RFC
 4559 dla serwerów proxy. Dekoduje żetony SPNEGO GSS-API RFC 2478 z IE7
 poprzez funkcje pomocnicze lub przez biblioteki Kerberos wspierające
@@ -278,18 +281,20 @@ authenticate users on an NT domain.
 Jest to moduł uwierzytelniania proxy, który pozwala na
 uwierzytelnianie użytkowników proxy w domenie NT.
 
-%package yp_auth
-Summary:	YP authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania YP dla squida
+%package nis_auth
+Summary:	NIS authentication helper for Squid
+Summary(pl.UTF-8):	Obsługa uwierzytelniania NIS dla squida
 Group:		Networking/Admin
+Obsoletes:	squid-yp_auth < %{version}-%{release}
+Provides:	squid-yp_auth = %{version}-%{release}
 
-%description yp_auth
+%description nis_auth
 This is an authentication module for the Squid proxy server to
-authenticate users on YP.
+authenticate users on NIS.
 
-%description yp_auth -l pl.UTF-8
+%description nis_auth -l pl.UTF-8
 Jest to moduł uwierzytelniania proxy, który pozwala na
-uwierzytelnianie użytkowników proxy poprzez YP.
+uwierzytelnianie użytkowników proxy poprzez NIS.
 
 %package ncsa_auth
 Summary:	NCSA httpd style authentication helper for Squid
@@ -366,6 +371,60 @@ user name and password of Basic HTTP authentication.
 %description radius_auth -l pl.UTF-8
 Program ten pozwala na uwierzytelnianie użytkowników squida przez
 serwer RADIUS.
+
+%package db_auth
+Summary:	Database authentication helper for Squid
+Summary(pl.UTF-8):	Obsługa uwierzytelniania przez bazę danych dla squida
+Group:		Networking/Admin
+
+%description db_auth
+This is an authentication module for the Squid proxy server to
+authenticate users againsta a database.
+
+%description db_auth -l pl.UTF-8
+Jest to moduł uwierzytelniania proxy, który pozwala na
+uwierzytelnianie użytkowników proxy poprzez bazę danych.
+
+%package pop3_auth
+Summary:	POP3 authentication helper for Squid
+Summary(pl.UTF-8):	Obsługa uwierzytelniania POP3 dla squida
+Group:		Networking/Admin
+
+%description pop3_auth
+This is an authentication module for the Squid proxy server to
+authenticate users on POP3.
+
+%description pop3_auth -l pl.UTF-8
+Jest to moduł uwierzytelniania proxy, który pozwala na
+uwierzytelnianie użytkowników proxy poprzez POP3.
+
+%package negotiate_wrapper_auth
+Summary:	Kerberos authentication helper for Squid
+Summary(pl.UTF-8):	Obsługa uwierzytelniania Kerberos dla squida
+Group:		Networking/Admin
+Requires:	%{name}-ntlm_auth
+Requires:	%{name}-kerberos_auth
+
+%description negotiate_wrapper_auth
+This is an authentication module for the Squid proxy server to
+authenticate users on Kerberos.
+
+%description negotiate_wrapper_auth -l pl.UTF-8
+Jest to moduł uwierzytelniania proxy, który pozwala na
+uwierzytelnianie użytkowników proxy poprzez Kerberosa.
+
+%package digest_edirectory_auth
+Summary:	eDirectory authentication helper for Squid
+Summary(pl.UTF-8):	Obsługa uwierzytelniania eDirectory dla squida
+Group:		Networking/Admin
+
+%description digest_edirectory_auth
+This is an authentication module for the Squid proxy server to
+authenticate users on eDirectory.
+
+%description digest_edirectory_auth -l pl.UTF-8
+Jest to moduł uwierzytelniania proxy, który pozwala na
+uwierzytelnianie użytkowników proxy poprzez eDirectory.
 
 %package digest_ldap_auth
 Summary:	LDAP authentication helper for Squid
@@ -455,6 +514,36 @@ Moduł oparty na koncepcji sesji, śledzący zapytania i wygaszający
 sesje jeśli w określonym czasie nie widziano w ich obrębie kolejnych
 zapytań.
 
+%package edirectory_userip_acl
+Summary:	Squid eDirectory IP Lookup Helper
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez eDirectory
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description edirectory_userip_acl
+This is an external ACL module for the Squid proxy server to limit
+access for users based on IP address lookup in eDirectory.
+
+%description edirectory_userip_acl -l pl.UTF-8
+Jest to moduł kontroli dostępu (ACL) do proxy, który pozwala na
+ograniczenie dostępu użytkowników proxy na podstawie ich adresu IP
+popranego z eDirectory.
+
+%package kerberos_ldap_group_acl
+Summary:	Squid LDAP external acl group helper for Kerberos or NTLM credentials
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy LDAP/Kerberos/NTLM dla squida
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description kerberos_ldap_group_acl
+This is an external ACL module for the Squid proxy server to limit
+access for users based on LDAP Kerberos or NTLM credentials.
+
+%description kerberos_ldap_group_acl -l pl.UTF-8
+Jest to moduł kontroli dostępu (ACL) do proxy, który pozwala na
+ograniczenie dostępu użytkowników proxy na podstawie ich
+uprawnień Kerberosowych lub NTLM-owych w LDAP.
+
 %package scripts
 Summary:	Perl scripts for Squid
 Summary(pl.UTF-8):	Skrypty perlowe dla Squida
@@ -472,14 +561,11 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %{?with_combined_log:%patch4 -p1}
 %ifarch ppc
 %patch5 -p1
 %endif
 %patch6 -p1
-
-%{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts,helpers/*/*}/*.pl
 
 %build
 %{__libtoolize}
@@ -488,16 +574,20 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-strict-error-checking \
+	--with-default-user=squid \
 	--with-logdir=/var/log/squid \
+	--with-swapdir=/var/cache/squid \
 	--with-pidfile=/var/run/squid.pid \
 	--datadir=%{_datadir}/squid \
 	--enable-arp-acl \
-	--enable-auth="basic,digest,negotiate,ntlm" \
-	--enable-basic-auth-helpers="LDAP,MSNT,NCSA,PAM,SASL,SMB,YP,getpwnam,multi-domain-NTLM,squid_radius_auth" \
-	--enable-ntlm-auth-helpers="fakeauth,no_check,smb_lm" \
-	--enable-negotiate-auth-helpers="squid_kerb_auth" \
-	--enable-digest-auth-helpers="ldap,password" \
-	--enable-external-acl-helpers="ip_user,ldap_group,session,unix_group,wbinfo_group" \
+	--enable-auth \
+	--enable-basic-auth-helpers \
+	--enable-ntlm-auth-helpers \
+	--enable-negotiate-auth-helpers \
+	--enable-digest-auth-helpers \
+	--enable-external-acl-helpers \
+	--enable-url-rewrite-helpers \
 	--enable-ntlm-fail-open \
 	--enable-cache-digests \
 	--enable-coss-aio-ops \
@@ -508,6 +598,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-forward-log \
 	--enable-forw-via-db \
 	--enable-htcp \
+	--enable-wccp \
+	--enable-wccpv2 \
 	--enable-icap-client \
 	--enable-ecap \
 	--enable-icmp \
@@ -518,10 +610,10 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-multicast-miss \
 	--enable-referer-log \
 	--enable-removal-policies="heap,lru" \
+	--enable-storeio="aufs,diskd,rock,ufs" \
 	--enable-snmp \
 	--enable-ssl \
 	--enable-ipv6 \
-	--enable-storeio="aufs,diskd,ufs" \
 	--enable-useragent-log \
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
@@ -541,25 +633,28 @@ install -d $RPM_BUILD_ROOT{%{_cgidir},%{_webapps}/%{_webapp}} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/man8 \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
-	$RPM_BUILD_ROOT/var/{cache,log{,/archive}}/squid
+	$RPM_BUILD_ROOT/var/{cache,log{,/archive}}/squid \
+	$RPM_BUILD_ROOT%{systemdtmpfilesdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cp -a contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
+%{__cp} -a contrib/*.pl $RPM_BUILD_ROOT%{_libexecdir}/contrib
 install scripts/*.pl $RPM_BUILD_ROOT%{_libexecdir}
 
 install %{SOURCE6} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
-cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
-cp -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
-rm $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
+install %{SOURCE8} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/squid.conf
+
+%{__mv} -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
+%{__cp} -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
+%{__cp} -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+%{__rm} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
 %{__patch} -p0 < %{SOURCE4}
-rm *.default squid.conf.documented
+%{__rm} *.default squid.conf.documented
 cd -
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/squid
@@ -568,15 +663,13 @@ install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/squid
 
 touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 
-rm $RPM_BUILD_ROOT%{_datadir}/squid/errors/{COPYRIGHT,TRANSLATORS}
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/squid/errors/{COPYRIGHT,TRANSLATORS}
 
 # cp, to have re-entrant install
-rm -rf docs
-cp -a doc docs
-# dunno why, but manual is not installed
-mv docs/squid.8 $RPM_BUILD_ROOT%{_mandir}/man8
+%{__rm} -rf docs
+%{__cp} -a doc docs
 # We don't want Makefiles as docs...
-rm docs/Makefile*
+%{__rm} docs/Makefile*
 
 :> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
 :> $RPM_BUILD_ROOT/var/cache/squid/swap.state
@@ -647,13 +740,20 @@ fi
 %doc RELEASENOTES.html SPONSORS docs/* src/mib.txt book-full.html
 %doc src/squid.conf.default src/squid.conf.documented src/mime.conf.default
 %doc errors/TRANSLATORS
+%attr(755,root,root) %{_bindir}/purge
 %attr(755,root,root) %{_bindir}/squidclient
+
+%dir %{_libexecdir}
 %attr(755,root,root) %{_libexecdir}/diskd
 # YES, it has to be suid root, it sends ICMP packets.
 %attr(4754,root,squid) %{_libexecdir}/pinger
 %attr(755,root,root) %{_libexecdir}/unlinkd
-%attr(755,root,root) %{_libexecdir}/fakeauth_auth
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_libexecdir}/ntlm_fake_auth
+%attr(755,root,root) %{_libexecdir}/basic_fake_auth
+%attr(755,root,root) %{_libexecdir}/url_fake_rewrite
+%attr(755,root,root) %{_libexecdir}/url_fake_rewrite.sh
+%attr(755,root,root) %{_libexecdir}/log_file_daemon
+%attr(755,root,root) %{_sbindir}/squid
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/squid
@@ -752,7 +852,8 @@ fi
 %lang(zh_TW) %{_datadir}/squid/errors/zh-hk
 %lang(zh_TW) %{_datadir}/squid/errors/zh-mo
 
-%dir %{_libexecdir}
+%{systemdtmpfilesdir}/squid.conf
+%attr(770,root,squid) %dir /var/run/squid
 
 %attr(770,root,squid) %dir /var/log/archive/squid
 %attr(770,root,squid) %dir /var/log/squid
@@ -779,112 +880,145 @@ fi
 %files ldap_auth
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/LDAP/README
-%attr(755,root,root) %{_libexecdir}/squid_ldap_auth
-%{_mandir}/man8/squid_ldap_auth.*
+%attr(755,root,root) %{_libexecdir}/basic_ldap_auth
+%{_mandir}/man8/basic_ldap_auth.*
 
 %files pam_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/PAM/pam_auth.c
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
-%attr(755,root,root) %{_libexecdir}/pam_auth
-%{_mandir}/man8/pam_auth.8*
+%attr(755,root,root) %{_libexecdir}/basic_pam_auth
+%{_mandir}/man8/basic_pam_auth.8*
 
 %files smb_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/SMB/{README,ChangeLog,smb_auth.sh}
-%doc helpers/basic_auth/multi-domain-NTLM/*
-%attr(755,root,root) %{_libexecdir}/smb_auth*
+%doc helpers/basic_auth/SMB/ChangeLog
+%attr(755,root,root) %{_libexecdir}/basic_smb_auth*
 
 %files msnt_auth
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/MSNT/README*
-%attr(755,root,root) %{_libexecdir}/msnt_auth
+%doc helpers/basic_auth/MSNT-multi-domain/README*
+%attr(755,root,root) %{_libexecdir}/basic_msnt_auth
+%attr(755,root,root) %{_libexecdir}/basic_msnt_multi_domain_auth
 %attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/msntauth.conf
 
-%files yp_auth
+%files nis_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/yp_auth
+%attr(755,root,root) %{_libexecdir}/basic_nis_auth
 
 %files ncsa_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/ncsa_auth
-%{_mandir}/man8/ncsa_auth.8*
+%attr(755,root,root) %{_libexecdir}/basic_ncsa_auth
+%{_mandir}/man8/basic_ncsa_auth.8*
 
 %files sasl_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/SASL/{README,squid_sasl*}
-%attr(755,root,root) %{_libexecdir}/sasl_auth
+%doc helpers/basic_auth/SASL/basic_sasl_auth.{conf,pam}
+%attr(755,root,root) %{_libexecdir}/basic_sasl_auth
+%{_mandir}/man8/basic_sasl_auth.8*
 
 %files getpwname_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/getpwname_auth
+%attr(755,root,root) %{_libexecdir}/basic_getpwnam_auth
+%{_mandir}/man8/basic_getpwnam_auth.8*
 
 %files passwd_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/digest_pw_auth
+%attr(755,root,root) %{_libexecdir}/digest_file_auth
+%{_mandir}/man8/digest_file_auth.8*
 
-%files kerb_auth
+%files kerberos_auth
 %defattr(644,root,root,755)
-%doc helpers/negotiate_auth/squid_kerb_auth/README
-%attr(755,root,root) %{_libexecdir}/negotiate_kerb_auth
-%attr(755,root,root) %{_libexecdir}/negotiate_kerb_auth_test
-%attr(755,root,root) %{_libexecdir}/squid_kerb_auth
-%attr(755,root,root) %{_libexecdir}/squid_kerb_auth_test
+%doc helpers/negotiate_auth/kerberos/README
+%attr(755,root,root) %{_libexecdir}/negotiate_kerberos_auth
+%attr(755,root,root) %{_libexecdir}/negotiate_kerberos_auth_test
+%{_mandir}/man8/negotiate_kerberos_auth.8*
 
 %files ntlm_auth
 %defattr(644,root,root,755)
-%doc helpers/ntlm_auth/no_check/{README*,no_check.pl}
 %attr(755,root,root) %{_libexecdir}/ntlm_smb_lm_auth
 
 %files radius_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/squid_radius_auth/README
-%attr(755,root,root) %{_libexecdir}/squid_radius_auth
-%{_mandir}/man8/squid_radius_auth.8*
+%doc helpers/basic_auth/RADIUS/README
+%attr(755,root,root) %{_libexecdir}/basic_radius_auth
+%{_mandir}/man8/basic_radius_auth.8*
 
 %files digest_ldap_auth
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/digest_ldap_auth
 
+%files db_auth
+%defattr(644,root,root,755)
+%{_libexecdir}/basic_db_auth
+%{_mandir}/man8/basic_db_auth.8*
+
+%files pop3_auth
+%defattr(644,root,root,755)
+%{_libexecdir}/basic_pop3_auth
+
+%files digest_edirectory_auth
+%defattr(644,root,root,755)
+%{_libexecdir}/digest_edirectory_auth
+
+%files negotiate_wrapper_auth
+%defattr(644,root,root,755)
+%{_libexecdir}/negotiate_wrapper_auth
+
 %files ip_acl
 %defattr(644,root,root,755)
-%doc helpers/external_acl/ip_user/{README,example*}
-%attr(755,root,root) %{_libexecdir}/ip_user_check
+%doc helpers/external_acl/file_userip/example*
+%attr(755,root,root) %{_libexecdir}/ext_file_userip_acl
+%{_mandir}/man8/ext_file_userip_acl.*
 
 %files ldap_acl
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/squid_ldap_group
-%{_mandir}/man8/%{name}_ldap_group.*
+%attr(755,root,root) %{_libexecdir}/ext_ldap_group_acl
+%{_mandir}/man8/ext_ldap_group_acl.*
 
 %files unix_acl
 %defattr(644,root,root,755)
-%doc helpers/external_acl/unix_group/README
-%attr(755,root,root) %{_libexecdir}/squid_unix_group
-%{_mandir}/man8/%{name}_unix_group.*
+%attr(755,root,root) %{_libexecdir}/ext_unix_group_acl
+%{_mandir}/man8/ext_unix_group_acl.*
 
 %files wbinfo_acl
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/wbinfo_group.pl
+%attr(755,root,root) %{_libexecdir}/ext_wbinfo_group_acl
+%{_mandir}/man8/ext_wbinfo_group_acl.8*
 
 %files session_acl
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/squid_session
-%{_mandir}/man8/%{name}_session.8*
+%attr(755,root,root) %{_libexecdir}/ext_session_acl
+%{_mandir}/man8/ext_session_acl.8*
+
+%files edirectory_userip_acl
+%defattr(644,root,root,755)
+%{_libexecdir}/ext_edirectory_userip_acl
+%{_mandir}/man8/ext_edirectory_userip_acl.8*
+
+%files kerberos_ldap_group_acl
+%defattr(644,root,root,755)
+%{_libexecdir}/ext_kerberos_ldap_group_acl
 
 %files scripts
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libexecdir}/contrib
 %attr(755,root,root) %{_libexecdir}/AnnounceCache.pl
 %attr(755,root,root) %{_libexecdir}/access-log-matrix.pl
 %attr(755,root,root) %{_libexecdir}/cache-compare.pl
 %attr(755,root,root) %{_libexecdir}/cachetrace.pl
+%attr(755,root,root) %{_libexecdir}/calc-must-ids.pl
+%attr(755,root,root) %{_libexecdir}/cert_tool
 %attr(755,root,root) %{_libexecdir}/check_cache.pl
-%attr(755,root,root) %{_libexecdir}/contrib
 %attr(755,root,root) %{_libexecdir}/fileno-to-pathname.pl
+%attr(755,root,root) %{_libexecdir}/find-alive.pl
 %attr(755,root,root) %{_libexecdir}/flag_truncs.pl
-%attr(755,root,root) %{_libexecdir}/icp-test.pl
+%attr(755,root,root) %{_libexecdir}/helper-mux.pl
 %attr(755,root,root) %{_libexecdir}/icpserver.pl
-%attr(755,root,root) %{_libexecdir}/no_check.pl
+%attr(755,root,root) %{_libexecdir}/icp-test.pl
 %attr(755,root,root) %{_libexecdir}/tcp-banger.pl
+%attr(755,root,root) %{_libexecdir}/trace-job.pl
+%attr(755,root,root) %{_libexecdir}/trace-master.pl
 %attr(755,root,root) %{_libexecdir}/udp-banger.pl
 %attr(755,root,root) %{_libexecdir}/upgrade-1.0-store.pl
