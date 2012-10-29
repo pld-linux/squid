@@ -1,0 +1,122 @@
+diff -uNrw squid-3.2.0.18/src/client_side.cc squid-3.2.0.18/src/client_side.cc
+--- squid-3.2.0.18/src/client_side.cc	2012-07-18 19:36:09.982711673 +0400
++++ squid-3.2.0.18/src/client_side.cc	2012-07-18 19:47:28.594672449 +0400
+@@ -1349,6 +1349,15 @@
+ {
+     reply = rep;
+ 
++    /* Remove our HDR_X_VARY_FOR hack if present.
++     * Client won't get the joke anyway.
++     */
++    if (rep && rep->header.has(HDR_X_VARY_FOR))
++    {
++        debugs(11,3, HERE << "HDR_X_VARY_FOR hack detected. Cleaning it up");
++        rep->header.delById(HDR_X_VARY_FOR);
++    }
++
+     if (http->request->range)
+         buildRangeHeader(rep);
+ }
+diff -uNrw squid-3.2.0.18/src/http.cc squid-3.2.0.18/src/http.cc
+--- squid-3.2.0.18/src/http.cc	2012-07-18 19:36:09.962712057 +0400
++++ squid-3.2.0.18/src/http.cc	2012-07-18 19:40:02.442715425 +0400
+@@ -880,6 +880,12 @@
+         }
+ 
+         entry->mem_obj->vary_headers = xstrdup(vary);
++        /* XXX: Currently we are losing vary_headers when
++         * saving objects to shm, so we now add them as header
++         * and remove on preparing client reply.
++         */
++        debugs(11,3,"haveParsedReplyHeaders: inserting HDR_X_VARY_FOR into the reply");
++        rep->header.putStr(HDR_X_VARY_FOR, entry->mem_obj->vary_headers);
+     }
+ 
+     /*
+diff -uNrw squid-3.2.0.18/src/HttpHeader.cc squid-3.2.0.18/src/HttpHeader.cc
+--- squid-3.2.0.18/src/HttpHeader.cc	2012-07-18 19:36:09.982711673 +0400
++++ squid-3.2.0.18/src/HttpHeader.cc	2012-07-18 19:52:20.551796245 +0400
+@@ -147,6 +147,7 @@
+     {"X-Cache", HDR_X_CACHE, ftStr},
+     {"X-Cache-Lookup", HDR_X_CACHE_LOOKUP, ftStr},
+     {"X-Forwarded-For", HDR_X_FORWARDED_FOR, ftStr},
++    {"X-Vary-For", HDR_X_VARY_FOR, ftStr},
+     {"X-Request-URI", HDR_X_REQUEST_URI, ftStr},
+     {"X-Squid-Error", HDR_X_SQUID_ERROR, ftStr},
+ #if X_ACCELERATOR_VARY
+@@ -206,7 +207,8 @@
+ #endif
+     HDR_SURROGATE_CAPABILITY,
+     HDR_SURROGATE_CONTROL,
+-    HDR_X_FORWARDED_FOR
++    HDR_X_FORWARDED_FOR,
++    HDR_X_VARY_FOR
+ };
+ 
+ /* general-headers */
+diff -uNrw squid-3.2.0.18/src/HttpHeader.h squid-3.2.0.18/src/HttpHeader.h
+--- squid-3.2.0.18/src/HttpHeader.h	2012-07-18 19:36:09.978711678 +0400
++++ squid-3.2.0.18/src/HttpHeader.h	2012-07-18 19:36:44.754628494 +0400
+@@ -136,6 +136,7 @@
+     HDR_AUTHENTICATION_INFO,            /**< RFC 2617 */
+     HDR_X_CACHE,                        /**< Squid custom header */
+     HDR_X_CACHE_LOOKUP,	                /**< Squid custom header. temporary hack that became de-facto. TODO remove */
++    HDR_X_VARY_FOR,	                    /**< Squid custom header. temporary hack */
+     HDR_X_FORWARDED_FOR,                /**< Squid custom header */
+     HDR_X_REQUEST_URI,                  /**< Squid custom header appended if ADD_X_REQUEST_URI is defined */
+     HDR_X_SQUID_ERROR,                  /**< Squid custom header on generated error responses */
+diff -uNrw squid-3.2.0.18/src/MemObject.cc squid-3.2.0.18/src/MemObject.cc
+--- squid-3.2.0.18/src/MemObject.cc	2012-07-18 19:36:09.986711701 +0400
++++ squid-3.2.0.18/src/MemObject.cc	2012-07-18 19:43:45.843879163 +0400
+@@ -189,6 +189,24 @@
+     return _reply;
+ }
+ 
++/* Dirty hack to fill vary_headers field from
++ * our special HDR_X_VARY_FOR reply header
++ */
++void
++MemObject::fillVaryHeader()
++{
++    if (_reply && _reply->header.has(HDR_X_VARY_FOR))
++    {
++        debugs(20,3, HERE << "got HDR_X_VARY_FOR: " << _reply->header.getList(HDR_X_VARY_FOR));
++        if (! vary_headers)
++			vary_headers = xstrdup(_reply->header.getList(HDR_X_VARY_FOR).termedBuf());
++		else
++			debugs(20,3, HERE << "vary_headers has already been set up: " << vary_headers);
++	}
++    else
++        debugs(20,3, HERE << "no HDR_X_VARY_FOR present!");
++}
++
+ void
+ MemObject::replaceHttpReply(HttpReply *newrep)
+ {
+diff -uNrw squid-3.2.0.18/src/MemObject.h squid-3.2.0.18/src/MemObject.h
+--- squid-3.2.0.18/src/MemObject.h	2012-07-18 20:06:23.151879182 +0400
++++ squid-3.2.0.18/src/MemObject.h	2012-07-18 20:08:14.755379555 +0400
+@@ -76,6 +76,8 @@
+     int64_t lowestMemReaderOffset() const;
+     bool readAheadPolicyCanRead() const;
+     void addClient(store_client *);
++    /* dirty hack to recover vary_headers from the reply */
++    void fillVaryHeader();
+     /* XXX belongs in MemObject::swapout, once swaphdrsz is managed
+      * better
+      */
+diff -uNrw squid-3.2.0.18/src/store.cc squid-3.2.0.18/src/store.cc
+--- squid-3.2.0.18/src/store.cc	2012-07-18 19:36:09.958711514 +0400
++++ squid-3.2.0.18/src/store.cc	2012-07-18 19:55:00.518734384 +0400
+@@ -1689,6 +1689,10 @@
+         mem_obj = hidden_mem_obj;
+         hidden_mem_obj = NULL;
+         mem_obj->resetUrls(aUrl, aLogUrl);
++        /* XXX: we're probably restoring from the cache,
++         * so try to recover vary_headers in mem_obj
++         */
++        mem_obj->fillVaryHeader();
+         return;
+     }
+ 
+

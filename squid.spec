@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.2.3
-Release:	2
+Release:	3
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -38,6 +38,11 @@ Patch2:		%{name}-crash-on-ENOSPC.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
+# http://www.squid-cache.org/mail-archive/squid-dev/201207/0099.html
+# http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-cache-1.patch
+Patch7:		squidv3-vary-cache-1.patch
+# http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
+Patch8:		squidv3-vary-headers-shm-hack.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -584,6 +589,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch5 -p1
 %endif
 %patch6 -p1
+%patch7 -p1
+%patch8 -p1
 
 %build
 %{__libtoolize}
