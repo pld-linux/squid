@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.2.3
-Release:	3
+Release:	4
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -591,6 +591,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+
+%{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
 %build
 %{__libtoolize}
