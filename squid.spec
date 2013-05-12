@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.2.9
+Version:	3.2.11
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v3/3.2/%{name}-%{version}.tar.bz2
-# Source0-md5:	de02be3c1f72e0d818374438044261a6
+# Source0-md5:	cdd3612bed27e8d513b713004c78bf5b
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -216,8 +216,8 @@ Summary:	Authentication via the Negotiate RFC 4559 for proxies
 Summary(pl.UTF-8):	Uwierzytelnianie przez negocjację RFC 4559 dla serwerów proxy
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Obsoletes:	squid-kerb_auth < %{epoch}:%{version}-%{release}
 Provides:	squid-kerb_auth = %{epoch}:%{version}-%{release}
+Obsoletes:	squid-kerb_auth < %{epoch}:%{version}-%{release}
 
 %description kerberos_auth
 This squid helper is a reference implementation that supports
@@ -297,8 +297,8 @@ Summary:	NIS authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania NIS dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Obsoletes:	squid-yp_auth < %{epoch}:%{version}-%{release}
 Provides:	squid-yp_auth = %{epoch}:%{version}-%{release}
+Obsoletes:	squid-yp_auth < %{epoch}:%{version}-%{release}
 
 %description nis_auth
 This is an authentication module for the Squid proxy server to
@@ -395,6 +395,8 @@ Summary:	Database authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania przez bazę danych dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	perl-DBI
+Suggests:	perl-DBD-mysql
 
 %description db_auth
 This is an authentication module for the Squid proxy server to
@@ -423,8 +425,8 @@ Summary:	Kerberos authentication helper for Squid
 Summary(pl.UTF-8):	Obsługa uwierzytelniania Kerberos dla squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
-Requires:	%{name}-ntlm_auth = %{epoch}:%{version}-%{release}
 Requires:	%{name}-kerberos_auth = %{epoch}:%{version}-%{release}
+Requires:	%{name}-ntlm_auth = %{epoch}:%{version}-%{release}
 
 %description negotiate_wrapper_auth
 This is an authentication module for the Squid proxy server to
@@ -564,8 +566,8 @@ access for users based on LDAP Kerberos or NTLM credentials.
 
 %description kerberos_ldap_group_acl -l pl.UTF-8
 Jest to moduł kontroli dostępu (ACL) do proxy, który pozwala na
-ograniczenie dostępu użytkowników proxy na podstawie ich
-uprawnień Kerberosowych lub NTLM-owych w LDAP.
+ograniczenie dostępu użytkowników proxy na podstawie ich uprawnień
+Kerberosowych lub NTLM-owych w LDAP.
 
 %package scripts
 Summary:	Perl scripts for Squid
@@ -914,7 +916,8 @@ fi
 %defattr(644,root,root,755)
 %config(noreplace) /etc/pam.d/squid
 %config(noreplace) /etc/security/blacklist.squid
-%attr(755,root,root) %{_libexecdir}/basic_pam_auth
+# it has to be suid root to access /etc/shadow
+%attr(4755,root,root) %{_libexecdir}/basic_pam_auth
 %{_mandir}/man8/basic_pam_auth.8*
 
 %files smb_auth
@@ -978,7 +981,7 @@ fi
 
 %files db_auth
 %defattr(644,root,root,755)
-%{_libexecdir}/basic_db_auth
+%attr(755,root,root) %{_libexecdir}/basic_db_auth
 %{_mandir}/man8/basic_db_auth.8*
 
 %files pop3_auth
