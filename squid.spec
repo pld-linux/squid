@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.2.11
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -32,6 +32,7 @@ Source5:	%{name}.logrotate
 Source6:	%{name}.pamd
 Source7:	%{name}-cachemgr-apache.conf
 Source8:	%{name}.tmpfiles
+Source9:	%{name}-cachemgr-httpd.conf
 Patch0:		%{name}-fhs.patch
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
@@ -202,6 +203,7 @@ Requires:	webserver
 Requires:	webserver(access)
 Requires:	webserver(alias)
 Requires:	webserver(cgi)
+Conflicts:	apache-base < 2.4.0-1
 
 %description cachemgr
 Cachemgr.cgi is a CGI script that allows administrator to check
@@ -678,7 +680,7 @@ install %{SOURCE8} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/squid.conf
 
 %{__mv} -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
 %{__cp} -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
-%{__cp} -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
+%{__cp} -a %{SOURCE9} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 %{__rm} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
@@ -751,10 +753,10 @@ fi
 %triggerun cachemgr -- apache1 < 1.3.37-3, apache1-base
 %webapp_unregister apache %{_webapp}
 
-%triggerin cachemgr -- apache < 2.2.0, apache-base
+%triggerin cachemgr -- apache-base
 %webapp_register httpd %{_webapp}
 
-%triggerun cachemgr -- apache < 2.2.0, apache-base
+%triggerun cachemgr -- apache-base
 %webapp_unregister httpd %{_webapp}
 
 %triggerpostun -- cachemgr < 7:3.0.STABLE10-0.2
