@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.2.13
+Version:	3.3.9
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v3/3.2/%{name}-%{version}.tar.bz2
-# Source0-md5:	367e59c9c25da7ebbfbf7cbc36d2444e
+Source0:	http://www.squid-cache.org/Versions/v3/3.3/%{name}-%{version}.tar.bz2
+# Source0-md5:	f08bffe795260cecca828331c579e0c4
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -44,6 +44,7 @@ Patch6:		%{name}-cachemgr-webapp.patch
 Patch7:		squidv3-vary-cache-1.patch
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch8:		squidv3-vary-headers-shm-hack.patch
+Patch9:		perl-5.18.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -571,6 +572,33 @@ Jest to moduł kontroli dostępu (ACL) do proxy, który pozwala na
 ograniczenie dostępu użytkowników proxy na podstawie ich uprawnień
 Kerberosowych lub NTLM-owych w LDAP.
 
+%package sql_session_acl
+Summary:	SQL Database session lookup helper for Squid
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description sql_session_acl
+Validates an HTTP requests access authorization with a session
+database.
+
+%package time_quota_acl
+Summary:	Squid time quota external acl helper
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description time_quota_acl
+This extension allows an administrator to define time budgets for
+the users of squid to limit the time using squid.
+
+%package log_db_daemon
+Summary:	Database logging daemon for Squid
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description log_db_daemon
+This program writes Squid access.log entries to a database.
+Presently only accepts the squid native format.
+
 %package scripts
 Summary:	Perl scripts for Squid
 Summary(pl.UTF-8):	Skrypty perlowe dla Squida
@@ -595,6 +623,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
@@ -1032,6 +1061,21 @@ fi
 %files kerberos_ldap_group_acl
 %defattr(644,root,root,755)
 %{_libexecdir}/ext_kerberos_ldap_group_acl
+
+%files sql_session_acl
+%defattr(644,root,root,755)
+%{_libexecdir}/ext_sql_session_acl
+%{_mandir}/man8/ext_sql_session_acl.8.gz
+
+%files time_quota_acl
+%defattr(644,root,root,755)
+%{_libexecdir}/ext_time_quota_acl
+%{_mandir}/man8/ext_time_quota_acl.8.gz
+
+%files log_db_daemon
+%defattr(644,root,root,755)
+%{_libexecdir}/log_db_daemon
+%{_mandir}/man8/log_db_daemon.8.gz
 
 %files scripts
 %defattr(644,root,root,755)
