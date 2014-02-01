@@ -1,0 +1,512 @@
+Support libecap v1.0, allowing asynchronous adapters and eCAP version checks.
+
+After these changes, Squid can support eCAP adapters built with libecap v1.0,
+but stops supporting adapters built with earlier libecap versions (due to API
+changes). The new libecap version allows Squid to better check the version of
+the eCAP adapter being loaded as well as the version of the eCAP library being
+used. This should help with migration to libecap v1.0.
+
+
+Expose [running] main event loop as a global so that modules can add engines.
+
+=== modified file 'configure.ac'
+--- configure.ac	2013-07-09 11:15:51 +0000
++++ configure.ac	2013-09-12 23:08:18 +0000
+@@ -1035,10 +1035,10 @@
+ 
+   if test -n "$PKG_CONFIG"; then
+     dnl eCAP support requires libecap.
+-    dnl This Squid supports libecap v0.2.x.
++    dnl This Squid supports libecap v1.0.x.
+     dnl Use EXT_ prefix to distinguish external libecap (that we check for
+     dnl here) from our own convenience ecap library in Makefiles.
+-    PKG_CHECK_MODULES([EXT_LIBECAP],[libecap >= 0.2.0 libecap < 0.3])
++    PKG_CHECK_MODULES([EXT_LIBECAP],[libecap >= 1.0 libecap < 1.1])
+   else
+     AC_MSG_NOTICE([eCAP support requires pkg-config to verify the correct library version. Trouble may follow.])
+   fi
+
+=== modified file 'src/EventLoop.cc'
+--- src/EventLoop.cc	2013-02-17 02:09:16 +0000
++++ src/EventLoop.cc	2013-09-16 00:07:51 +0000
+@@ -37,6 +37,8 @@
+ #include "base/AsyncCallQueue.h"
+ #include "SquidTime.h"
+ 
++EventLoop *EventLoop::Running = NULL;
++
+ EventLoop::EventLoop() : errcount(0), last_loop(false), timeService(NULL),
+         primaryEngine(NULL),
+         loop_delay(EVENT_LOOP_TIMEOUT),
+@@ -96,7 +98,12 @@
+ {
+     prepareToRun();
+ 
++    assert(!Running);
++    Running = this;
++
+     while (!runOnce());
++
++    Running = NULL;
+ }
+ 
+ bool
+
+=== modified file 'src/EventLoop.h'
+--- src/EventLoop.h	2013-05-04 11:50:26 +0000
++++ src/EventLoop.h	2013-09-16 00:07:51 +0000
+@@ -89,6 +89,10 @@
+ 
+     int errcount;
+ 
++    /// the [main program] loop running now; may be nil
++    /// for simplicity, we assume there are no concurrent loops
++    static EventLoop *Running;
++
+ private:
+     /** setup state variables prior to running */
+     void prepareToRun();
+
+=== modified file 'src/adaptation/ecap/Host.cc'
+--- src/adaptation/ecap/Host.cc	2012-08-28 13:00:30 +0000
++++ src/adaptation/ecap/Host.cc	2013-09-16 18:04:34 +0000
+@@ -70,11 +70,55 @@
+     os << PACKAGE_NAME << " v" << PACKAGE_VERSION;
+ }
+ 
++/// Strips libecap version components not affecting compatibility decisions.
++static std::string
++EssentialVersion(const std::string &raw)
++{
++    // all libecap x.y.* releases are supposed to be compatible so we strip
++    // everything after the second period
++    const std::string::size_type minorPos = raw.find('.');
++    const std::string::size_type microPos = minorPos == std::string::npos ?
++        std::string::npos : raw.find('.', minorPos+1);
++    return raw.substr(0, microPos); // becomes raw if microPos is npos
++}
++
++/// If "their" libecap version is not compatible with what Squid has been built
++/// with, then complain and return false.
++static bool
++SupportedVersion(const char *vTheir, const std::string &them)
++{
++    if (!vTheir || !*vTheir) {
++        debugs(93, DBG_CRITICAL, "ERROR: Cannot use " << them <<
++               " with libecap prior to v1.0.");
++        return false;
++    }
++
++    // we support what we are built with
++    const std::string vSupported(LIBECAP_VERSION);
++    debugs(93, 2, them << " with libecap v" << vTheir << "; us: v" << vSupported);
++
++    if (EssentialVersion(vTheir) == EssentialVersion(vSupported))
++        return true; // their version is supported
++
++    debugs(93, DBG_CRITICAL, "ERROR: Cannot use " << them <<
++           " with libecap v" << vTheir <<
++           ": incompatible with supported libecap v" << vSupported);
++    return false;
++}
++
+ void
+-Adaptation::Ecap::Host::noteService(const libecap::weak_ptr<libecap::adapter::Service> &weak)
++Adaptation::Ecap::Host::noteVersionedService(const char *vGiven, const libecap::weak_ptr<libecap::adapter::Service> &weak)
+ {
+-    Must(!weak.expired());
+-    RegisterAdapterService(weak.lock());
++    /*
++     * Check that libecap used to build the service is compatible with ours.
++     * This has to be done using vGiven string and not Service object itself
++     * because dereferencing a Service pointer coming from an unsupported
++     * version is unsafe.
++     */
++    if (SupportedVersion(vGiven, "eCAP service built")) {
++        Must(!weak.expired());
++        RegisterAdapterService(weak.lock());
++    }
+ }
+ 
+ static int
+@@ -126,7 +170,8 @@
+ void
+ Adaptation::Ecap::Host::Register()
+ {
+-    if (!TheHost) {
++    if (!TheHost && SupportedVersion(libecap::VersionString(),
++                                     "Squid executable dynamically linked")) {
+         TheHost.reset(new Adaptation::Ecap::Host);
+         libecap::RegisterHost(TheHost);
+     }
+
+=== modified file 'src/adaptation/ecap/Host.h'
+--- src/adaptation/ecap/Host.h	2012-10-04 11:10:17 +0000
++++ src/adaptation/ecap/Host.h	2013-09-16 18:04:34 +0000
+@@ -19,7 +19,7 @@
+     /* libecap::host::Host API */
+     virtual std::string uri() const; // unique across all vendors
+     virtual void describe(std::ostream &os) const; // free-format info
+-    virtual void noteService(const libecap::weak_ptr<libecap::adapter::Service> &s);
++    virtual void noteVersionedService(const char *libEcapVersion, const libecap::weak_ptr<libecap::adapter::Service> &s);
+     virtual std::ostream *openDebug(libecap::LogVerbosity lv);
+     virtual void closeDebug(std::ostream *debug);
+     typedef libecap::shared_ptr<libecap::Message> MessagePtr;
+
+=== modified file 'src/adaptation/ecap/ServiceRep.cc'
+--- src/adaptation/ecap/ServiceRep.cc	2012-08-28 13:00:30 +0000
++++ src/adaptation/ecap/ServiceRep.cc	2013-09-16 18:04:34 +0000
+@@ -2,20 +2,29 @@
+  * DEBUG: section 93    eCAP Interface
+  */
+ #include "squid.h"
++#include "adaptation/ecap/Config.h"
++#include "adaptation/ecap/Host.h"
++#include "adaptation/ecap/ServiceRep.h"
++#include "adaptation/ecap/XactionRep.h"
++#include "AsyncEngine.h"
++#include "base/TextException.h"
+ #include "Debug.h"
+-#include <list>
++#include "EventLoop.h"
+ #include <libecap/adapter/service.h>
+ #include <libecap/common/options.h>
+ #include <libecap/common/name.h>
+ #include <libecap/common/named_values.h>
+-#include "adaptation/ecap/Config.h"
+-#include "adaptation/ecap/Host.h"
+-#include "adaptation/ecap/ServiceRep.h"
+-#include "adaptation/ecap/XactionRep.h"
+-#include "base/TextException.h"
++#if HAVE_LIMITS
++#include <limits>
++#endif
++#include <map>
+ 
+-// configured eCAP service wrappers
+-static std::list<Adaptation::Ecap::ServiceRep::AdapterService> TheServices;
++/// libecap::adapter::services indexed by their URI
++typedef std::map<std::string, Adaptation::Ecap::ServiceRep::AdapterService> AdapterServices;
++/// all loaded services
++static AdapterServices TheServices;
++/// configured services producing async transactions
++static AdapterServices AsyncServices;
+ 
+ namespace Adaptation
+ {
+@@ -39,6 +48,17 @@
+     const Master &master; ///< the configuration being wrapped
+ };
+ 
++/// manages async eCAP transactions
++class Engine: public AsyncEngine
++{
++public:
++    /* AsyncEngine API */
++    virtual int checkEvents(int timeout);
++
++private:
++    void kickAsyncServices(timeval &timeout);
++};
++
+ } // namespace Ecap
+ } // namespace Adaptation
+ 
+@@ -76,6 +96,55 @@
+         visitor.visit(Name(i->first), Area::FromTempString(i->second));
+ }
+ 
++/* Adaptation::Ecap::Engine */
++
++int
++Adaptation::Ecap::Engine::checkEvents(int)
++{
++    // Start with the default I/O loop timeout, convert from milliseconds.
++    static const struct timeval maxTimeout {
++        EVENT_LOOP_TIMEOUT/1000, // seconds
++        (EVENT_LOOP_TIMEOUT % 1000)*1000 
++    }; // microseconds
++    struct timeval timeout = maxTimeout;
++
++    kickAsyncServices(timeout);
++    if (timeout.tv_sec == maxTimeout.tv_sec && timeout.tv_usec == maxTimeout.tv_usec)
++        return EVENT_IDLE;
++
++    debugs(93, 7, "timeout: " << timeout.tv_sec << "s+" << timeout.tv_usec << "us");
++
++    // convert back to milliseconds, avoiding int overflows
++    if (timeout.tv_sec >= std::numeric_limits<int>::max()/1000 - 1000)
++        return std::numeric_limits<int>::max();
++    else
++        return timeout.tv_sec*1000 + timeout.tv_usec/1000;
++}
++
++/// resumes async transactions (if any) and returns true if they set a timeout
++void
++Adaptation::Ecap::Engine::kickAsyncServices(timeval &timeout)
++{
++    if (AsyncServices.empty())
++        return;
++
++    debugs(93, 3, "async services: " << AsyncServices.size());
++
++    // Activate waiting async transactions, if any.
++    typedef AdapterServices::iterator ASI;
++    for (ASI s = AsyncServices.begin(); s != AsyncServices.end(); ++s) {
++        assert(s->second);
++        s->second->resume(); // may call Ecap::Xaction::resume()
++    }
++
++    // Give services a chance to decrease the default timeout.
++    for (ASI s = AsyncServices.begin(); s != AsyncServices.end(); ++s) {
++        s->second->suspend(timeout);
++    }
++}
++
++/* Adaptation::Ecap::ServiceRep */
++
+ Adaptation::Ecap::ServiceRep::ServiceRep(const ServiceConfigPointer &cfg):
+         /*AsyncJob("Adaptation::Ecap::ServiceRep"),*/ Adaptation::Service(cfg),
+         isDetached(false)
+@@ -123,6 +192,11 @@
+ 
+     debugs(93,DBG_IMPORTANT, "Starting eCAP service: " << theService->uri());
+     theService->start();
++
++    if (theService->makesAsyncXactions()) {
++        AsyncServices[theService->uri()] = theService;
++        debugs(93, 5, "asyncs: " << AsyncServices.size());
++    }
+ }
+ 
+ /// handles failures while configuring or starting an eCAP service;
+@@ -168,6 +242,16 @@
+         HttpRequest *cause)
+ {
+     Must(up());
++
++    // register now because (a) we need EventLoop::Running and (b) we do not
++    // want to add more main loop overheads unless an async service is used.
++    static AsyncEngine *TheEngine = NULL;
++    if (AsyncServices.size() && !TheEngine && EventLoop::Running) {
++        TheEngine = new Engine;
++        EventLoop::Running->registerEngine(TheEngine);
++        debugs(93, 3, "asyncs: " << AsyncServices.size() << ' ' << TheEngine);
++    }
++
+     XactionRep *rep = new XactionRep(virgin, cause, Pointer(this));
+     XactionRep::AdapterXaction x(theService->makeXaction(rep));
+     rep->master(x);
+@@ -210,11 +294,10 @@
+ Adaptation::Ecap::ServiceRep::AdapterService
+ Adaptation::Ecap::FindAdapterService(const String& serviceUri)
+ {
+-    typedef std::list<ServiceRep::AdapterService>::const_iterator ASCI;
+-    for (ASCI s = TheServices.begin(); s != TheServices.end(); ++s) {
+-        Must(*s);
+-        if (serviceUri == (*s)->uri().c_str())
+-            return *s;
++    AdapterServices::const_iterator pos = TheServices.find(serviceUri.termedBuf());
++    if (pos != TheServices.end()) {
++        Must(pos->second);
++        return pos->second;
+     }
+     return ServiceRep::AdapterService();
+ }
+@@ -222,30 +305,18 @@
+ void
+ Adaptation::Ecap::RegisterAdapterService(const Adaptation::Ecap::ServiceRep::AdapterService& adapterService)
+ {
+-    typedef std::list<ServiceRep::AdapterService>::iterator ASI;
+-    for (ASI s = TheServices.begin(); s != TheServices.end(); ++s) {
+-        Must(*s);
+-        if (adapterService->uri() == (*s)->uri()) {
+-            *s = adapterService;
+-            debugs(93, 3, "updated eCAP module service: " <<
+-                   adapterService->uri());
+-            return;
+-        }
+-    }
+-    TheServices.push_back(adapterService);
+-    debugs(93, 3, "registered eCAP module service: " << adapterService->uri());
++    TheServices[adapterService->uri()] = adapterService; // may update old one
++    debugs(93, 3, "stored eCAP module service: " << adapterService->uri());
++    // We do not update AsyncServices here in case they are not configured.
+ }
+ 
+ void
+ Adaptation::Ecap::UnregisterAdapterService(const String& serviceUri)
+ {
+-    typedef std::list<ServiceRep::AdapterService>::iterator ASI;
+-    for (ASI s = TheServices.begin(); s != TheServices.end(); ++s) {
+-        if (serviceUri == (*s)->uri().c_str()) {
+-            TheServices.erase(s);
+-            debugs(93, 3, "unregistered eCAP module service: " << serviceUri);
+-            return;
+-        }
++    if (TheServices.erase(serviceUri.termedBuf())) {
++        debugs(93, 3, "unregistered eCAP module service: " << serviceUri);
++        AsyncServices.erase(serviceUri.termedBuf()); // no-op for non-async
++        return;
+     }
+     debugs(93, 3, "failed to unregister eCAP module service: " << serviceUri);
+ }
+@@ -253,16 +324,16 @@
+ void
+ Adaptation::Ecap::CheckUnusedAdapterServices(const Adaptation::Services& cfgs)
+ {
+-    typedef std::list<ServiceRep::AdapterService>::const_iterator ASCI;
++    typedef AdapterServices::const_iterator ASCI;
+     for (ASCI loaded = TheServices.begin(); loaded != TheServices.end();
+             ++loaded) {
+         bool found = false;
+         for (Services::const_iterator cfged = cfgs.begin();
+                 cfged != cfgs.end() && !found; ++cfged) {
+-            found = (*cfged)->cfg().uri == (*loaded)->uri().c_str();
++            found = (*cfged)->cfg().uri == loaded->second->uri().c_str();
+         }
+         if (!found)
+             debugs(93, DBG_IMPORTANT, "Warning: loaded eCAP service has no matching " <<
+-                   "ecap_service config option: " << (*loaded)->uri());
++                   "ecap_service config option: " << loaded->second->uri());
+     }
+ }
+
+=== modified file 'src/adaptation/ecap/XactionRep.cc'
+--- src/adaptation/ecap/XactionRep.cc	2013-06-03 14:05:16 +0000
++++ src/adaptation/ecap/XactionRep.cc	2013-09-23 16:22:57 +0000
+@@ -2,19 +2,20 @@
+  * DEBUG: section 93    eCAP Interface
+  */
+ #include "squid.h"
++#include "adaptation/Answer.h"
++#include "adaptation/ecap/XactionRep.h"
++#include "adaptation/ecap/Config.h"
++#include "adaptation/Initiator.h"
++#include "base/AsyncJobCalls.h"
++#include "base/TextException.h"
++#include "HttpRequest.h"
++#include "HttpReply.h"
++#include "SquidTime.h"
+ #include <libecap/common/area.h>
+ #include <libecap/common/delay.h>
+ #include <libecap/common/named_values.h>
+ #include <libecap/common/names.h>
+ #include <libecap/adapter/xaction.h>
+-#include "HttpRequest.h"
+-#include "HttpReply.h"
+-#include "SquidTime.h"
+-#include "adaptation/Answer.h"
+-#include "adaptation/ecap/XactionRep.h"
+-#include "adaptation/ecap/Config.h"
+-#include "adaptation/Initiator.h"
+-#include "base/TextException.h"
+ 
+ CBDATA_NAMESPACED_CLASS_INIT(Adaptation::Ecap::XactionRep, XactionRep);
+ 
+@@ -273,6 +274,25 @@
+     Adaptation::Initiate::swanSong();
+ }
+ 
++void
++Adaptation::Ecap::XactionRep::resume()
++{
++    // go async to gain exception protection and done()-based job destruction
++    typedef NullaryMemFunT<Adaptation::Ecap::XactionRep> Dialer;
++    AsyncCall::Pointer call = asyncCall(93, 5, "Adaptation::Ecap::XactionRep::doResume",
++                                        Dialer(this, &Adaptation::Ecap::XactionRep::doResume));
++    ScheduleCallHere(call);
++}
++
++/// the guts of libecap::host::Xaction::resume() API implementation
++/// which just goes async in Adaptation::Ecap::XactionRep::resume().
++void
++Adaptation::Ecap::XactionRep::doResume()
++{
++    Must(theMaster);
++    theMaster->resume();
++}
++
+ libecap::Message &
+ Adaptation::Ecap::XactionRep::virgin()
+ {
+@@ -595,12 +615,6 @@
+     mustStop("adaptationAborted");
+ }
+ 
+-bool
+-Adaptation::Ecap::XactionRep::callable() const
+-{
+-    return !done();
+-}
+-
+ void
+ Adaptation::Ecap::XactionRep::noteMoreBodySpaceAvailable(RefCount<BodyPipe> bp)
+ {
+
+=== modified file 'src/adaptation/ecap/XactionRep.h'
+--- src/adaptation/ecap/XactionRep.h	2012-10-04 11:10:17 +0000
++++ src/adaptation/ecap/XactionRep.h	2013-09-23 16:22:57 +0000
+@@ -44,6 +44,7 @@
+     virtual void blockVirgin();
+     virtual void adaptationDelayed(const libecap::Delay &);
+     virtual void adaptationAborted();
++    virtual void resume();
+     virtual void vbDiscard();
+     virtual void vbMake();
+     virtual void vbStopMaking();
+@@ -53,9 +54,6 @@
+     virtual void noteAbContentDone(bool atEnd);
+     virtual void noteAbContentAvailable();
+ 
+-    // libecap::Callable API, via libecap::host::Xaction
+-    virtual bool callable() const;
+-
+     // BodyProducer API
+     virtual void noteMoreBodySpaceAvailable(RefCount<BodyPipe> bp);
+     virtual void noteBodyConsumerAborted(RefCount<BodyPipe> bp);
+@@ -97,6 +95,8 @@
+     /// Return the adaptation meta headers and their values
+     void visitEachMetaHeader(libecap::NamedValueVisitor &visitor) const;
+ 
++    void doResume();
++
+ private:
+     AdapterXaction theMaster; // the actual adaptation xaction we represent
+     Adaptation::ServicePointer theService; ///< xaction's adaptation service
+
+=== modified file 'src/main.cc'
+--- src/main.cc	2013-06-07 04:35:25 +0000
++++ src/main.cc	2013-09-16 00:12:40 +0000
+@@ -225,17 +225,15 @@
+ {
+ 
+ public:
+-    SignalEngine(EventLoop &evtLoop) : loop(evtLoop) {}
+     virtual int checkEvents(int timeout);
+ 
+ private:
+-    static void StopEventLoop(void * data) {
+-        static_cast<SignalEngine *>(data)->loop.stop();
++    static void StopEventLoop(void *) {
++        if (EventLoop::Running)
++            EventLoop::Running->stop();
+     }
+ 
+     void doShutdown(time_t wait);
+-
+-    EventLoop &loop;
+ };
+ 
+ int
+@@ -1506,7 +1504,7 @@
+     /* main loop */
+     EventLoop mainLoop;
+ 
+-    SignalEngine signalEngine(mainLoop);
++    SignalEngine signalEngine;
+ 
+     mainLoop.registerEngine(&signalEngine);
+ 
+
+

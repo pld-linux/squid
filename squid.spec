@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.3.11
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -45,6 +45,7 @@ Patch7:		squidv3-vary-cache-1.patch
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch8:		squidv3-vary-headers-shm-hack.patch
 Patch9:		perl-5.18.patch
+Patch10:	ecap-1p0-t2.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -624,6 +625,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p0
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
