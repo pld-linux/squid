@@ -19,6 +19,7 @@
 	postrotate
 		# signal Squid to restart logging with the new files
 		/usr/sbin/squid -k rotate
+#		/bin/killall digest_pw_auth
 	endscript
 	sharedscripts
 }
