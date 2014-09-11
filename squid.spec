@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.3.11
-Release:	2
+Version:	3.4.7
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v3/3.3/%{name}-%{version}.tar.bz2
-# Source0-md5:	abf2b0fe128f73f5dc157e7e917949e0
+Source0:	http://www.squid-cache.org/Versions/v3/3.4/%{name}-%{version}.tar.xz
+# Source0-md5:	74677634121649ccb87a5655fcd4298d
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -39,13 +39,10 @@ Patch2:		%{name}-crash-on-ENOSPC.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
-# http://www.squid-cache.org/mail-archive/squid-dev/201207/0099.html
-# http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-cache-1.patch
-Patch7:		squidv3-vary-cache-1.patch
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
-Patch8:		squidv3-vary-headers-shm-hack.patch
-Patch9:		perl-5.18.patch
-Patch10:	ecap-1p0-t2.patch
+Patch7:		squidv3-vary-headers-shm-hack.patch
+Patch8:		ecap-1p0-t2.patch
+Patch9:		digest-edirectory-m4.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -67,7 +64,9 @@ BuildRequires:	pam-devel
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.268
 BuildRequires:	sed >= 4.0
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	unzip
+BuildRequires:	xz
 Requires(post):	/bin/hostname
 Requires(post):	fileutils
 Requires(post):	findutils
@@ -588,8 +587,8 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description time_quota_acl
-This extension allows an administrator to define time budgets for
-the users of squid to limit the time using squid.
+This extension allows an administrator to define time budgets for the
+users of squid to limit the time using squid.
 
 %package log_db_daemon
 Summary:	Database logging daemon for Squid
@@ -597,8 +596,18 @@ Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description log_db_daemon
-This program writes Squid access.log entries to a database.
-Presently only accepts the squid native format.
+This program writes Squid access.log entries to a database. Presently
+only accepts the squid native format.
+
+%package storeid_file_rewrite
+Summary:	File based Store-ID helper for Squid
+Group:		Networking/Admin
+Requires:	%{name} = %{epoch}:%{version}-%{release}
+
+%description storeid_file_rewrite
+This program acts as a store_id helper program, rewriting URLs passed
+by Squid into storage-ids that can be used to achieve better caching
+for websites that use different URLs for the same content.
 
 %package scripts
 Summary:	Perl scripts for Squid
@@ -623,9 +632,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %endif
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
+%patch8 -p0
 %patch9 -p1
-%patch10 -p0
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
@@ -673,6 +681,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--enable-referer-log \
 	--enable-removal-policies="heap,lru" \
 	--enable-storeio="aufs,diskd,rock,ufs" \
+	--enable-storeid-rewrite-helpers="file" \
 	--enable-snmp \
 	--enable-ssl \
 	--enable-ipv6 \
@@ -684,6 +693,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 	--with-large-files \
 	--with-maxfd=32768 \
 	--with-pthreads \
+	--with-openssl \
+	--without-nettle \
 	--enable-zph-qos
 
 %{__make}
@@ -1067,17 +1078,22 @@ fi
 %files sql_session_acl
 %defattr(644,root,root,755)
 %{_libexecdir}/ext_sql_session_acl
-%{_mandir}/man8/ext_sql_session_acl.8.gz
+%{_mandir}/man8/ext_sql_session_acl.8*
 
 %files time_quota_acl
 %defattr(644,root,root,755)
 %{_libexecdir}/ext_time_quota_acl
-%{_mandir}/man8/ext_time_quota_acl.8.gz
+%{_mandir}/man8/ext_time_quota_acl.8*
 
 %files log_db_daemon
 %defattr(644,root,root,755)
 %{_libexecdir}/log_db_daemon
-%{_mandir}/man8/log_db_daemon.8.gz
+%{_mandir}/man8/log_db_daemon.8*
+
+%files storeid_file_rewrite
+%defattr(644,root,root,755)
+%{_libexecdir}/storeid_file_rewrite
+%{_mandir}/man8/storeid_file_rewrite.8*
 
 %files scripts
 %defattr(644,root,root,755)
@@ -1088,6 +1104,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/cachetrace.pl
 %attr(755,root,root) %{_libexecdir}/calc-must-ids.pl
 %attr(755,root,root) %{_libexecdir}/cert_tool
+%attr(755,root,root) %{_libexecdir}/cert_valid.pl
 %attr(755,root,root) %{_libexecdir}/check_cache.pl
 %attr(755,root,root) %{_libexecdir}/fileno-to-pathname.pl
 %attr(755,root,root) %{_libexecdir}/find-alive.pl
