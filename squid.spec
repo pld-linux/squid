@@ -17,7 +17,7 @@ Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
 Version:	3.4.7
-Release:	1
+Release:	2
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
@@ -33,6 +33,8 @@ Source6:	%{name}.pamd
 Source7:	%{name}-cachemgr-apache.conf
 Source8:	%{name}.tmpfiles
 Source9:	%{name}-cachemgr-httpd.conf
+Source10:	%{name}.service
+Source11:	%{name}-check_cache
 Patch0:		%{name}-fhs.patch
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
@@ -62,7 +64,7 @@ BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.671
 BuildRequires:	sed >= 4.0
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	unzip
@@ -80,8 +82,10 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(pre,triggerpostun):	/bin/id
 Requires(pre,triggerpostun):	/usr/sbin/usermod
+Requires(post,preun,postun):	systemd-units >= 38
 Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
+Requires:	systemd-units >= 38
 Provides:	group(squid)
 # epoll enabled by default:
 Requires:	uname(release) >= 2.6
@@ -707,7 +711,8 @@ install -d $RPM_BUILD_ROOT{%{_cgidir},%{_webapps}/%{_webapp}} \
 	$RPM_BUILD_ROOT%{_mandir}/man8 \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
 	$RPM_BUILD_ROOT/var/{cache,log{,/archive}}/squid \
-	$RPM_BUILD_ROOT%{systemdtmpfilesdir}
+	$RPM_BUILD_ROOT%{systemdtmpfilesdir} \
+	$RPM_BUILD_ROOT%{systemdunitdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -749,6 +754,9 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 :> $RPM_BUILD_ROOT/var/cache/squid/swap.state.clean
 :> $RPM_BUILD_ROOT/var/cache/squid/swap.state.last-clean
 
+%{__sed} -e 's|@@LIBEXECDIR@@|%{_libexecdir}|g' %{SOURCE10} >$RPM_BUILD_ROOT%{systemdunitdir}/squid.service
+cp -p %{SOURCE11} $RPM_BUILD_ROOT%{_libexecdir}/squid-check_cache
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -770,6 +778,7 @@ if [ "$1" = "1" ]; then
 	/sbin/service squid init >&2
 fi
 %service squid restart
+%systemd_post squid.service
 
 %preun
 if [ "$1" = "0" ]; then
@@ -779,15 +788,20 @@ if [ "$1" = "0" ]; then
 	# nuke squid cache if uninstalling
 	rm -rf /var/cache/squid/??
 fi
+%systemd_preun squid.service
 
 %postun
 if [ "$1" = "0" ]; then
 	%userremove squid
 	%groupremove squid
 fi
+%systemd_reload
 
 %triggerpostun -- squid < 7:2.5.STABLE7-5
 %addusertogroup stats squid
+
+%triggerpostun -- squid < 7:3.4.7-2
+%systemd_trigger squid.service
 
 %triggerin cachemgr -- apache1 < 1.3.37-3, apache1-base
 %webapp_register apache %{_webapp}
@@ -826,6 +840,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite.sh
 %attr(755,root,root) %{_libexecdir}/log_file_daemon
+%attr(755,root,root) %{_libexecdir}/squid-check_cache
 %attr(755,root,root) %{_sbindir}/squid
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
@@ -925,6 +940,7 @@ fi
 %lang(zh_TW) %{_datadir}/squid/errors/zh-hk
 %lang(zh_TW) %{_datadir}/squid/errors/zh-mo
 
+%{systemdunitdir}/squid.service
 %{systemdtmpfilesdir}/squid.conf
 %attr(770,root,squid) %dir /var/run/squid
 
