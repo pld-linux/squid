@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# determine which one is the cache_swap directory
+CACHE_SWAP=$(awk '/^cache_dir/{print $3}' /etc/squid/squid.conf)
+[ -z "$CACHE_SWAP" ] && CACHE_SWAP=/var/cache/squid
+
+need_init=0
+for dir in $CACHE_SWAP; do
+	if [ ! -d $dir/00 ]; then
+		need_init=1
+	fi
+done
+if [ $need_init = 1 ]; then
+	squid -z -F -D >> /var/log/squid/squid.out 2>&1
+fi
+exit 0

@@ -1,0 +1,18 @@
+[Unit]
+Description=Squid caching proxy
+After=syslog.target network.target
+
+[Service]
+Type=forking
+User=squid
+Group=squid
+EnvironmentFile=-/etc/sysconfig/squid
+LimitNOFILE=8192
+ExecStartPre=@@LIBEXECDIR@@/squid-check_cache
+ExecStart=/usr/sbin/squid $SQUID_OPTS
+ExecReload=/usr/sbin/squid $SQUID_OPTS -k reconfigure
+ExecStop=/usr/sbin/squid -k shutdown
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
