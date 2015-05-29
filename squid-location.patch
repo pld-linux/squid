@@ -1,6 +1,5 @@
-diff -urN squid-2.5.STABLE4.org/QUICKSTART squid-2.5.STABLE4/QUICKSTART
---- squid-2.5.STABLE4.org/QUICKSTART	2003-10-26 14:34:44.000000000 +0100
-+++ squid-2.5.STABLE4/QUICKSTART	2003-10-26 14:35:42.000000000 +0100
+--- squid-2.6.STABLE23/QUICKSTART~	2015-05-29 22:30:01.000000000 +0300
++++ squid-2.6.STABLE23/QUICKSTART	2015-05-29 22:31:08.231016180 +0300
 @@ -12,10 +12,9 @@
  INSTALL in the same directory), you have to configure the squid.conf
  file. This is the list of the values you *need* to change, because no
@@ -14,12 +13,12 @@ diff -urN squid-2.5.STABLE4.org/QUICKSTART squid-2.5.STABLE4/QUICKSTART
  
  ==============================================================================
  
-@@ -26,7 +25,7 @@
+@@ -25,7 +25,7 @@
      always ask permission before adding a parent cache. See also the
      never_direct/always_direct directives.
  
--cache_dir /usr/local/squid/var/cache 100 16 256
-+cache_dir /var/cache/squid 100 16 256
+-cache_dir ufs /usr/local/squid/var/cache 100 16 256
++cache_dir ufs /var/cache/squid 100 16 256
  
      Add here (first number, here 100) the amount of hard disk space 
      (in megabytes) to devote to caching.
