@@ -44,7 +44,6 @@ Patch6:		%{name}-cachemgr-webapp.patch
 # still needed? http://bugs.squid-cache.org/show_bug.cgi?id=3806
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch7:		squidv3-vary-headers-shm-hack.patch
-Patch8:		ecap-1p0-t2.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -636,7 +635,6 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %endif
 %patch6 -p1
 #%patch7 -p1
-#%patch8 -p0
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
