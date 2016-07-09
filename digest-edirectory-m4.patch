@@ -1,6 +1,0 @@
-diff -uNr squid-3.4.7/helpers/digest_auth/eDirectory/required.m4 squid-3.4.7.new/helpers/digest_auth/eDirectory/required.m4
---- squid-3.4.7/helpers/digest_auth/eDirectory/required.m4	2014-08-27 16:22:40.000000000 +0200
-+++ squid-3.4.7.new/helpers/digest_auth/eDirectory/required.m4	2014-09-10 12:36:21.114741605 +0200
-@@ -1 +1 @@
--AC_CHECK_HEADERS([ldap.h winldap.h],[BUILD_HELPER="LDAP"])
-+AC_CHECK_HEADERS([ldap.h winldap.h],[BUILD_HELPER="eDirectory"])

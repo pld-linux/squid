@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.4.14
-Release:	2
+Version:	3.5.20
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v3/3.4/%{name}-%{version}.tar.xz
-# Source0-md5:	4e7d7d062159484563ef11f69a0df50a
+Source0:	http://www.squid-cache.org/Versions/v3/3.5/%{name}-%{version}.tar.xz
+# Source0-md5:	48fb18679a30606de98882528beab3a7
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -41,10 +41,10 @@ Patch2:		%{name}-crash-on-ENOSPC.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
+# still needed? http://bugs.squid-cache.org/show_bug.cgi?id=3806
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch7:		squidv3-vary-headers-shm-hack.patch
 Patch8:		ecap-1p0-t2.patch
-Patch9:		digest-edirectory-m4.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -54,7 +54,7 @@ BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
 BuildRequires:	libcap-devel >= 1:2.09
-BuildRequires:	libecap-devel >= 0.2.0
+BuildRequires:	libecap-devel >= 1
 BuildRequires:	libltdl-devel
 BuildRequires:	libnetfilter_conntrack-devel
 BuildRequires:	libstdc++-devel
@@ -635,9 +635,8 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch5 -p1
 %endif
 %patch6 -p1
-%patch7 -p1
-%patch8 -p0
-%patch9 -p1
+#%patch7 -p1
+#%patch8 -p0
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
@@ -648,6 +647,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-silent-rules \
 	--disable-strict-error-checking \
 	--with-default-user=squid \
 	--with-logdir=/var/log/squid \
@@ -823,7 +823,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CONTRIBUTORS COPYRIGHT CREDITS README ChangeLog QUICKSTART
+%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART
 %doc RELEASENOTES.html SPONSORS docs/* src/mib.txt book-full.html
 %doc src/squid.conf.default src/squid.conf.documented src/mime.conf.default
 %doc errors/TRANSLATORS
@@ -837,6 +837,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/unlinkd
 %attr(755,root,root) %{_libexecdir}/ntlm_fake_auth
 %attr(755,root,root) %{_libexecdir}/basic_fake_auth
+%attr(755,root,root) %{_libexecdir}/ext_delayer_acl
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite.sh
 %attr(755,root,root) %{_libexecdir}/log_file_daemon
@@ -897,6 +898,8 @@ fi
 %lang(it) %{_datadir}/squid/errors/it-*
 %lang(ja) %{_datadir}/squid/errors/ja
 %lang(ja) %{_datadir}/squid/errors/ja-*
+%lang(ka) %{_datadir}/squid/errors/ka
+%lang(ka) %{_datadir}/squid/errors/ka-*
 %lang(ko) %{_datadir}/squid/errors/ko
 %lang(ko) %{_datadir}/squid/errors/ko-*
 %lang(lt) %{_datadir}/squid/errors/lt
@@ -913,6 +916,7 @@ fi
 %lang(pt) %{_datadir}/squid/errors/pt
 %lang(pt) %{_datadir}/squid/errors/pt-pt
 %lang(pt_BR) %{_datadir}/squid/errors/pt-br
+%lang(pt_BZ) %{_datadir}/squid/errors/pt-bz
 %lang(ro) %{_datadir}/squid/errors/ro
 %lang(ro) %{_datadir}/squid/errors/ro-*
 %lang(ru) %{_datadir}/squid/errors/ru
@@ -935,6 +939,7 @@ fi
 %lang(vi) %{_datadir}/squid/errors/vi
 %lang(vi) %{_datadir}/squid/errors/vi-*
 %lang(zh_CN) %{_datadir}/squid/errors/zh-cn
+%lang(zh_CN) %{_datadir}/squid/errors/zh-han*
 %lang(zh_CN) %{_datadir}/squid/errors/zh-sg
 %lang(zh_CN) %{_datadir}/squid/errors/zh-tw
 %lang(zh_TW) %{_datadir}/squid/errors/zh-hk
@@ -954,6 +959,7 @@ fi
 %ghost /var/cache/squid/swap.state.clean
 %ghost /var/cache/squid/swap.state.last-clean
 %{_mandir}/man1/squidclient.1*
+%{_mandir}/man8/ext_delayer_acl.8*
 %{_mandir}/man8/squid.8*
 
 %files cachemgr
@@ -968,7 +974,6 @@ fi
 
 %files ldap_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/LDAP/README
 %attr(755,root,root) %{_libexecdir}/basic_ldap_auth
 %{_mandir}/man8/basic_ldap_auth.*
 
@@ -983,15 +988,13 @@ fi
 %files smb_auth
 %defattr(644,root,root,755)
 %doc helpers/basic_auth/SMB/ChangeLog
+%attr(755,root,root) %{_libexecdir}/basic_smb_lm_auth
 %attr(755,root,root) %{_libexecdir}/basic_smb_auth*
 
 %files msnt_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/MSNT/README*
-%doc helpers/basic_auth/MSNT-multi-domain/README*
-%attr(755,root,root) %{_libexecdir}/basic_msnt_auth
 %attr(755,root,root) %{_libexecdir}/basic_msnt_multi_domain_auth
-%attr(640,root,squid) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/msntauth.conf
+%{_mandir}/man8/basic_msnt_multi_domain_auth.8*
 
 %files nis_auth
 %defattr(644,root,root,755)
@@ -1047,6 +1050,7 @@ fi
 %files pop3_auth
 %defattr(644,root,root,755)
 %{_libexecdir}/basic_pop3_auth
+%{_mandir}/man8/basic_pop3_auth.8*
 
 %files digest_edirectory_auth
 %defattr(644,root,root,755)
