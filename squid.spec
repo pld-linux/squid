@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	3.5.27
-Release:	2
+Version:	4.2
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v3/3.5/%{name}-%{version}.tar.xz
-# Source0-md5:	39ef8199675d48a314b540f92c00c545
+Source0:	http://www.squid-cache.org/Versions/v4/%{name}-%{version}.tar.xz
+# Source0-md5:	2cf3f5f183d04322d798f98ea5ead43f
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -35,7 +35,7 @@ Source8:	%{name}.tmpfiles
 Source9:	%{name}-cachemgr-httpd.conf
 Source10:	%{name}.service
 Source11:	%{name}-check_cache
-Patch0:		%{name}-fhs.patch
+
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
@@ -626,7 +626,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %prep
 %setup -q -a3
-%patch0 -p1
+
 %patch1 -p1
 %patch2 -p1
 %{?with_combined_log:%patch4 -p1}
@@ -836,10 +836,14 @@ fi
 %attr(755,root,root) %{_libexecdir}/ntlm_fake_auth
 %attr(755,root,root) %{_libexecdir}/basic_fake_auth
 %attr(755,root,root) %{_libexecdir}/ext_delayer_acl
+%attr(755,root,root) %{_libexecdir}/helper-mux
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite.sh
 %attr(755,root,root) %{_libexecdir}/log_file_daemon
+%attr(755,root,root) %{_libexecdir}/security_fake_certverify
+%attr(755,root,root) %{_libexecdir}/security_file_certgen
 %attr(755,root,root) %{_libexecdir}/squid-check_cache
+%attr(755,root,root) %{_libexecdir}/url_lfs_rewrite
 %attr(755,root,root) %{_sbindir}/squid
 
 %attr(754,root,root) /etc/rc.d/init.d/squid
@@ -956,9 +960,14 @@ fi
 %ghost /var/cache/squid/swap.state
 %ghost /var/cache/squid/swap.state.clean
 %ghost /var/cache/squid/swap.state.last-clean
+%{_mandir}/man1/purge.1*
 %{_mandir}/man1/squidclient.1*
 %{_mandir}/man8/ext_delayer_acl.8*
 %{_mandir}/man8/squid.8*
+%{_mandir}/man8/helper-mux.8*
+%{_mandir}/man8/security_fake_certverify.8*
+%{_mandir}/man8/security_file_certgen.8*
+%{_mandir}/man8/url_lfs_rewrite.8*
 
 %files cachemgr
 %defattr(644,root,root,755)
@@ -985,14 +994,13 @@ fi
 
 %files smb_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/SMB/ChangeLog
-%attr(755,root,root) %{_libexecdir}/basic_smb_lm_auth
+%doc src/auth/basic/SMB/ChangeLog
 %attr(755,root,root) %{_libexecdir}/basic_smb_auth*
 
 %files msnt_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/basic_msnt_multi_domain_auth
-%{_mandir}/man8/basic_msnt_multi_domain_auth.8*
+#%attr(755,root,root) %{_libexecdir}/basic_msnt_multi_domain_auth
+#%{_mandir}/man8/basic_msnt_multi_domain_auth.8*
 
 %files nis_auth
 %defattr(644,root,root,755)
@@ -1005,7 +1013,7 @@ fi
 
 %files sasl_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/SASL/basic_sasl_auth.{conf,pam}
+%doc src/auth/basic/SASL/basic_sasl_auth.{conf,pam}
 %attr(755,root,root) %{_libexecdir}/basic_sasl_auth
 %{_mandir}/man8/basic_sasl_auth.8*
 
@@ -1021,18 +1029,18 @@ fi
 
 %files kerberos_auth
 %defattr(644,root,root,755)
-%doc helpers/negotiate_auth/kerberos/README
+%doc src/auth/negotiate/kerberos/README
 %attr(755,root,root) %{_libexecdir}/negotiate_kerberos_auth
 %attr(755,root,root) %{_libexecdir}/negotiate_kerberos_auth_test
 %{_mandir}/man8/negotiate_kerberos_auth.8*
 
 %files ntlm_auth
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libexecdir}/ntlm_smb_lm_auth
+#%attr(755,root,root) %{_libexecdir}/ntlm_smb_lm_auth
 
 %files radius_auth
 %defattr(644,root,root,755)
-%doc helpers/basic_auth/RADIUS/README
+%doc src/auth/basic/RADIUS/README
 %attr(755,root,root) %{_libexecdir}/basic_radius_auth
 %{_mandir}/man8/basic_radius_auth.8*
 
@@ -1060,7 +1068,7 @@ fi
 
 %files ip_acl
 %defattr(644,root,root,755)
-%doc helpers/external_acl/file_userip/example*
+%doc src/acl/external/file_userip/example*
 %attr(755,root,root) %{_libexecdir}/ext_file_userip_acl
 %{_mandir}/man8/ext_file_userip_acl.*
 
@@ -1122,12 +1130,10 @@ fi
 %attr(755,root,root) %{_libexecdir}/cachetrace.pl
 %attr(755,root,root) %{_libexecdir}/calc-must-ids.pl
 %attr(755,root,root) %{_libexecdir}/cert_tool
-%attr(755,root,root) %{_libexecdir}/cert_valid.pl
 %attr(755,root,root) %{_libexecdir}/check_cache.pl
 %attr(755,root,root) %{_libexecdir}/fileno-to-pathname.pl
 %attr(755,root,root) %{_libexecdir}/find-alive.pl
 %attr(755,root,root) %{_libexecdir}/flag_truncs.pl
-%attr(755,root,root) %{_libexecdir}/helper-mux.pl
 %attr(755,root,root) %{_libexecdir}/icpserver.pl
 %attr(755,root,root) %{_libexecdir}/icp-test.pl
 %attr(755,root,root) %{_libexecdir}/tcp-banger.pl

@@ -1,14 +1,14 @@
---- squid-3.2.3/src/log/ModStdio.cc~	2012-10-20 14:39:49.000000000 +0200
-+++ squid-3.2.3/src/log/ModStdio.cc	2012-10-26 12:23:52.502399442 +0200
-@@ -60,7 +60,11 @@
+--- squid-4.2//src/log/ModStdio.cc~	2018-08-05 16:13:41.000000000 +0200
++++ squid-4.2//src/log/ModStdio.cc	2018-09-20 20:19:38.877856849 +0200
+@@ -46,7 +46,11 @@ logfileWriteWrapper(Logfile * lf, const
      if (!lf->flags.fatal)
          return;
  
--    fatalf("logfileWrite: %s: %s\n", lf->path, xstrerror());
+-    fatalf("logfileWrite: %s: %s\n", lf->path, xstrerr(xerrno));
 +#if HAVE_SYSLOG
-+    syslog(LOG_ALERT, "logfileWrite: %s: %s", lf->path, xstrerror());
++    syslog(LOG_ALERT, "logfileWrite: %s: %s", lf->path, xstrerr(xerrno));
 +#else
-+    debugs(50, 1, "logfileWrite: " << lf->path << ": " << xstrerror());
++    debugs(50, 1, "logfileWrite: " << lf->path << ": " << xstrerr(xerrno));
 +#endif
  }
  
