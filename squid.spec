@@ -647,6 +647,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %configure \
 	--disable-silent-rules \
 	--disable-strict-error-checking \
+	--disable-arch-native \
 	--with-default-user=squid \
 	--with-logdir=/var/log/squid \
 	--with-swapdir=/var/cache/squid \
