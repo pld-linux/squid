@@ -4,6 +4,10 @@ After=syslog.target network.target
 
 [Service]
 Type=forking
+PIDFile=/var/run/squid/squid.pid
+# Note: when starting directly as squid user the /var/run directory is not writable, put:
+# pid_filename /var/run/squid/squid.pid
+# into /etc/squid/squid.conf; and make sure you did systemctl daemon-reexec after useradd
 User=squid
 Group=squid
 EnvironmentFile=-/etc/sysconfig/squid
