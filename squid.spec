@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	4.10
+Version:	4.11
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v4/%{name}-%{version}.tar.xz
-# Source0-md5:	af7ac6e70f9bd03ae4fcec0c9b99c38a
+# Source0-md5:	10f34e852153a9996aa4614670e2bda1
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -38,12 +38,14 @@ Source11:	%{name}-check_cache
 
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
+Patch3:		krb.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
 # still needed? http://bugs.squid-cache.org/show_bug.cgi?id=3806
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch7:		squidv3-vary-headers-shm-hack.patch
+Patch8:		debug.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -629,12 +631,14 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %{?with_combined_log:%patch4 -p1}
 %ifarch ppc
 %patch5 -p1
 %endif
 %patch6 -p1
 #%patch7 -p1
+%patch8 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
