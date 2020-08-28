@@ -16,13 +16,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	4.11
+Version:	4.13
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
 Source0:	http://www.squid-cache.org/Versions/v4/%{name}-%{version}.tar.xz
-# Source0-md5:	10f34e852153a9996aa4614670e2bda1
+# Source0-md5:	492e54afc15821141ff1d1d9903854d6
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
@@ -38,33 +38,35 @@ Source11:	%{name}-check_cache
 
 Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
-Patch3:		krb.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
 Patch6:		%{name}-cachemgr-webapp.patch
 # still needed? http://bugs.squid-cache.org/show_bug.cgi?id=3806
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch7:		squidv3-vary-headers-shm-hack.patch
-Patch8:		debug.patch
 URL:		http://www.squid-cache.org/
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.61
+BuildRequires:	automake >= 1.5
 BuildRequires:	cppunit-devel
 BuildRequires:	cyrus-sasl-devel >= 2.1.0
 BuildRequires:	db-devel
 BuildRequires:	expat-devel
 BuildRequires:	heimdal-devel
 BuildRequires:	libcap-devel >= 1:2.09
-BuildRequires:	libecap-devel >= 1
-BuildRequires:	libltdl-devel
+BuildRequires:	libecap-devel >= 1.0
+BuildRequires:	libecap-devel < 1.1
+BuildRequires:	libltdl-devel >= 2:2.2
 BuildRequires:	libnetfilter_conntrack-devel
+BuildRequires:	libnsl-devel
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool
-BuildRequires:	libxml2-devel
+BuildRequires:	libtirpc-devel
+BuildRequires:	libtool >= 2:2.2
+BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	openldap-devel >= 2.3.0
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.671
 BuildRequires:	sed >= 4.0
 BuildRequires:	tar >= 1:1.22
@@ -242,7 +244,7 @@ SPNEGO i żetony Kerberos RFC 1964 z Firefoksa w Linuksie.
 
 %package ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -256,7 +258,7 @@ uwierzytelniania (otwartym tekstem).
 
 %package pam_auth
 Summary:	PAM authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania PAM dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania PAM dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	pam >= 0.77.3
@@ -272,7 +274,7 @@ Program ten pozwala na uwierzytelnianie użytkowników squida w dowolnym
 
 %package smb_auth
 Summary:	SMB authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania SMB dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania SMB dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -288,7 +290,7 @@ Samba.
 
 %package msnt_auth
 Summary:	MSNT domain authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania w domenie MSNT dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania w domenie MSNT dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -302,7 +304,7 @@ uwierzytelnianie użytkowników proxy w domenie NT.
 
 %package nis_auth
 Summary:	NIS authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania NIS dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania NIS dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	squid-yp_auth = %{epoch}:%{version}-%{release}
@@ -318,7 +320,7 @@ uwierzytelnianie użytkowników proxy poprzez NIS.
 
 %package ncsa_auth
 Summary:	NCSA httpd style authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania NCSA httpd dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania NCSA httpd dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -330,7 +332,7 @@ Moduł uwierzytelniania proxy używający pliku haseł jak w NCSA httpd.
 
 %package sasl_auth
 Summary:	SASL authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania SASL dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania SASL dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -344,7 +346,7 @@ uwierzytelnianie użytkowników proxy poprzez SASL.
 
 %package getpwname_auth
 Summary:	getpwname authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania getpwname dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania getpwname dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -358,7 +360,7 @@ uwierzytelnianie użytkowników proxy poprzez getpwname.
 
 %package passwd_auth
 Summary:	passwd authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania passwd dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania passwd dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -372,7 +374,7 @@ uwierzytelnianie użytkowników proxy poprzez oddzielny plik passwd.
 
 %package ntlm_auth
 Summary:	NTLM authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania NTLM dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania NTLM dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -386,7 +388,7 @@ uwierzytelnianie użytkowników proxy poprzez NTLM.
 
 %package radius_auth
 Summary:	RADIUS authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania RADIUS dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania RADIUS dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -400,7 +402,7 @@ serwer RADIUS.
 
 %package db_auth
 Summary:	Database authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania przez bazę danych dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania przez bazę danych dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	perl-DBI
@@ -416,7 +418,7 @@ uwierzytelnianie użytkowników proxy poprzez bazę danych.
 
 %package pop3_auth
 Summary:	POP3 authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania POP3 dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania POP3 dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -430,7 +432,7 @@ uwierzytelnianie użytkowników proxy poprzez POP3.
 
 %package negotiate_wrapper_auth
 Summary:	Kerberos authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania Kerberos dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania Kerberos dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Requires:	%{name}-kerberos_auth = %{epoch}:%{version}-%{release}
@@ -446,7 +448,7 @@ uwierzytelnianie użytkowników proxy poprzez Kerberosa.
 
 %package digest_edirectory_auth
 Summary:	eDirectory authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania eDirectory dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania eDirectory dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -460,7 +462,7 @@ uwierzytelnianie użytkowników proxy poprzez eDirectory.
 
 %package digest_ldap_auth
 Summary:	LDAP authentication helper for Squid
-Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla squida
+Summary(pl.UTF-8):	Obsługa uwierzytelniania LDAP dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -474,7 +476,7 @@ uwierzytelnianie użytkowników proxy poprzez LDAP.
 
 %package ip_acl
 Summary:	IP external ACL helper for Squid
-Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez IP dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez IP dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -488,7 +490,7 @@ ograniczenie dostępu użytkowników proxy na podstawie ich adresu IP.
 
 %package ldap_acl
 Summary:	LDAP group external ACL helper for Squid
-Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy LDAP dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy LDAP dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -503,7 +505,7 @@ przynależności do grup LDAP.
 
 %package unix_acl
 Summary:	UNIX group external ACL helper for Squid
-Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy UNIX dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy UNIX dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -518,7 +520,7 @@ przynależności do grup UNIX.
 
 %package wbinfo_acl
 Summary:	NT domain group external ACL helper for Squid
-Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy w domenie NT dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy w domenie NT dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -564,7 +566,7 @@ popranego z eDirectory.
 
 %package kerberos_ldap_group_acl
 Summary:	Squid LDAP external acl group helper for Kerberos or NTLM credentials
-Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy LDAP/Kerberos/NTLM dla squida
+Summary(pl.UTF-8):	Wsparcie kontroli dostępu przez grupy LDAP/Kerberos/NTLM dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -579,6 +581,7 @@ Kerberosowych lub NTLM-owych w LDAP.
 
 %package sql_session_acl
 Summary:	SQL Database session lookup helper for Squid
+Summary(pl.UTF-8):	Obsługa wyszukiwania sesji w bazie SQL dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -586,26 +589,41 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 Validates an HTTP requests access authorization with a session
 database.
 
+%description sql_session_acl -l pl.UTF-8
+Moduł sprawdzający autoryzację dostępu HTTP względem bazy danych
+sesji.
+
 %package time_quota_acl
 Summary:	Squid time quota external acl helper
+Summary(pl.UTF-8):	Obsługa limitu czasu dostępu dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description time_quota_acl
 This extension allows an administrator to define time budgets for the
-users of squid to limit the time using squid.
+users of Squid to limit the time using Squid.
+
+%description time_quota_acl -l pl.UTF-8
+To rozszerzenie pozwala administratorowi definiować budżety czasowe,
+ograniczające użytkownikom czas używania Squida.
 
 %package log_db_daemon
 Summary:	Database logging daemon for Squid
+Summary(pl.UTF-8):	Demon dla Squida logujący do bazy danych
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description log_db_daemon
 This program writes Squid access.log entries to a database. Presently
-only accepts the squid native format.
+only accepts the Squid native format.
+
+%description log_db_daemon -l pl.UTF-8
+Ten program zapisuje wpisy access.log Squida do bazy danych. Aktualnie
+obsługiwany jest tylko format natywny Squida.
 
 %package storeid_file_rewrite
 Summary:	File based Store-ID helper for Squid
+Summary(pl.UTF-8):	Obsługa opartego na plikach Store-ID dla Squida
 Group:		Networking/Admin
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -613,6 +631,12 @@ Requires:	%{name} = %{epoch}:%{version}-%{release}
 This program acts as a store_id helper program, rewriting URLs passed
 by Squid into storage-ids that can be used to achieve better caching
 for websites that use different URLs for the same content.
+
+%description storeid_file_rewrite -l pl.UTF-8
+Ten program obsługuje store_id, przepisując URL-e przekazane przez
+Squida na identyfikatory przestrzeni dyskowej, pozwalające osiągnąć
+lepsze działanie pamięci podręcznej dla stron wykorzystujących różne
+URL-e dla tej samej treści.
 
 %package scripts
 Summary:	Perl scripts for Squid
@@ -631,14 +655,12 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %{?with_combined_log:%patch4 -p1}
 %ifarch ppc
 %patch5 -p1
 %endif
 %patch6 -p1
 #%patch7 -p1
-%patch8 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
@@ -648,6 +670,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+CPPFLAGS="%{rpmcppflags} $(pkg-config --cflags libtirpc)"
 %configure \
 	--disable-silent-rules \
 	--disable-strict-error-checking \
@@ -826,10 +849,8 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART
-%doc RELEASENOTES.html SPONSORS docs/* src/mib.txt book-full.html
-%doc src/squid.conf.default src/squid.conf.documented src/mime.conf.default
-%doc errors/TRANSLATORS
+%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS book-full.html
+%doc docs/* src/{mib.txt,squid.conf.default,squid.conf.documented,mime.conf.default} errors/TRANSLATORS
 %attr(755,root,root) %{_bindir}/purge
 %attr(755,root,root) %{_bindir}/squidclient
 
@@ -873,6 +894,7 @@ fi
 %lang(bg) %{_datadir}/squid/errors/bg
 %lang(bg) %{_datadir}/squid/errors/bg-*
 %lang(ca) %{_datadir}/squid/errors/ca
+%lang(ca_ES) %{_datadir}/squid/errors/ca-es
 %lang(cs) %{_datadir}/squid/errors/cs
 %lang(cs) %{_datadir}/squid/errors/cs-*
 %lang(da) %{_datadir}/squid/errors/da
@@ -924,6 +946,7 @@ fi
 %lang(pt) %{_datadir}/squid/errors/pt-pt
 %lang(pt_BR) %{_datadir}/squid/errors/pt-br
 %lang(pt_BZ) %{_datadir}/squid/errors/pt-bz
+%lang(pt) %{_datadir}/squid/errors/pt-xl
 %lang(ro) %{_datadir}/squid/errors/ro
 %lang(ro) %{_datadir}/squid/errors/ro-*
 %lang(ru) %{_datadir}/squid/errors/ru
@@ -947,10 +970,10 @@ fi
 %lang(vi) %{_datadir}/squid/errors/vi-*
 %lang(zh_CN) %{_datadir}/squid/errors/zh-cn
 %lang(zh_CN) %{_datadir}/squid/errors/zh-han*
-%lang(zh_CN) %{_datadir}/squid/errors/zh-sg
-%lang(zh_CN) %{_datadir}/squid/errors/zh-tw
-%lang(zh_TW) %{_datadir}/squid/errors/zh-hk
-%lang(zh_TW) %{_datadir}/squid/errors/zh-mo
+%lang(zh_HK) %{_datadir}/squid/errors/zh-hk
+%lang(zh_MO) %{_datadir}/squid/errors/zh-mo
+%lang(zh_SG) %{_datadir}/squid/errors/zh-sg
+%lang(zh_TW) %{_datadir}/squid/errors/zh-tw
 
 %{systemdunitdir}/squid.service
 %{systemdtmpfilesdir}/squid.conf
