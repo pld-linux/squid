@@ -83,8 +83,8 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/lib/rpm/user_group.sh
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(pre,triggerpostun):	/bin/id
-Requires(pre,triggerpostun):	/usr/sbin/usermod
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/usermod
 Requires(post,preun,postun):	systemd-units >= 38
 Requires:	rc-scripts >= 0.2.0
 Requires:	setup >= 2.4.6
