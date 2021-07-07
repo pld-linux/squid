@@ -15,8 +15,8 @@ diff -ur squid-2.6.STABLE19/QUICKSTART squid-2.6.STABLE19.new/QUICKSTART
  ==============================================================================
  
 @@ -26,7 +25,7 @@
-     always ask permission before adding a parent cache. See also the
-     never_direct/always_direct directives.
+     as after startup (typically "nobody" and "nogroup").  Do not use
+     "root", for security reasons.
  
 -cache_dir ufs /usr/local/squid/var/cache 100 16 256
 +cache_dir ufs /var/cache/squid 100 16 256

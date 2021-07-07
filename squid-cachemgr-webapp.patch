@@ -1,11 +1,11 @@
 --- squid-2.7.STABLE5/tools/Makefile.am~	2006-09-22 12:08:46.000000000 +0300
 +++ squid-2.7.STABLE5/tools/Makefile.am	2008-11-12 15:55:17.030499323 +0200
 @@ -39,7 +39,7 @@
- EXTRA_DIST = \
- 	cachemgr.conf
+ 
+ ## ##### cachemgr.cgi  #####
  
 -DEFAULT_CACHEMGR_CONFIG = $(sysconfdir)/cachemgr.conf
 +DEFAULT_CACHEMGR_CONFIG = /etc/webapps/cachemgr/cachemgr.conf
  
- $(OBJS): $(top_srcdir)/include/version.h ../include/autoconf.h
+ libexec_PROGRAMS = cachemgr$(CGIEXT)
  
