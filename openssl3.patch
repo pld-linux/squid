@@ -1,0 +1,701 @@
+From 2dcbe5cd4661e90030d1e9586f59d01c9c1e945a Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Thu, 23 Jul 2020 17:38:26 +1200
+Subject: [PATCH 01/10] Update license disclaimer
+
+OpenSSL 3.0 uses Apache License v2 which removes the SSLeay distribution restrictions.
+---
+ src/main.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/main.cc b/src/main.cc
+index 4576b761c54..4654df0be0a 100644
+--- a/src/main.cc
++++ b/src/main.cc
+@@ -672,7 +672,9 @@ mainHandleCommandLineOption(const int optId, const char *optValue)
+             printf("%s\n",SQUID_BUILD_INFO);
+ #if USE_OPENSSL
+         printf("\nThis binary uses %s. ", OpenSSL_version(OPENSSL_VERSION));
++#if OPENSSL_VERSION_MAJOR < 3
+         printf("For legal restrictions on distribution see https://www.openssl.org/source/license.html\n\n");
++#endif
+ #endif
+         printf( "configure options: %s\n", SQUID_CONFIGURE_OPTIONS);
+ 
+
+From 18628a4b53ed6ea1be91b26d201ef8a75e3b39de Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Thu, 23 Jul 2020 18:08:15 +1200
+Subject: [PATCH 02/10] TODO Upgrade API calls verifying loaded DH params file
+
+---
+ src/security/ServerOptions.cc | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/security/ServerOptions.cc b/src/security/ServerOptions.cc
+index 2613c279f2c..dee22869a74 100644
+--- a/src/security/ServerOptions.cc
++++ b/src/security/ServerOptions.cc
+@@ -364,6 +364,10 @@ Security::ServerOptions::loadDhParams()
+         return;
+     }
+ 
++#if OPENSSL_VERSION_MAJOR < 3
++    // DH_check() removed in OpenSSL 3.0.
++    // TODO: use the EVP API instead, which also works in OpenSSL 1.1.
++    // But it is not yet clear exactly how that API works for DH.
+     int codes;
+     if (DH_check(dhp, &codes) == 0) {
+         if (codes) {
+@@ -372,6 +376,7 @@ Security::ServerOptions::loadDhParams()
+             dhp = nullptr;
+         }
+     }
++#endif
+ 
+     parsedDhParams.resetWithoutLocking(dhp);
+ #endif
+
+From 8de1d03adf5a001c9bf9784543e345b9a5e47804 Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Thu, 23 Jul 2020 18:51:20 +1200
+Subject: [PATCH 03/10] Declaration of CRYPTO_EX_dup changed again in 3.0
+
+---
+ src/ssl/support.cc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/ssl/support.cc b/src/ssl/support.cc
+index e33fad6adfc..c9d99e9a27e 100644
+--- a/src/ssl/support.cc
++++ b/src/ssl/support.cc
+@@ -559,7 +559,11 @@ Ssl::VerifyCallbackParameters::At(Security::Connection &sconn)
+ }
+ 
+ // "dup" function for SSL_get_ex_new_index("cert_err_check")
+-#if SQUID_USE_CONST_CRYPTO_EX_DATA_DUP
++#if OPENSSL_VERSION_MAJOR >= 3
++static int
++ssl_dupAclChecklist(CRYPTO_EX_DATA *, const CRYPTO_EX_DATA *, void **,
++                    int, long, void *)
++#elif SQUID_USE_CONST_CRYPTO_EX_DATA_DUP
+ static int
+ ssl_dupAclChecklist(CRYPTO_EX_DATA *, const CRYPTO_EX_DATA *, void *,
+                     int, long, void *)
+
+From c194b7327ffd6f22a141b9031d8fb21f5f96596e Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Thu, 23 Jul 2020 21:02:36 +1200
+Subject: [PATCH 04/10] Refactor Ssl::createSslPrivateKey()
+
+* Use the OpenSSL 1.1+ EVP API for generating RSA keys.
+
+* Make static since this is only used by the gadgets.cc code.
+---
+ src/ssl/gadgets.cc | 41 +++++++++++++++++------------------------
+ src/ssl/gadgets.h  |  8 +-------
+ 2 files changed, 18 insertions(+), 31 deletions(-)
+
+diff --git a/src/ssl/gadgets.cc b/src/ssl/gadgets.cc
+index 36262e29ba0..c1e81c79291 100644
+--- a/src/ssl/gadgets.cc
++++ b/src/ssl/gadgets.cc
+@@ -9,35 +9,28 @@
+ #include "squid.h"
+ #include "ssl/gadgets.h"
+ 
+-EVP_PKEY * Ssl::createSslPrivateKey()
++static EVP_PKEY *
++CreateRsaPrivateKey()
+ {
+-    Security::PrivateKeyPointer pkey(EVP_PKEY_new());
+-
+-    if (!pkey)
+-        return NULL;
+-
+-    BIGNUM_Pointer bn(BN_new());
+-    if (!bn)
+-        return NULL;
+-
+-    if (!BN_set_word(bn.get(), RSA_F4))
+-        return NULL;
+-
+-    Ssl::RSA_Pointer rsa(RSA_new());
++    Ssl::EVP_PKEY_CTX_Pointer rsa(EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, nullptr));
+     if (!rsa)
+-        return NULL;
++        return nullptr;
+ 
+-    int num = 2048; // Maybe use 4096 RSA keys, or better make it configurable?
+-    if (!RSA_generate_key_ex(rsa.get(), num, bn.get(), NULL))
+-        return NULL;
++    if (EVP_PKEY_keygen_init(rsa.get()) <= 0)
++        return nullptr;
+ 
+-    if (!rsa)
+-        return NULL;
++    int num = 2048; // Maybe use 4096 RSA keys, or better make it configurable?
++    if (EVP_PKEY_CTX_set_rsa_keygen_bits(rsa.get(), num) <= 0)
++        return nullptr;
+ 
+-    if (!EVP_PKEY_assign_RSA(pkey.get(), (rsa.get())))
+-        return NULL;
++    /* Generate key */
++    Security::PrivateKeyPointer pkey(EVP_PKEY_new());
++    if (pkey) {
++        auto *foo = pkey.get();
++        if (EVP_PKEY_keygen(rsa.get(), &foo) <= 0)
++            return nullptr;
++    }
+ 
+-    rsa.release();
+     return pkey.release();
+ }
+ 
+@@ -553,7 +546,7 @@ static bool generateFakeSslCertificate(Security::CertPointer & certToStore, Secu
+     if (properties.signWithPkey.get())
+         pkey.resetAndLock(properties.signWithPkey.get());
+     else // if not exist generate one
+-        pkey.resetWithoutLocking(Ssl::createSslPrivateKey());
++        pkey.resetWithoutLocking(CreateRsaPrivateKey());
+ 
+     if (!pkey)
+         return false;
+diff --git a/src/ssl/gadgets.h b/src/ssl/gadgets.h
+index 0a2535e41e5..b4395198cce 100644
+--- a/src/ssl/gadgets.h
++++ b/src/ssl/gadgets.h
+@@ -57,7 +57,7 @@ typedef std::unique_ptr<TXT_DB, HardFun<void, TXT_DB*, &TXT_DB_free>> TXT_DB_Poi
+ 
+ typedef std::unique_ptr<X509_NAME, HardFun<void, X509_NAME*, &X509_NAME_free>> X509_NAME_Pointer;
+ 
+-typedef std::unique_ptr<RSA, HardFun<void, RSA*, &RSA_free>> RSA_Pointer;
++typedef std::unique_ptr<EVP_PKEY_CTX, HardFun<void, EVP_PKEY_CTX*, &EVP_PKEY_CTX_free>> EVP_PKEY_CTX_Pointer;
+ 
+ typedef std::unique_ptr<X509_REQ, HardFun<void, X509_REQ*, &X509_REQ_free>> X509_REQ_Pointer;
+ 
+@@ -71,12 +71,6 @@ typedef std::unique_ptr<GENERAL_NAME, HardFun<void, GENERAL_NAME*, &GENERAL_NAME
+ typedef std::unique_ptr<X509_EXTENSION, HardFun<void, X509_EXTENSION*, &X509_EXTENSION_free>> X509_EXTENSION_Pointer;
+ 
+ typedef std::unique_ptr<X509_STORE_CTX, HardFun<void, X509_STORE_CTX *, &X509_STORE_CTX_free>> X509_STORE_CTX_Pointer;
+-/**
+- \ingroup SslCrtdSslAPI
+- * Create 1024 bits rsa key.
+- */
+-EVP_PKEY * createSslPrivateKey();
+-
+ /**
+  \ingroup SslCrtdSslAPI
+  * Write private key and SSL certificate to memory.
+
+From b62997320204965a765bab0dc9a5b2d3b5daa13c Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <squid3@treenet.co.nz>
+Date: Tue, 10 Nov 2020 12:01:28 +1300
+Subject: [PATCH 05/10] Tweak RSA key generator
+
+... rely on EVP_PKEY_keygen() allocating the key memory.
+---
+ src/ssl/gadgets.cc | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/src/ssl/gadgets.cc b/src/ssl/gadgets.cc
+index c1e81c79291..0754e4b26b4 100644
+--- a/src/ssl/gadgets.cc
++++ b/src/ssl/gadgets.cc
+@@ -24,14 +24,11 @@ CreateRsaPrivateKey()
+         return nullptr;
+ 
+     /* Generate key */
+-    Security::PrivateKeyPointer pkey(EVP_PKEY_new());
+-    if (pkey) {
+-        auto *foo = pkey.get();
+-        if (EVP_PKEY_keygen(rsa.get(), &foo) <= 0)
+-            return nullptr;
+-    }
++    EVP_PKEY *pkey = nullptr;
++    if (EVP_PKEY_keygen(rsa.get(), &pkey) <= 0)
++        return nullptr;
+ 
+-    return pkey.release();
++    return pkey;
+ }
+ 
+ /**
+
+From d38c63c6051d534e0b2eeb1d33e1a2dc380479a9 Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Wed, 6 Oct 2021 22:39:49 +1300
+Subject: [PATCH 06/10] Fix EVP_PKEY_get0_RSA is deprecated
+
+---
+ src/ssl/gadgets.cc | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/ssl/gadgets.cc b/src/ssl/gadgets.cc
+index 0754e4b26b4..c94d57c5dbb 100644
+--- a/src/ssl/gadgets.cc
++++ b/src/ssl/gadgets.cc
+@@ -369,7 +369,11 @@ mimicExtensions(Security::CertPointer & cert, Security::CertPointer const &mimic
+     // XXX: Add PublicKeyPointer. In OpenSSL, public and private keys are
+     // internally represented by EVP_PKEY pair, but GnuTLS uses distinct types.
+     const Security::PrivateKeyPointer certKey(X509_get_pubkey(mimicCert.get()));
+-    const auto rsaPkey = EVP_PKEY_get0_RSA(certKey.get()) != nullptr;
++#if OPENSSL_VERSION_MAJOR < 3
++    const auto rsaPkey = bool(EVP_PKEY_get0_RSA(certKey.get()));
++#else
++    const auto rsaPkey = EVP_PKEY_is_a(certKey.get(), "RSA");
++#endif
+ 
+     int added = 0;
+     int nid;
+
+From f3acc382b9b609eaddb44a747a47dbf85cce4023 Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Wed, 6 Oct 2021 21:12:25 +1300
+Subject: [PATCH 07/10] Initial DH conversion to EVP_PKEY
+
+3.0 build does not yet complete due to ENGINE and BIGNUM deprecation issues.
+
+This conversion relies on OSSL_*() functions added in 3.0. So the
+old DH loading code is left unchanged.
+---
+ configure.ac                  |  1 +
+ src/security/ServerOptions.cc | 30 +++++++++++++++++++++++++++---
+ src/security/forward.h        | 24 +++++++++++++++---------
+ 3 files changed, 43 insertions(+), 12 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 534cec994fd..a97d05f55cf 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1307,6 +1307,7 @@ if test "x$with_openssl" = "xyes"; then
+     openssl/bio.h \
+     openssl/bn.h \
+     openssl/crypto.h \
++    openssl/decoder.h \
+     openssl/dh.h \
+     openssl/err.h \
+     openssl/evp.h \
+diff --git a/src/security/ServerOptions.cc b/src/security/ServerOptions.cc
+index dee22869a74..040d6888bec 100644
+--- a/src/security/ServerOptions.cc
++++ b/src/security/ServerOptions.cc
+@@ -19,6 +19,9 @@
+ #include "compat/openssl.h"
+ #include "ssl/support.h"
+ 
++#if HAVE_OPENSSL_DECODER_H
++#include <openssl/decoder.h>
++#endif
+ #if HAVE_OPENSSL_ERR_H
+ #include <openssl/err.h>
+ #endif
+@@ -353,6 +356,7 @@ Security::ServerOptions::loadDhParams()
+         return;
+ 
+ #if USE_OPENSSL
++#if OPENSSL_VERSION_MAJOR < 3
+     DH *dhp = nullptr;
+     if (FILE *in = fopen(dhParamsFile.c_str(), "r")) {
+         dhp = PEM_read_DHparams(in, NULL, NULL, NULL);
+@@ -364,7 +368,6 @@ Security::ServerOptions::loadDhParams()
+         return;
+     }
+ 
+-#if OPENSSL_VERSION_MAJOR < 3
+     // DH_check() removed in OpenSSL 3.0.
+     // TODO: use the EVP API instead, which also works in OpenSSL 1.1.
+     // But it is not yet clear exactly how that API works for DH.
+@@ -376,10 +379,31 @@ Security::ServerOptions::loadDhParams()
+             dhp = nullptr;
+         }
+     }
+-#endif
+-
+     parsedDhParams.resetWithoutLocking(dhp);
++
++#else // OpenSSL 3.0+
++    EVP_PKEY *pkey = nullptr;
++    if (auto *dctx = OSSL_DECODER_CTX_new_for_pkey(&pkey, "PEM", nullptr, "DH", OSSL_KEYMGMT_SELECT_ALL, nullptr, nullptr)) {
++        if (auto *in = fopen(dhParamsFile.c_str(), "r")) {
++            if (OSSL_DECODER_from_fp(dctx, in) == 1) {
++
++                /* pkey is created with the decoded data from the bio */
++                Must(pkey);
++                parsedDhParams.resetWithoutLocking(pkey);
++
++            } else {
++                debugs(83, DBG_IMPORTANT, "WARNING: Failed to decode DH parameters '" << dhParamsFile << "'");
++            }
++            fclose(in);
++        }
++        OSSL_DECODER_CTX_free(dctx);
++
++    } else {
++        debugs(83, DBG_IMPORTANT, "WARNING: no suitable potential decoders found for DH parameters");
++        return;
++    }
+ #endif
++#endif // USE_OPENSSL
+ }
+ 
+ bool
+diff --git a/src/security/forward.h b/src/security/forward.h
+index 7cf1c5eb5a2..265c07eb021 100644
+--- a/src/security/forward.h
++++ b/src/security/forward.h
+@@ -93,9 +93,24 @@ typedef std::list<Security::CertPointer> CertList;
+ typedef std::list<Security::CrlPointer> CertRevokeList;
+ 
+ #if USE_OPENSSL
++CtoCpp1(EVP_PKEY_free, EVP_PKEY *)
++typedef Security::LockingPointer<EVP_PKEY, EVP_PKEY_free_cpp, HardFun<int, EVP_PKEY *, EVP_PKEY_up_ref> > PrivateKeyPointer;
++#elif USE_GNUTLS
++typedef std::shared_ptr<struct gnutls_x509_privkey_int> PrivateKeyPointer;
++#else
++typedef std::shared_ptr<void> PrivateKeyPointer;
++#endif
++
++#if USE_OPENSSL
++#if OPENSSL_VERSION_MAJOR < 3
+ CtoCpp1(DH_free, DH *);
+ typedef Security::LockingPointer<DH, DH_free_cpp, HardFun<int, DH *, DH_up_ref> > DhePointer;
+ #else
++typedef PrivateKeyPointer DhePointer;
++#endif
++#elif USE_GNUTLS
++typedef void *DhePointer;
++#else
+ typedef void *DhePointer;
+ #endif
+ 
+@@ -178,15 +193,6 @@ class PeerConnector;
+ class PeerConnector;
+ class PeerOptions;
+ 
+-#if USE_OPENSSL
+-CtoCpp1(EVP_PKEY_free, EVP_PKEY *)
+-typedef Security::LockingPointer<EVP_PKEY, EVP_PKEY_free_cpp, HardFun<int, EVP_PKEY *, EVP_PKEY_up_ref> > PrivateKeyPointer;
+-#elif USE_GNUTLS
+-typedef std::shared_ptr<struct gnutls_x509_privkey_int> PrivateKeyPointer;
+-#else
+-typedef std::shared_ptr<void> PrivateKeyPointer;
+-#endif
+-
+ class ServerOptions;
+ 
+ class ErrorDetail;
+
+From b2f040b6872314390866e69ee643abe2786f3556 Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Wed, 6 Oct 2021 21:55:38 +1300
+Subject: [PATCH 08/10] Switch to BN_rand()
+
+BN_pseudo_rand() has been identical since libssl 1.1.0 and is removed in libssl 3.0
+---
+ src/cf.data.pre    | 2 ++
+ src/ssl/gadgets.cc | 2 +-
+ src/ssl/support.cc | 5 ++---
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/src/cf.data.pre b/src/cf.data.pre
+index be6741ec2ef..ef82d0a435b 100644
+--- a/src/cf.data.pre
++++ b/src/cf.data.pre
+@@ -3057,6 +3057,8 @@ DEFAULT: none
+ DOC_START
+ 	The OpenSSL engine to use. You will need to set this if you
+ 	would like to use hardware SSL acceleration for example.
++
++	Note: OpenSSL 3.0 and newer do not provide Engine support.
+ DOC_END
+ 
+ NAME: sslproxy_session_ttl
+diff --git a/src/ssl/gadgets.cc b/src/ssl/gadgets.cc
+index c94d57c5dbb..626cb81e578 100644
+--- a/src/ssl/gadgets.cc
++++ b/src/ssl/gadgets.cc
+@@ -46,7 +46,7 @@ static bool setSerialNumber(ASN1_INTEGER *ai, BIGNUM const* serial)
+         if (!bn)
+             return false;
+ 
+-        if (!BN_pseudo_rand(bn.get(), 64, 0, 0))
++        if (!BN_rand(bn.get(), 64, 0, 0))
+             return false;
+     }
+ 
+diff --git a/src/ssl/support.cc b/src/ssl/support.cc
+index c9d99e9a27e..52b94cafdae 100644
+--- a/src/ssl/support.cc
++++ b/src/ssl/support.cc
+@@ -660,8 +660,8 @@ Ssl::Initialize(void)
+ 
+     SQUID_OPENSSL_init_ssl();
+ 
+-#if !defined(OPENSSL_NO_ENGINE)
+     if (::Config.SSL.ssl_engine) {
++#if !defined(OPENSSL_NO_ENGINE) && OPENSSL_VERSION_MAJOR < 3
+         ENGINE_load_builtin_engines();
+         ENGINE *e;
+         if (!(e = ENGINE_by_id(::Config.SSL.ssl_engine)))
+@@ -671,11 +671,10 @@ Ssl::Initialize(void)
+             const auto ssl_error = ERR_get_error();
+             fatalf("Failed to initialise SSL engine: %s\n", Security::ErrorString(ssl_error));
+         }
+-    }
+ #else
+-    if (::Config.SSL.ssl_engine)
+         fatalf("Your OpenSSL has no SSL engine support\n");
+ #endif
++    }
+ 
+     const char *defName = ::Config.SSL.certSignHash ? ::Config.SSL.certSignHash : SQUID_SSL_SIGN_HASH_IF_NONE;
+     Ssl::DefaultSignHash = EVP_get_digestbyname(defName);
+
+From 6923982e708a6bd58379161a6256f37645792edc Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Sun, 10 Oct 2021 02:35:10 +1300
+Subject: [PATCH 09/10] SSL_OP_* macro definitions changed in 3.0
+
+---
+ src/security/PeerOptions.cc | 50 ++++++++++++++++++-------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/src/security/PeerOptions.cc b/src/security/PeerOptions.cc
+index 648f9f2590e..52a154b8c02 100644
+--- a/src/security/PeerOptions.cc
++++ b/src/security/PeerOptions.cc
+@@ -297,130 +297,130 @@ static struct ssl_option {
+ 
+ } ssl_options[] = {
+ 
+-#if SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG
++#if defined(SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG)
+     {
+         "NETSCAPE_REUSE_CIPHER_CHANGE_BUG", SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG
+     },
+ #endif
+-#if SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG
++#if defined(SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG)
+     {
+         "SSLREF2_REUSE_CERT_TYPE_BUG", SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG
+     },
+ #endif
+-#if SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER
++#if defined(SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER)
+     {
+         "MICROSOFT_BIG_SSLV3_BUFFER", SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER
+     },
+ #endif
+-#if SSL_OP_SSLEAY_080_CLIENT_DH_BUG
++#if defined(SSL_OP_SSLEAY_080_CLIENT_DH_BUG)
+     {
+         "SSLEAY_080_CLIENT_DH_BUG", SSL_OP_SSLEAY_080_CLIENT_DH_BUG
+     },
+ #endif
+-#if SSL_OP_TLS_D5_BUG
++#if defined(SSL_OP_TLS_D5_BUG)
+     {
+         "TLS_D5_BUG", SSL_OP_TLS_D5_BUG
+     },
+ #endif
+-#if SSL_OP_TLS_BLOCK_PADDING_BUG
++#if defined(SSL_OP_TLS_BLOCK_PADDING_BUG)
+     {
+         "TLS_BLOCK_PADDING_BUG", SSL_OP_TLS_BLOCK_PADDING_BUG
+     },
+ #endif
+-#if SSL_OP_TLS_ROLLBACK_BUG
++#if defined(SSL_OP_TLS_ROLLBACK_BUG)
+     {
+         "TLS_ROLLBACK_BUG", SSL_OP_TLS_ROLLBACK_BUG
+     },
+ #endif
+-#if SSL_OP_ALL
++#if defined(SSL_OP_ALL)
+     {
+         "ALL", (long)SSL_OP_ALL
+     },
+ #endif
+-#if SSL_OP_SINGLE_DH_USE
++#if defined(SSL_OP_SINGLE_DH_USE)
+     {
+         "SINGLE_DH_USE", SSL_OP_SINGLE_DH_USE
+     },
+ #endif
+-#if SSL_OP_EPHEMERAL_RSA
++#if defined(SSL_OP_EPHEMERAL_RSA)
+     {
+         "EPHEMERAL_RSA", SSL_OP_EPHEMERAL_RSA
+     },
+ #endif
+-#if SSL_OP_PKCS1_CHECK_1
++#if defined(SSL_OP_PKCS1_CHECK_1)
+     {
+         "PKCS1_CHECK_1", SSL_OP_PKCS1_CHECK_1
+     },
+ #endif
+-#if SSL_OP_PKCS1_CHECK_2
++#if defined(SSL_OP_PKCS1_CHECK_2)
+     {
+         "PKCS1_CHECK_2", SSL_OP_PKCS1_CHECK_2
+     },
+ #endif
+-#if SSL_OP_NETSCAPE_CA_DN_BUG
++#if defined(SSL_OP_NETSCAPE_CA_DN_BUG)
+     {
+         "NETSCAPE_CA_DN_BUG", SSL_OP_NETSCAPE_CA_DN_BUG
+     },
+ #endif
+-#if SSL_OP_NON_EXPORT_FIRST
++#if defined(SSL_OP_NON_EXPORT_FIRST)
+     {
+         "NON_EXPORT_FIRST", SSL_OP_NON_EXPORT_FIRST
+     },
+ #endif
+-#if SSL_OP_CIPHER_SERVER_PREFERENCE
++#if defined(SSL_OP_CIPHER_SERVER_PREFERENCE)
+     {
+         "CIPHER_SERVER_PREFERENCE", SSL_OP_CIPHER_SERVER_PREFERENCE
+     },
+ #endif
+-#if SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG
++#if defined(SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG)
+     {
+         "NETSCAPE_DEMO_CIPHER_CHANGE_BUG", SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG
+     },
+ #endif
+-#if SSL_OP_NO_SSLv3
++#if defined(SSL_OP_NO_SSLv3)
+     {
+         "NO_SSLv3", SSL_OP_NO_SSLv3
+     },
+ #endif
+-#if SSL_OP_NO_TLSv1
++#if defined(SSL_OP_NO_TLSv1)
+     {
+         "NO_TLSv1", SSL_OP_NO_TLSv1
+     },
+ #else
+     { "NO_TLSv1", 0 },
+ #endif
+-#if SSL_OP_NO_TLSv1_1
++#if defined(SSL_OP_NO_TLSv1_1)
+     {
+         "NO_TLSv1_1", SSL_OP_NO_TLSv1_1
+     },
+ #else
+     { "NO_TLSv1_1", 0 },
+ #endif
+-#if SSL_OP_NO_TLSv1_2
++#if defined(SSL_OP_NO_TLSv1_2)
+     {
+         "NO_TLSv1_2", SSL_OP_NO_TLSv1_2
+     },
+ #else
+     { "NO_TLSv1_2", 0 },
+ #endif
+-#if SSL_OP_NO_TLSv1_3
++#if defined(SSL_OP_NO_TLSv1_3)
+     {
+         "NO_TLSv1_3", SSL_OP_NO_TLSv1_3
+     },
+ #else
+     { "NO_TLSv1_3", 0 },
+ #endif
+-#if SSL_OP_NO_COMPRESSION
++#if defined(SSL_OP_NO_COMPRESSION)
+     {
+         "No_Compression", SSL_OP_NO_COMPRESSION
+     },
+ #endif
+-#if SSL_OP_NO_TICKET
++#if defined(SSL_OP_NO_TICKET)
+     {
+         "NO_TICKET", SSL_OP_NO_TICKET
+     },
+ #endif
+-#if SSL_OP_SINGLE_ECDH_USE
++#if defined(SSL_OP_SINGLE_ECDH_USE)
+     {
+         "SINGLE_ECDH_USE", SSL_OP_SINGLE_ECDH_USE
+     },
+@@ -512,7 +512,7 @@ Security::PeerOptions::parseOptions()
+ 
+     }
+ 
+-#if SSL_OP_NO_SSLv2
++#if defined(SSL_OP_NO_SSLv2)
+     // compliance with RFC 6176: Prohibiting Secure Sockets Layer (SSL) Version 2.0
+     op = op | SSL_OP_NO_SSLv2;
+ #endif
+
+From 0097ab042f705596c317eb69ffa7271bc676ff66 Mon Sep 17 00:00:00 2001
+From: Amos Jeffries <amosjeffries@squid-cache.org>
+Date: Mon, 11 Oct 2021 06:01:10 +1300
+Subject: [PATCH 10/10] Update ECDH key settings
+
+---
+ src/security/ServerOptions.cc | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/src/security/ServerOptions.cc b/src/security/ServerOptions.cc
+index 040d6888bec..9594350e776 100644
+--- a/src/security/ServerOptions.cc
++++ b/src/security/ServerOptions.cc
+@@ -383,7 +383,12 @@ Security::ServerOptions::loadDhParams()
+ 
+ #else // OpenSSL 3.0+
+     EVP_PKEY *pkey = nullptr;
+-    if (auto *dctx = OSSL_DECODER_CTX_new_for_pkey(&pkey, "PEM", nullptr, "DH", OSSL_KEYMGMT_SELECT_ALL, nullptr, nullptr)) {
++    const char *type = "DH";
++    if (!eecdhCurve.isEmpty())
++        type = "EC";
++    // XXX: use the eecdhCurve name when generating the EVP_KEY object. or at least verify it matches the loaded params.
++
++    if (auto *dctx = OSSL_DECODER_CTX_new_for_pkey(&pkey, "PEM", nullptr, type, OSSL_KEYMGMT_SELECT_ALL, nullptr, nullptr)) {
+         if (auto *in = fopen(dhParamsFile.c_str(), "r")) {
+             if (OSSL_DECODER_from_fp(dctx, in) == 1) {
+ 
+@@ -482,6 +487,9 @@ Security::ServerOptions::updateContextEecdh(Security::ContextPointer &ctx)
+         debugs(83, 9, "Setting Ephemeral ECDH curve to " << eecdhCurve << ".");
+ 
+ #if USE_OPENSSL && OPENSSL_VERSION_NUMBER >= 0x0090800fL && !defined(OPENSSL_NO_ECDH)
++
++    // OpenSSL 3.0+ generates the key in loadDhParams()
++#if OPENSSL_VERSION_MAJOR < 3
+         int nid = OBJ_sn2nid(eecdhCurve.c_str());
+         if (!nid) {
+             debugs(83, DBG_CRITICAL, "ERROR: Unknown EECDH curve '" << eecdhCurve << "'");
+@@ -489,6 +497,9 @@ Security::ServerOptions::updateContextEecdh(Security::ContextPointer &ctx)
+         }
+ 
+         auto ecdh = EC_KEY_new_by_curve_name(nid);
++#else
++        auto ecdh = parsedDhParams.get();
++#endif
+         if (!ecdh) {
+             const auto x = ERR_get_error();
+             debugs(83, DBG_CRITICAL, "ERROR: Unable to configure Ephemeral ECDH: " << Security::ErrorString(x));
+@@ -499,7 +510,11 @@ Security::ServerOptions::updateContextEecdh(Security::ContextPointer &ctx)
+             const auto x = ERR_get_error();
+             debugs(83, DBG_CRITICAL, "ERROR: Unable to set Ephemeral ECDH: " << Security::ErrorString(x));
+         }
++#if OPENSSL_VERSION_MAJOR < 3
+         EC_KEY_free(ecdh);
++#else
++        return;
++#endif
+ 
+ #else
+         debugs(83, DBG_CRITICAL, "ERROR: EECDH is not available in this build." <<
+@@ -508,8 +523,8 @@ Security::ServerOptions::updateContextEecdh(Security::ContextPointer &ctx)
+ #endif
+     }
+ 
+-    // set DH parameters into the server context
+ #if USE_OPENSSL
++    // set DH parameters into the server context
+     if (parsedDhParams) {
+         SSL_CTX_set_tmp_dh(ctx.get(), parsedDhParams.get());
+     }
