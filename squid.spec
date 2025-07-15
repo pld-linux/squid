@@ -661,7 +661,7 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %patch -P5 -p1
 %endif
 %patch -P6 -p1
-#%patch7 -p1
+#%%patch7 -p1
 %patch -P8 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
