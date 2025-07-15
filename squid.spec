@@ -654,15 +654,15 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %prep
 %setup -q -a3
 
-%patch1 -p1
-%patch2 -p1
+%patch -P1 -p1
+%patch -P2 -p1
 %{?with_combined_log:%patch4 -p1}
 %ifarch ppc
-%patch5 -p1
+%patch -P5 -p1
 %endif
-%patch6 -p1
+%patch -P6 -p1
 #%patch7 -p1
-%patch8 -p1
+%patch -P8 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
