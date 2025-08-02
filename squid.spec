@@ -825,10 +825,8 @@ if [ "$1" = "0" ]; then
 fi
 %systemd_reload
 
-%triggerpostun -- squid < 7:2.5.STABLE7-5
-%addusertogroup stats squid
-
 %triggerpostun -- squid < 7:3.4.7-2
+%addusertogroup stats squid
 %systemd_trigger squid.service
 
 %triggerin cachemgr -- apache1 < 1.3.37-3, apache1-base
