@@ -1,14 +1,5 @@
 --- squid.conf.default	2010-09-08 13:45:20.000000000 +0200
 +++ squid.conf	2010-09-08 17:29:24.765819003 +0200
-@@ -43,7 +43,7 @@
- # We strongly recommend the following be uncommented to protect innocent
- # web applications running on the proxy server who think the only
- # one who can access services on "localhost" is a local user
--#http_access deny to_localhost
-+http_access deny to_localhost
- 
- #
- # INSERT YOUR OWN RULE(S) HERE TO ALLOW ACCESS FROM YOUR CLIENTS
 @@ -65,7 +65,8 @@
  hierarchy_stoplist cgi-bin ?
  

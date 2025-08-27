@@ -7,6 +7,7 @@
 #
 # Conditional build:
 %bcond_with	combined_log	# enables apache-like combined log format
+%bcond_with	ldap		# ldap support
 #
 Summary:	SQUID Internet Object Cache
 Summary(es.UTF-8):	proxy/cache para WWW/FTP/gopher
@@ -16,23 +17,22 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	5.2
-Release:	2
+Version:	7.1
+Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	http://www.squid-cache.org/Versions/v5/%{name}-%{version}.tar.xz
-# Source0-md5:	102984f3ea382a1fa5bd917c2ee155ec
+Source0:	https://github.com/squid-cache/squid/releases/download/SQUID_7_1/%{name}-%{version}.tar.xz
+# Source0-md5:	e617871ff11444bdf930aa2455d7627b
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
-Source3:	http://squid-docs.sourceforge.net/latest/zip-files/book-full-html.zip
-# Source3-md5:	4f3b6dab1de9cbb847df89d8b417378a
+
 Source4:	%{name}.conf.patch
 Source5:	%{name}.logrotate
 Source6:	%{name}.pamd
-Source7:	%{name}-cachemgr-apache.conf
+
 Source8:	%{name}.tmpfiles
-Source9:	%{name}-cachemgr-httpd.conf
+
 Source10:	%{name}.service
 Source11:	%{name}-check_cache
 
@@ -40,11 +40,10 @@ Patch1:		%{name}-location.patch
 Patch2:		%{name}-crash-on-ENOSPC.patch
 Patch4:		%{name}-2.5.STABLE4-apache-like-combined-log.patch
 Patch5:		%{name}-ppc-m32.patch
-Patch6:		%{name}-cachemgr-webapp.patch
+
 # still needed? http://bugs.squid-cache.org/show_bug.cgi?id=3806
 # http://www.squid-cache.org/mail-archive/squid-dev/201207/att-0177/squidv3-vary-headers-shm-hack.patch
 Patch7:		squidv3-vary-headers-shm-hack.patch
-Patch8:		openssl3.patch
 URL:		http://www.squid-cache.org/
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake >= 1.5
@@ -63,7 +62,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libtirpc-devel
 BuildRequires:	libtool >= 2:2.2
 BuildRequires:	libxml2-devel >= 2.0
-BuildRequires:	openldap-devel >= 2.3.0
+%{?with_ldap:BuildRequires:	openldap-devel >= 2.6.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pam-devel
 BuildRequires:	perl-base
@@ -99,11 +98,8 @@ Provides:	user(squid)
 Conflicts:	logrotate < 3.8.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_webapps	/etc/webapps
-%define		_webapp		cachemgr
 %define		_libexecdir	%{_libdir}/%{name}
 %define		_sysconfdir	/etc/%{name}
-%define		_cgidir		%{_prefix}/lib/cgi-bin/%{_webapp}
 
 %description
 Squid is a high-performance proxy caching server for web clients,
@@ -200,27 +196,6 @@ Squid - це кешуючий проксі-сервер для web-клієнт�
 
 Цей пакет має вбудовану підтримку бази даних мережевих ICMP-проб
 (Netdb).
-
-%package cachemgr
-Summary:	CGI script for Squid management
-Summary(pl.UTF-8):	Skrypt CGI do zarządzania Squidem przez WWW
-Group:		Applications/WWW
-# does not require squid locally
-Requires:	group(http)
-Requires:	webapps
-Requires:	webserver
-Requires:	webserver(access)
-Requires:	webserver(alias)
-Requires:	webserver(cgi)
-Conflicts:	apache-base < 2.4.0-1
-
-%description cachemgr
-Cachemgr.cgi is a CGI script that allows administrator to check
-various informations about Squid via WWW.
-
-%description cachemgr -l pl.UTF-8
-Cachemgr.cgi jest skryptem CGI, który pozwala administratorowi
-zapoznać się z informacjami o pracy Squida poprzez WWW.
 
 %package kerberos_auth
 Summary:	Authentication via the Negotiate RFC 4559 for proxies
@@ -652,7 +627,7 @@ This package contains Perl scripts and contributed programs for Squid.
 Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 
 %prep
-%setup -q -a3
+%setup -q
 
 %patch -P1 -p1
 %patch -P2 -p1
@@ -660,23 +635,50 @@ Ten pakiet zawiera skrypty perlowe i dodatkowe programy dla Squida.
 %ifarch ppc
 %patch -P5 -p1
 %endif
-%patch -P6 -p1
+
 #%%patch7 -p1
-%patch -P8 -p1
 
 %{__sed} -i -e '1s#!.*bin/perl#!%{__perl}#' {contrib,scripts}/*.pl
 
 %build
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-%{__autoheader}
-%{__automake}
+for i in . libltdl; do
+	olddir=$(pwd)
+	cd $i
+	%{__libtoolize}
+	%{__aclocal}
+	%{__autoconf}
+	%{__autoheader}
+	%{__automake}
+	cd "$olddir"
+done
+
+# get_helpers dir "what to skip"
+get_helpers() {
+	local dir="$1" skip_helpers="$2" out_helpers=""
+
+	for helper in $(cd $dir; for d in *; do [ -d "$d" ] && echo $d; done); do
+		skip=0
+		for skip_helper in $skip_helpers; do
+			[ "$helper" = "$skip_helper" ] && skip=1 && break
+		done
+		[ "$skip" -eq 1 ] && continue
+		[ -n "$out_helpers" ] && out_helpers="$out_helpers,$helper" || out_helpers="$helper"
+	done
+	echo $out_helpers
+}
+
+EXTERNAL_ACL_HELPERS_SKIP="AD_group LM_group %{!?with_ldap:eDirectory_userip LDAP_group kerberos_ldap_group}"
+AUTH_BASIC_SKIP="SSPI %{!?with_ldap:LDAP}"
+AUTH_DIGEST_SKIP="%{!?with_ldap:eDirectory LDAP}"
+AUTH_NEGOTIATE_SKIP="SSPI"
+AUTH_NTLM_SKIP="SSPI"
+
 CPPFLAGS="%{rpmcppflags} $(pkg-config --cflags libtirpc)"
 %configure \
 	--disable-silent-rules \
 	--disable-strict-error-checking \
 	--disable-arch-native \
+	%{!?with_ldap:--disable-ldap} \
 	--with-default-user=squid \
 	--with-logdir=/var/log/squid \
 	--with-swapdir=/var/cache/squid \
@@ -685,17 +687,21 @@ CPPFLAGS="%{rpmcppflags} $(pkg-config --cflags libtirpc)"
 	--enable-arp-acl \
 	--enable-auth \
 	--enable-basic-auth-helpers \
-	--enable-ntlm-auth-helpers \
-	--enable-negotiate-auth-helpers \
-	--enable-digest-auth-helpers \
-	--enable-external-acl-helpers \
+	--enable-auth-basic=$(get_helpers src/auth/basic "$AUTH_BASIC_SKIP") \
+	--enable-auth-ntlm=$(get_helpers src/auth/ntlm "$AUTH_NTLM_SKIP") \
+	--enable-auth-negotiate=$(get_helpers src/auth/negotiate "$AUTH_NEGOTIATE_SKIP") \
+	--enable-auth-digest=$(get_helpers src/auth/digest "$AUTH_DIGEST_SKIP") \
+	--enable-external-acl-helpers=$(get_helpers src/acl/external "$EXTERNAL_ACL_HELPERS_SKIP") \
 	--enable-url-rewrite-helpers \
 	--enable-ntlm-fail-open \
 	--enable-cache-digests \
 	--enable-coss-aio-ops \
 	--enable-delay-pools \
+	--enable-diskio \
+	--enable-epoll \
 	--enable-err-language=English \
 	--enable-esi \
+	--enable-eui \
 	--enable-follow-x-forwarded-for	\
 	--enable-forward-log \
 	--enable-forw-via-db \
@@ -704,23 +710,31 @@ CPPFLAGS="%{rpmcppflags} $(pkg-config --cflags libtirpc)"
 	--enable-wccpv2 \
 	--enable-icap-client \
 	--enable-ecap \
+	--enable-ident-lookups \
 	--enable-icmp \
 	--enable-kill-parent-hack \
 	--enable-large-cache-files \
 	--enable-linux-netfilter \
 	--disable-linux-tproxy \
+	--enable-log-daemon-helpers=$(get_helpers src/log "") \
 	--enable-multicast-miss \
 	--enable-referer-log \
 	--enable-removal-policies="heap,lru" \
+	--enable-security-cert-validators=$(get_helpers src/security/cert_validators "") \
+	--enable-security-cert-generators=$(get_helpers src/security/cert_generators "") \
 	--enable-storeio="aufs,diskd,rock,ufs" \
-	--enable-storeid-rewrite-helpers="file" \
+	--enable-storeid-rewrite-helpers=$(get_helpers src/store/id_rewriters "") \
 	--enable-snmp \
 	--enable-ssl \
+	--enable-ssl-crtd \
+	--enable-translation \
 	--enable-ipv6 \
+	--enable-url-rewrite-helpers=$(get_helpers src/http/url_rewriters "") \
 	--enable-useragent-log \
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
+	--with-aio \
 	--with-auth-on-acceleration \
 	--with-large-files \
 	--with-maxfd=32768 \
@@ -733,8 +747,7 @@ CPPFLAGS="%{rpmcppflags} $(pkg-config --cflags libtirpc)"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_cgidir},%{_webapps}/%{_webapp}} \
-	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
+install -d $RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,security,sysconfig,logrotate.d} \
 	$RPM_BUILD_ROOT{%{_sbindir},%{_bindir},%{_libexecdir}/contrib} \
 	$RPM_BUILD_ROOT%{_mandir}/man8 \
 	$RPM_BUILD_ROOT%{_datadir}/squid \
@@ -752,11 +765,6 @@ install %{SOURCE6} $RPM_BUILD_ROOT/etc/pam.d/squid
 touch $RPM_BUILD_ROOT/etc/security/blacklist.squid
 
 install %{SOURCE8} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/squid.conf
-
-%{__mv} -f $RPM_BUILD_ROOT%{_libdir}/squid/cachemgr.cgi $RPM_BUILD_ROOT%{_cgidir}
-%{__cp} -a %{SOURCE7} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/apache.conf
-%{__cp} -a %{SOURCE9} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
-%{__rm} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/cachemgr.conf.default
 
 cd $RPM_BUILD_ROOT/etc/squid
 %{__patch} -p0 < %{SOURCE4}
@@ -776,6 +784,9 @@ touch $RPM_BUILD_ROOT/var/log/squid/{access,cache,store}.log
 %{__cp} -a doc docs
 # We don't want Makefiles as docs...
 %{__rm} docs/Makefile*
+%{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/squid.conf.orig
+# unknown locale
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/squid/errors/spq
 
 :> $RPM_BUILD_ROOT/var/cache/squid/netdb_state
 :> $RPM_BUILD_ROOT/var/cache/squid/swap.state
@@ -829,30 +840,10 @@ fi
 %addusertogroup stats squid
 %systemd_trigger squid.service
 
-%triggerin cachemgr -- apache1 < 1.3.37-3, apache1-base
-%webapp_register apache %{_webapp}
-
-%triggerun cachemgr -- apache1 < 1.3.37-3, apache1-base
-%webapp_unregister apache %{_webapp}
-
-%triggerin cachemgr -- apache-base
-%webapp_register httpd %{_webapp}
-
-%triggerun cachemgr -- apache-base
-%webapp_unregister httpd %{_webapp}
-
-%triggerpostun -- cachemgr < 7:3.0.STABLE10-0.2
-if [ -f %{_sysconfdir}/cachemgr.conf.rpmsave ]; then
-	cp -f %{_webapps}/%{_webapp}/cachemgr.conf{,.rpmsave}
-	mv -f %{_sysconfdir}/cachemgr.conf.rpmsave %{_webapps}/%{_webapp}/cachemgr.conf
-fi
-
 %files
 %defattr(644,root,root,755)
-%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS book-full.html
+%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
 %doc docs/* src/{mib.txt,squid.conf.default,squid.conf.documented,mime.conf.default} errors/TRANSLATORS
-%attr(755,root,root) %{_bindir}/purge
-%attr(755,root,root) %{_bindir}/squidclient
 
 %dir %{_libexecdir}
 %attr(755,root,root) %{_libexecdir}/diskd
@@ -862,6 +853,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/ntlm_fake_auth
 %attr(755,root,root) %{_libexecdir}/basic_fake_auth
 %attr(755,root,root) %{_libexecdir}/ext_delayer_acl
+%attr(755,root,root) %{_libexecdir}/ext_kerberos_sid_group_acl
 %attr(755,root,root) %{_libexecdir}/helper-mux
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite
 %attr(755,root,root) %{_libexecdir}/url_fake_rewrite.sh
@@ -988,29 +980,20 @@ fi
 %ghost /var/cache/squid/swap.state
 %ghost /var/cache/squid/swap.state.clean
 %ghost /var/cache/squid/swap.state.last-clean
-%{_mandir}/man1/purge.1*
-%{_mandir}/man1/squidclient.1*
 %{_mandir}/man8/ext_delayer_acl.8*
+%{_mandir}/man8/ext_kerberos_sid_group_acl.8*
 %{_mandir}/man8/squid.8*
 %{_mandir}/man8/helper-mux.8*
 %{_mandir}/man8/security_fake_certverify.8*
 %{_mandir}/man8/security_file_certgen.8*
 %{_mandir}/man8/url_lfs_rewrite.8*
 
-%files cachemgr
-%defattr(644,root,root,755)
-%dir %attr(750,root,http) %{_webapps}/%{_webapp}
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/apache.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/httpd.conf
-%attr(640,root,http) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/cachemgr.conf
-%dir %{_cgidir}
-%attr(755,root,root) %{_cgidir}/cachemgr.cgi
-%{_mandir}/man8/cachemgr.cgi.8*
-
+%if %{with ldap}
 %files ldap_auth
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/basic_ldap_auth
 %{_mandir}/man8/basic_ldap_auth.*
+%endif
 
 %files pam_auth
 %defattr(644,root,root,755)
@@ -1072,9 +1055,11 @@ fi
 %attr(755,root,root) %{_libexecdir}/basic_radius_auth
 %{_mandir}/man8/basic_radius_auth.8*
 
+%if %{with ldap}
 %files digest_ldap_auth
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/digest_ldap_auth
+%endif
 
 %files db_auth
 %defattr(644,root,root,755)
@@ -1086,9 +1071,11 @@ fi
 %{_libexecdir}/basic_pop3_auth
 %{_mandir}/man8/basic_pop3_auth.8*
 
+%if %{with ldap}
 %files digest_edirectory_auth
 %defattr(644,root,root,755)
 %{_libexecdir}/digest_edirectory_auth
+%endif
 
 %files negotiate_wrapper_auth
 %defattr(644,root,root,755)
@@ -1100,10 +1087,12 @@ fi
 %attr(755,root,root) %{_libexecdir}/ext_file_userip_acl
 %{_mandir}/man8/ext_file_userip_acl.*
 
+%if %{with ldap}
 %files ldap_acl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libexecdir}/ext_ldap_group_acl
 %{_mandir}/man8/ext_ldap_group_acl.*
+%endif
 
 %files unix_acl
 %defattr(644,root,root,755)
@@ -1120,6 +1109,7 @@ fi
 %attr(755,root,root) %{_libexecdir}/ext_session_acl
 %{_mandir}/man8/ext_session_acl.8*
 
+%if %{with ldap}
 %files edirectory_userip_acl
 %defattr(644,root,root,755)
 %{_libexecdir}/ext_edirectory_userip_acl
@@ -1128,6 +1118,7 @@ fi
 %files kerberos_ldap_group_acl
 %defattr(644,root,root,755)
 %{_libexecdir}/ext_kerberos_ldap_group_acl
+%endif
 
 %files sql_session_acl
 %defattr(644,root,root,755)
@@ -1157,15 +1148,15 @@ fi
 %attr(755,root,root) %{_libexecdir}/cache-compare.pl
 %attr(755,root,root) %{_libexecdir}/cachetrace.pl
 %attr(755,root,root) %{_libexecdir}/calc-must-ids.pl
-%attr(755,root,root) %{_libexecdir}/cert_tool
 %attr(755,root,root) %{_libexecdir}/check_cache.pl
 %attr(755,root,root) %{_libexecdir}/fileno-to-pathname.pl
 %attr(755,root,root) %{_libexecdir}/find-alive.pl
 %attr(755,root,root) %{_libexecdir}/flag_truncs.pl
 %attr(755,root,root) %{_libexecdir}/icpserver.pl
 %attr(755,root,root) %{_libexecdir}/icp-test.pl
-%attr(755,root,root) %{_libexecdir}/tcp-banger.pl
+%attr(755,root,root) %{_libexecdir}/trace-context.pl
 %attr(755,root,root) %{_libexecdir}/trace-job.pl
 %attr(755,root,root) %{_libexecdir}/trace-master.pl
+%attr(755,root,root) %{_libexecdir}/update-contributors.pl
 %attr(755,root,root) %{_libexecdir}/udp-banger.pl
 %attr(755,root,root) %{_libexecdir}/upgrade-1.0-store.pl
