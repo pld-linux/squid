@@ -17,13 +17,13 @@ Summary(ru.UTF-8):	Squid - кэш объектов Internet
 Summary(uk.UTF-8):	Squid - кеш об'єктів Internet
 Summary(zh_CN.UTF-8):	SQUID 高速缓冲代理服务器
 Name:		squid
-Version:	7.1
+Version:	7.5
 Release:	1
 Epoch:		7
 License:	GPL v2
 Group:		Networking/Daemons
-Source0:	https://github.com/squid-cache/squid/releases/download/SQUID_7_1/%{name}-%{version}.tar.xz
-# Source0-md5:	e617871ff11444bdf930aa2455d7627b
+Source0:	https://github.com/squid-cache/squid/releases/download/SQUID_7_5/%{name}-%{version}.tar.xz
+# Source0-md5:	6221ea4b5f8e2f5df1db0e2182305198
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 
@@ -677,71 +677,42 @@ CPPFLAGS="%{rpmcppflags} $(pkg-config --cflags libtirpc)"
 %configure \
 	--disable-silent-rules \
 	--disable-strict-error-checking \
-	--disable-arch-native \
-	%{!?with_ldap:--disable-ldap} \
+	%{!?with_ldap:--without-ldap} \
 	--with-default-user=squid \
 	--with-logdir=/var/log/squid \
 	--with-swapdir=/var/cache/squid \
 	--with-pidfile=/var/run/squid.pid \
 	--datadir=%{_datadir}/squid \
-	--enable-arp-acl \
 	--enable-auth \
-	--enable-basic-auth-helpers \
 	--enable-auth-basic=$(get_helpers src/auth/basic "$AUTH_BASIC_SKIP") \
 	--enable-auth-ntlm=$(get_helpers src/auth/ntlm "$AUTH_NTLM_SKIP") \
 	--enable-auth-negotiate=$(get_helpers src/auth/negotiate "$AUTH_NEGOTIATE_SKIP") \
 	--enable-auth-digest=$(get_helpers src/auth/digest "$AUTH_DIGEST_SKIP") \
 	--enable-external-acl-helpers=$(get_helpers src/acl/external "$EXTERNAL_ACL_HELPERS_SKIP") \
-	--enable-url-rewrite-helpers \
-	--enable-ntlm-fail-open \
+	--enable-url-rewrite-helpers=$(get_helpers src/http/url_rewriters "") \
 	--enable-cache-digests \
-	--enable-coss-aio-ops \
 	--enable-delay-pools \
-	--enable-diskio \
-	--enable-epoll \
-	--enable-err-language=English \
-	--enable-esi \
-	--enable-eui \
-	--enable-follow-x-forwarded-for	\
-	--enable-forward-log \
-	--enable-forw-via-db \
-	--enable-htcp \
-	--enable-wccp \
-	--enable-wccpv2 \
-	--enable-icap-client \
+	--enable-disk-io \
 	--enable-ecap \
-	--enable-ident-lookups \
+	--enable-forw-via-db \
 	--enable-icmp \
-	--enable-kill-parent-hack \
-	--enable-large-cache-files \
 	--enable-linux-netfilter \
-	--disable-linux-tproxy \
 	--enable-log-daemon-helpers=$(get_helpers src/log "") \
-	--enable-multicast-miss \
-	--enable-referer-log \
 	--enable-removal-policies="heap,lru" \
 	--enable-security-cert-validators=$(get_helpers src/security/cert_validators "") \
 	--enable-security-cert-generators=$(get_helpers src/security/cert_generators "") \
-	--enable-storeio="aufs,diskd,rock,ufs" \
-	--enable-storeid-rewrite-helpers=$(get_helpers src/store/id_rewriters "") \
-	--enable-snmp \
 	--enable-ssl \
 	--enable-ssl-crtd \
+	--enable-storeio="aufs,diskd,rock,ufs" \
+	--enable-storeid-rewrite-helpers=$(get_helpers src/store/id_rewriters "") \
 	--enable-translation \
-	--enable-ipv6 \
-	--enable-url-rewrite-helpers=$(get_helpers src/http/url_rewriters "") \
-	--enable-useragent-log \
 	--enable-x-accelerator-vary \
 	--localstatedir=/var \
 	--sysconfdir=%{_sysconfdir} \
-	--with-aio \
-	--with-auth-on-acceleration \
+	--with-filedescriptors=32768 \
 	--with-large-files \
-	--with-maxfd=32768 \
-	--with-pthreads \
 	--with-openssl \
-	--without-nettle \
-	--enable-zph-qos
+	--without-nettle
 
 %{__make}
 
@@ -842,7 +813,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART RELEASENOTES.html SPONSORS
+%doc CONTRIBUTORS CREDITS README ChangeLog QUICKSTART SPONSORS
 %doc docs/* src/{mib.txt,squid.conf.default,squid.conf.documented,mime.conf.default} errors/TRANSLATORS
 
 %dir %{_libexecdir}
